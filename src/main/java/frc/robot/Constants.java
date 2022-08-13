@@ -23,6 +23,8 @@ public final class Constants{
         }
 
         public static class kSwerve {
+                public static final double WHEEL_BASE = 0;
+                public static final double MAX_SPEED = 0;
                 public static final SwerveModuleConfig frontLeft = new SwerveModuleConfig(new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0);
                 public static final SwerveModuleConfig frontRight = new SwerveModuleConfig(new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0);
                 public static final SwerveModuleConfig backLeft = new SwerveModuleConfig(new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0);

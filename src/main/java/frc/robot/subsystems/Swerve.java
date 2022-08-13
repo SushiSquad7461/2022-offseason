@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import SushiFrcLib.Kinematics.SwerveDriveKinematics;
 import SushiFrcLib.SwerveModule.SwerveModuleSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kSwerve;
@@ -9,6 +10,7 @@ public class Swerve extends SubsystemBase {
     private SwerveModuleSparkMax frontLeft;
     private SwerveModuleSparkMax backLeft;
     private SwerveModuleSparkMax backRight;
+    private SwerveDriveKinematics kinematics;
     
     //Subsystem Creation
     private static Swerve sInstance = null;
@@ -34,12 +36,13 @@ public class Swerve extends SubsystemBase {
         frontLeft.start();
         backRight.start();
         backLeft.start();
-
+        kinematics = new SwerveDriveKinematics(kSwerve.WHEEL_BASE, kSwerve.MAX_SPEED);
     }
 
     @Override
     public void periodic() { 
         synchronized (Swerve.this) {
+            kinematics.calculate(, )
         }
     }
 
