@@ -5,6 +5,11 @@ import SushiFrcLib.Motor.SwerveModuleConfig;
 import SushiFrcLib.State.State.MotorDirection;
 import SushiFrcLib.State.State.MotorNeturalState;
 import SushiFrcLib.State.State.MotorType;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 public final class Constants{
         public static final class kIntake {
@@ -25,10 +30,29 @@ public final class Constants{
         public static class kSwerve {
                 public static final double WHEEL_BASE = 0;
                 public static final double MAX_SPEED = 0;
-                public static final SwerveModuleConfig frontLeft = new SwerveModuleConfig(new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0);
-                public static final SwerveModuleConfig frontRight = new SwerveModuleConfig(new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0);
-                public static final SwerveModuleConfig backLeft = new SwerveModuleConfig(new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0);
-                public static final SwerveModuleConfig backRight = new SwerveModuleConfig(new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0);
+                public static final SwerveModuleConfig[] CONFIGS = new SwerveModuleConfig[]{
+                        new SwerveModuleConfig(
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0),
+                        new SwerveModuleConfig(
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0),
+                        new SwerveModuleConfig(
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0),
+                        new SwerveModuleConfig(
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 
+                                new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 0, 0)};
+
+                public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+                        new Translation2d(WHEEL_BASE/2.0, WHEEL_BASE/2.0), 
+                        new Translation2d(-WHEEL_BASE/2.0, WHEEL_BASE/2.0), 
+                        new Translation2d(-WHEEL_BASE/2.0, -WHEEL_BASE/2.0), 
+                        new Translation2d(WHEEL_BASE/2.0, -WHEEL_BASE/2.0));
+                
+                public static final PIDController X_CONTROLLER = new PIDController(0, 0, 0);
+                public static final PIDController Y_CONTROLLER = new PIDController(0, 0, 0);
+                public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0));
         }
 
         public static void setup() {
