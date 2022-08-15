@@ -30,6 +30,7 @@ public final class Constants{
         public static class kSwerve {
                 public static final double WHEEL_BASE = 0;
                 public static final double MAX_SPEED = 0;
+                public static final double MAX_ACCELERATION = 0;
                 public static final SwerveModuleConfig[] CONFIGS = new SwerveModuleConfig[]{
                         new SwerveModuleConfig(
                                 new MotorConfig(0, 0, MotorNeturalState.BRAKE, MotorDirection.CLOCKWISE, 0, 0, 0, 0, MotorType.BRUSHLESS), 

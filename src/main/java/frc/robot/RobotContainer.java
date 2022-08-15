@@ -6,7 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
@@ -21,11 +24,16 @@ public class RobotContainer {
   XboxController driver = new XboxController(0);
   Swerve mSwerve = Swerve.getInstance("Robot Container");
   Intake mIntake = Intake.getInstance("Robot Container");
+  SendableChooser<SequentialCommandGroup> autoChooser;
+  AutoCommands autos;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    autos = new AutoCommands(mSwerve);
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("Test", autos.test);
   }
 
   /**
@@ -46,8 +54,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  // public Command getAutonomousCommand() {
-  //   // An ExampleCommand will run in autonomous
-  //   return m_autoCommand;
-  // }
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    return autoChooser.getSelected();
+  }
 }
