@@ -5,6 +5,7 @@ import java.util.ResourceBundle.Control;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import SushiFrcLib.ChesyLibUtil.InterpolatingDouble;
 import SushiFrcLib.Motor.MotorHelper;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ports;
@@ -23,6 +24,10 @@ public class Hood extends SubsystemBase {
         if (0 <= newPos && newPos <= kHood.maxPos) {
             pos = newPos;
         }
+    }
+
+    void setPosBasedOnDistance(double distance) {
+        pos = kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value;
     }
 
     @Override
