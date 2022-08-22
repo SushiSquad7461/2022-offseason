@@ -1,19 +1,24 @@
 package frc.robot;
 
-import SushiFrcLib.Motor.MotorConfig;
-import SushiFrcLib.Motor.SwerveModuleConfig;
-import SushiFrcLib.State.State.MotorDirection;
-import SushiFrcLib.State.State.MotorNeturalState;
-import SushiFrcLib.State.State.MotorType;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 
-public final class Constants{
+public final class Constants {
         public static class Ports {
+                public static final int HOOD_MOTOR = -1;
+                public static final int HOOD_CAN_CODER = -1;
         }
+
+        public static class kHood {
+                public static final int CURRENT_LIMIT = 35;
+                public static final TalonFXInvertType INVERSION = TalonFXInvertType.CounterClockwise;
+                public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
+                public static final double kP = 0;
+                public static final double kI = 0;
+                public static final double kD = 0;
+                public static final double kF = 0;
+                public static final double maxPos = 180;
+        } 
 
         public static void setup() {
         }
