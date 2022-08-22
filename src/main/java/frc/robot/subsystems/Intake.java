@@ -20,12 +20,12 @@ public class Intake extends SubsystemBase {
 
     public static Intake getInstance(String caller) {
         if (sInstance == null) {
-            sInstance = new Intake(caller);
+            sInstance = new Intake();
         }
         return sInstance;
     }
 
-    private Intake(String caller) {
+    private Intake() {
         pivot = MotorHelper.createFalconMotor(Ports.INTAKE_PIVOT, kIntake.PIVOT_CURRENT_LIMIT, TalonFXInvertType.CounterClockwise, NeutralMode.Brake);
         roller = MotorHelper.createFalconMotor(Ports.INTAKE_ROLLER, kIntake.ROLLER_CURRENT_LIMIT, TalonFXInvertType.Clockwise, NeutralMode.Coast);
         pivot.setSelectedSensorPosition(0);
