@@ -12,16 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 public final class Constants{
-        public static final class kIntake {
-                public static final int PIVOT_CURRENT_LIMIT = 30;
-                public static final int ROLLER_CURRENT_LIMIT = 30;
-                public static final int EXTENDED_SETPOINT = 200;
-                public static final double kPPivot = 0;
-                public static final double kIPivot = 0;
-                public static final double kDPivot = 0;
-                public static final double kFPivot = 0;
-        }
-
         public static class Ports {
                 public static final int INTAKE_PIVOT = -1;
                 public static final int INTAKE_ROLLER = -1;

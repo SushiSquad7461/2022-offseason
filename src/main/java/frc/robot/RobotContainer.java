@@ -23,7 +23,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
   Swerve mSwerve = Swerve.getInstance("Robot Container");
-  Intake mIntake = Intake.getInstance("Robot Container");
   SendableChooser<SequentialCommandGroup> autoChooser;
   AutoCommands autos;
 
