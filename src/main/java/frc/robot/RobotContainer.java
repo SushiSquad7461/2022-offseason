@@ -22,18 +22,11 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
-  Swerve mSwerve = Swerve.getInstance("Robot Container");
-  Intake mIntake = Intake.getInstance("Robot Container");
-  SendableChooser<SequentialCommandGroup> autoChooser;
-  AutoCommands autos;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    autos = new AutoCommands(mSwerve);
-    autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Test", autos.test);
   }
 
   /**
@@ -46,7 +39,6 @@ public class RobotContainer {
   }
 
   public void teleopDrive() {
-    mSwerve.setDefaultCommand(new RunCommand(()->mSwerve.updateDriveValues(driver.getLeftX(), driver.getLeftY(), driver.getRightX()), mSwerve));
   }
 
   /**
@@ -56,6 +48,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return autoChooser.getSelected();
+    return null;
   }
 }
