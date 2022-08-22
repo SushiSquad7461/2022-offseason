@@ -1,7 +1,5 @@
 package frc.robot.subsytems;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
