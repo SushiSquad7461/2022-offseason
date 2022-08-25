@@ -3,8 +3,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 
-import SushiFrcLib.ChesyLibUtil.InterpolatingDouble;
-import SushiFrcLib.ChesyLibUtil.InterpolatingTreeMap;
+import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
+import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
 
 public final class Constants {
         public static class Ports {
