@@ -10,10 +10,19 @@ import frc.robot.Constants.Ports;
 import frc.robot.Constants.kHood;
 
 public class Hood extends SubsystemBase {
-    WPI_TalonFX motor;
-    double pos = 0;
+    private final WPI_TalonFX motor;
+    private double pos = 0;
 
-    Hood() {
+    private static Hood instance;
+    
+    public static Hood getInstance() {
+        if (instance == null) {
+            instance = new Hood();
+        }
+        return instance;
+    }
+
+    private Hood() {
         motor = MotorHelper.createFalconMotor(Ports.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION, kHood.NEUTRAL_MODE, kHood.kP, kHood.kI, kHood.kD, kHood.kF);
         motor.setSelectedSensorPosition(0);
     }
