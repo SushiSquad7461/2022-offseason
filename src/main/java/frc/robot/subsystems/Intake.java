@@ -16,13 +16,13 @@ public class Intake extends SubsystemBase {
     private final WPI_TalonFX roller;
 
     //Subsystem Creation
-    private static Intake sInstance = null;
+    private static Intake instance = null;
 
-    public static Intake getInstance(String caller) {
-        if (sInstance == null) {
-            sInstance = new Intake();
+    public static Intake getInstance() {
+        if (instance == null) {
+            instance = new Intake();
         }
-        return sInstance;
+        return instance;
     }
 
     private Intake() {
@@ -48,7 +48,15 @@ public class Intake extends SubsystemBase {
     }
 
     private void setMotors(double pivotGoal, double rollerSpeed) {
-        pivot.set(ControlMode.Position, pivotGoal);
-        roller.set(ControlMode.PercentOutput, rollerSpeed);
+        setPivot(ControlMode.Position, pivotGoal);
+        setRoller(ControlMode.PercentOutput, rollerSpeed);
+    }
+
+    private void setPivot(ControlMode mode, double goal) {
+        pivot.set(mode, goal);
+    }
+
+    private void setRoller(ControlMode mode, double goal) {
+        roller.set(mode, goal);
     }
 }
