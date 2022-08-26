@@ -8,7 +8,9 @@ import java.util.ResourceBundle.Control;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import SushiFrcLib.Motor.MotorHelper;
@@ -34,7 +36,7 @@ public class Shooter extends SubsystemBase {
       TalonFXInvertType.CounterClockwise, NeutralMode.Coast, Constants.kShooter.kP, Constants.kShooter.kI, Constants.kShooter.kD, 
       Constants.kShooter.kF);
 
-    rightMotor.follow(leftMotor);
+    // rightMotor.follow(leftMotor);
 
     setPointRPM = 0;
   }
@@ -44,33 +46,44 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Shooter current rpm", Constants.convertTransToRPM(leftMotor.getSelectedSensorVelocity()));
     SmartDashboard.putNumber("Shooter set rpm", setPointRPM);
+    SmartDashboard.putNumber("Shooter error", getError());
+    SmartDashboard.putNumber("Left motor current draw", leftMotor.getStatorCurrent());
+    SmartDashboard.putNumber("Right motor current draw", rightMotor.getStatorCurrent());
 
-    if (setPointRPM == 0) {
-      stopShooter();
-    } else {
-      leftMotor.set(ControlMode.Velocity, Constants.convertRPMToTrans(setPointRPM));
-      rightMotor.set(ControlMode.Velocity, Constants.convertRPMToTrans(setPointRPM));
-    }
+    runShooter();
+  }
+
+  public void setLeftMotorSpeed (ControlMode controlMode, double speed) {
+    leftMotor.set(controlMode, speed);
+  }
+
+  public void setRightMotorSpeed (ControlMode controlMode, double speed) {
+    rightMotor.set(controlMode, speed);
   }
 
   public void runShooter() {
-    leftMotor.set(ControlMode.PercentOutput, 1);
-    rightMotor.set(ControlMode.PercentOutput, 1);
+    setLeftMotorSpeed(ControlMode.Velocity, setPointRPM);
+    setRightMotorSpeed(ControlMode.Velocity, setPointRPM);
   }
 
   public void stopShooter() {
-    leftMotor.set(ControlMode.PercentOutput, 0);
-    rightMotor.set(ControlMode.PercentOutput, 0);
+    setLeftMotorSpeed(ControlMode.PercentOutput, 0);
+    setRightMotorSpeed(ControlMode.PercentOutput, 0);
   }
 
   public boolean isAtSpeed() {
-    double error = 
-      Math.abs(Constants.convertTransToRPM(leftMotor.getSelectedSensorVelocity()) - setPointRPM);
-
-    return error <= Constants.kShooter.ERROR_TOLERANCE;
+    return getError() <= Constants.kShooter.ERROR_TOLERANCE;
   }
 
-  public void setState (ShooterState state) {
+  private double getError() {
+    return Math.abs(Constants.convertTransToRPM(leftMotor.getSelectedSensorVelocity()) - setPointRPM);
+  }
 
+  public double getLeftMotorPosition() {
+    return leftMotor.getSelectedSensorPosition();
+  }
+
+  public double getRightMotorPosition() {
+    return rightMotor.getSelectedSensorPosition();
   }
 }
