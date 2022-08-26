@@ -18,8 +18,8 @@ public final class Constants{
         }
 
         public static class Ports {
-                public static final int INTAKE_PIVOT = -1;
-                public static final int INTAKE_ROLLER = -1;
+                public static final int INTAKE_PIVOT_MOTOR = -1;
+                public static final int INTAKE_ROLLER_ROLLER = -1;
         }
 
         public static class kSwerve {
