@@ -51,6 +51,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Right motor current draw", rightMotor.getStatorCurrent());
 
     runShooter();
+    setLeftMotorSpeed(ControlMode.PercentOutput, 0.25);
+    setRightMotorSpeed(ControlMode.PercentOutput, 0.25);
   }
 
   public void setLeftMotorSpeed (ControlMode controlMode, double speed) {

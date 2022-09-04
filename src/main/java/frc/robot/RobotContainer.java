@@ -7,6 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,9 +22,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
+  Shooter mShooter = new Shooter();
+  Indexer mIndexer = new Indexer();
+  private final XboxController driveController;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    driveController = new XboxController(0);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -31,6 +41,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(driveController, XboxController.Button.kA.value)
+      .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer));
   }
 
   public void teleopDrive() {
