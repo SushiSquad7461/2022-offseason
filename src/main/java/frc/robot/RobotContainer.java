@@ -22,8 +22,8 @@ import frc.robot.subsystems.Shooter;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
-  Shooter mShooter = new Shooter();
-  Indexer mIndexer = new Indexer();
+  //Shooter mShooter = new Shooter();
+  Indexer mIndexer = Indexer.getInstance();
   private final XboxController driveController;
 
 
@@ -46,6 +46,7 @@ public class RobotContainer {
   }
 
   public void teleopDrive() {
+    mIndexer.setIntake();
   }
 
   /**

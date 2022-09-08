@@ -30,6 +30,8 @@ public final class Constants{
         }
 
         public static class kIndexer {
+                public static final double colorSensorThreasholdRed = 2;
+                public static final double colorSensorThreasholdBlue = 1.5;
         }
 
         public static class Ports {
