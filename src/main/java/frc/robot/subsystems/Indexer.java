@@ -9,14 +9,19 @@ import java.net.CacheRequest;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ColorSensorV3.ColorSensorMeasurementRate;
+import com.revrobotics.ColorSensorV3.ColorSensorResolution;
+import com.revrobotics.ColorSensorV3.GainFactor;
 
 import SushiFrcLib.Motor.MotorHelper;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
@@ -65,7 +70,13 @@ public class Indexer extends SubsystemBase {
     ejecter = MotorHelper.createSparkMax(Ports.EJECTER_MOTOR, MotorType.kBrushless);
     currState = IndexerState.IDLE;
     colorSensor = new ColorSensorV3(Port.kOnboard);
+    colorSensor.configureColorSensor(
+      ColorSensorResolution.kColorSensorRes13bit,
+      ColorSensorMeasurementRate.kColorRate25ms,
+      GainFactor.kGain3x
+    );
     ballCount = 0;
+    m_timer.start();
   }
 
   public boolean canIntake() {
@@ -81,17 +92,29 @@ public class Indexer extends SubsystemBase {
     SmartDashboard.putString("Indexer State", currState.toString());
     SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
     pollColor();
-    if (currState == IndexerState.INTAKING && lowerBeamBreakActuated()) {
-      if (isCorrectColor()) {
-        ballCount += 1;
-        setState(canIntake() ? IndexerState.MOVING_UP : IndexerState.IDLE);
-      } else {
+    if (lowerBeamBreakActuated()) {
+      // System.out.println("beam break");
+      if (!isRed && !isBlue) {
+        System.out.println("IDLING");
+        setState(IndexerState.IDLE);
+      
+      // else if (isCorrectColor()) {
+      //   System.out.println("correct color");
+      //   ballCount += 1;
+      //   setState(canIntake() ? IndexerState.MOVING_UP : IndexerState.IDLE);
+      } else if (!isCorrectColor()) {
+        System.out.println("not correct color");
         setState(IndexerState.EJECTING);
       }
-    } else if ((currState == IndexerState.EJECTING && !lowerBeamBreakActuated()) || (currState == IndexerState.MOVING_UP && upperBeamBreakActuated())) {
-      setState(IndexerState.INTAKING);
-    }
+    } 
+    // else if ((currState == IndexerState.EJECTING && !lowerBeamBreakActuated()) || (currState == IndexerState.MOVING_UP && upperBeamBreakActuated())) {
+    //   System.out.println("intaking after eject");
+    //   setState(IndexerState.INTAKING);
+    // }
   }
+
+  private Timer m_timer = new Timer();
+  private double m_startTime = 0;
 
   public boolean lowerBeamBreakActuated() {
     return !bottomBeamBreak.get();
@@ -106,19 +129,26 @@ public class Indexer extends SubsystemBase {
   }
 
   public void pollColor() {
-    int red = colorSensor.getRed();
-    int blue = colorSensor.getBlue();
-    SmartDashboard.putBoolean("Red", isRed);
-    SmartDashboard.putBoolean("Blue", isBlue);
+    Color color = colorSensor.getColor();
+    // System.out.printf("%f %f %b\n", color.red, color.blue, isRed);
     //int green = colorSensor.getGreen();
-    if((double)red/blue > kIndexer.colorSensorThreasholdRed) {
-      isRed = true;
-      isBlue = false;
-    } else if((double)blue/red > kIndexer.colorSensorThreasholdBlue) {
-      isBlue = true;
+    isRed = false;
+    isBlue = false;
+    if(color.blue > 0.27) {
+      if (isRed) {
+        System.out.println("blue" + (m_timer.get() - m_startTime));
+      }
       isRed = false;
+      isBlue = true;
+    } else if(color.red > 0.33) {
+      if(isBlue) {
+        System.out.println("red: " + (m_timer.get() - m_startTime));
+      } 
+      isBlue = false;
+      isRed = true;
     }
-
+    SmartDashboard.putBoolean("Blue", isBlue);
+    SmartDashboard.putBoolean("Red", isRed);
   }
 
   public void setIntake() {
@@ -137,7 +167,7 @@ public class Indexer extends SubsystemBase {
       case INTAKING:
         kicker.set(0);
         ejecter.set(0);
-        feeder.set(0.8);
+        feeder.set(0.5);
         break;
       case EJECTING:
         kicker.set(0);
