@@ -66,17 +66,22 @@ public class Indexer extends SubsystemBase {
     NetworkTableInstance instance = NetworkTableInstance.getDefault();
     NetworkTable table = instance.getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
+
     kicker = MotorHelper.createSparkMax(Constants.Ports.KICKER_MOTOR, MotorType.kBrushless);
     feeder = MotorHelper.createSparkMax(Ports.FEEDER_MOTOR, MotorType.kBrushless);
     ejecter = MotorHelper.createSparkMax(Ports.EJECTER_MOTOR, MotorType.kBrushless);
+
     currState = IndexerState.IDLE;
+
     colorSensor = new ColorSensorV3(Port.kOnboard);
     colorSensor.configureColorSensor(
       ColorSensorResolution.kColorSensorRes13bit,
       ColorSensorMeasurementRate.kColorRate25ms,
       GainFactor.kGain3x
     );
+
     ballCount = 0;
+
     m_timer.start();
   }
 
@@ -107,10 +112,11 @@ public class Indexer extends SubsystemBase {
         setState(IndexerState.EJECTING);
       }
     } 
-    // else if ((currState == IndexerState.EJECTING && !lowerBeamBreakActuated()) || (currState == IndexerState.MOVING_UP && upperBeamBreakActuated())) {
-    //   System.out.println("intaking after eject");
-    //   setState(IndexerState.INTAKING);
-    // }
+    else if ((currState == IndexerState.EJECTING && !lowerBeamBreakActuated()) || (currState == IndexerState.MOVING_UP && upperBeamBreakActuated())) {
+      
+      System.out.println("intaking after eject");
+      setState(IndexerState.INTAKING);
+    }
   }
 
   private Timer m_timer = new Timer();
@@ -133,18 +139,21 @@ public class Indexer extends SubsystemBase {
     Color color = colorSensor.getColor();
     // System.out.printf("%f %f %b\n", color.red, color.blue, isRed);
     //int green = colorSensor.getGreen();
-    ballColor = BallColor.Unknown;
-    if(color.blue > 0.27) {
+    
+    if(color.blue > Constants.kIndexer.colorSensorThreasholdBlue) {
       if (ballColor != BallColor.Blue) {
         System.out.println("blue" + (m_timer.get() - m_startTime));
       }
       ballColor = BallColor.Blue;
-    } else if(color.red > 0.33) {
+    } else if(color.red > Constants.kIndexer.colorSensorThreasholdRed) {
       if(ballColor != BallColor.Red) {
         System.out.println("red: " + (m_timer.get() - m_startTime));
       } 
       ballColor = BallColor.Red;
+    } else {
+      ballColor = BallColor.Unknown;
     }
+
     SmartDashboard.putString("Ball Color", ballColor.name());
   }
 
