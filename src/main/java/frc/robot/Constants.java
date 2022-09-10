@@ -8,18 +8,17 @@ import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
 
 public final class Constants {
         public static class Ports {
-                public static final int HOOD_MOTOR = -1;
-                public static final int HOOD_CAN_CODER = -1;
+                public static final int HOOD_MOTOR = 47;
         }
 
         public static class kHood {
                 public static final int CURRENT_LIMIT = 35;
-                public static final TalonFXInvertType INVERSION = TalonFXInvertType.CounterClockwise;
+                public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
                 public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
                 public static final double kP = 0;
                 public static final double kI = 0;
                 public static final double kD = 0;
-                public static final double kF = 0;
+                public static final double kF = 0.0006;
                 public static final double maxPos = 180;
                 public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> posMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
 

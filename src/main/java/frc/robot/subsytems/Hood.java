@@ -27,18 +27,21 @@ public class Hood extends SubsystemBase {
         motor.setSelectedSensorPosition(0);
     }
 
-    void setPos(double newPos) {
-        if (0 <= newPos && newPos <= kHood.maxPos) {
-            pos = newPos;
-        }
+    public void setPos(double newPos) {
+        // if (0 <= newPos && newPos <= kHood.maxPos) {
+        //     pos = newPos;
+        // }
+        pos = newPos;
     }
 
-    void setPosBasedOnDistance(double distance) {
+    public void setPosBasedOnDistance(double distance) {
         pos = kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value;
     }
 
     @Override
     public void periodic() {
        motor.set(ControlMode.Position, pos);
+       System.out.println(motor.getSelectedSensorPosition());
+        // motor.set(ControlMode.PercentOutput, 0.4);
     } 
 }
