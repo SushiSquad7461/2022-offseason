@@ -30,7 +30,7 @@ public class Indexer extends SubsystemBase {
   private static Indexer indexer = null;
 
   DigitalInput bottomBeamBreak = new DigitalInput(0);
-  DigitalInput topBeamBreak = new DigitalInput(1);
+  DigitalInput upperBeamBreak = new DigitalInput(1);
 
   ColorSensorV3 colorSensor;
   IndexerState currState;
@@ -38,6 +38,8 @@ public class Indexer extends SubsystemBase {
   int ballCount;
   boolean isRedAlliance;
   BallColor ballColor;
+  // This prevents it from counting the same ball multiple balls
+  boolean canCount = true;
 
   enum IndexerState {
     IDLE,
@@ -100,22 +102,25 @@ public class Indexer extends SubsystemBase {
     pollColor();
     if (lowerBeamBreakActuated()) {
       // System.out.println("beam break");
-      if (ballColor == BallColor.Unknown) {
+      if (ballColor == BallColor.Unknown 
+        && currState == IndexerState.INTAKING) { 
         System.out.println("IDLING");
         setState(IndexerState.IDLE);
-      // else if (isCorrectColor()) {
-      //   System.out.println("correct color");
-      //   ballCount += 1;
-      //   setState(canIntake() ? IndexerState.MOVING_UP : IndexerState.IDLE);
+      }
+      else if (isCorrectColor() && canCount) {
+        ballCount += 1;
+        canCount = false;
+        setState(canIntake() ? IndexerState.MOVING_UP : IndexerState.IDLE);
       } else if (!isCorrectColor()) {
-        System.out.println("not correct color");
         setState(IndexerState.EJECTING);
       }
     } 
-    else if ((currState == IndexerState.EJECTING && !lowerBeamBreakActuated()) || (currState == IndexerState.MOVING_UP && upperBeamBreakActuated())) {
+    else if ((currState == IndexerState.EJECTING && !lowerBeamBreakActuated()) 
+      || (currState == IndexerState.MOVING_UP && !upperBeamBreakActuated())) {
       
       System.out.println("intaking after eject");
       setState(IndexerState.INTAKING);
+      canCount = true;
     }
   }
 
@@ -127,7 +132,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean upperBeamBreakActuated() {
-    return false;
+    return !upperBeamBreak.get();
   }
 
   public boolean isCorrectColor() {
@@ -142,7 +147,7 @@ public class Indexer extends SubsystemBase {
     
     if(color.blue > Constants.kIndexer.colorSensorThreasholdBlue) {
       if (ballColor != BallColor.Blue) {
-        System.out.println("blue" + (m_timer.get() - m_startTime));
+        System.out.println("blue: " + (m_timer.get() - m_startTime));
       }
       ballColor = BallColor.Blue;
     } else if(color.red > Constants.kIndexer.colorSensorThreasholdRed) {
@@ -151,6 +156,9 @@ public class Indexer extends SubsystemBase {
       } 
       ballColor = BallColor.Red;
     } else {
+      if(ballColor != BallColor.Unknown) {
+        System.out.println("unknown: " + (m_timer.get() - m_startTime));
+      } 
       ballColor = BallColor.Unknown;
     }
 
@@ -162,6 +170,9 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setState(IndexerState newState) {
+    if (newState != currState) {
+      System.out.println(newState);
+    }
     currState = newState;
 
     switch (currState) {
