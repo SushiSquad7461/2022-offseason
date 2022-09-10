@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.net.CacheRequest;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -17,7 +15,6 @@ import SushiFrcLib.Motor.MotorHelper;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,7 +22,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
-import frc.robot.Constants.kIndexer;
 
 public class Indexer extends SubsystemBase {
   CANSparkMax kicker;
@@ -41,8 +37,7 @@ public class Indexer extends SubsystemBase {
 
   int ballCount;
   boolean isRedAlliance;
-  boolean isRed = false;
-  boolean isBlue = false;
+  BallColor ballColor;
 
   enum IndexerState {
     IDLE,
@@ -51,6 +46,12 @@ public class Indexer extends SubsystemBase {
     STORING,
     SHOOTING,
     MOVING_UP
+  }
+
+  enum BallColor {
+    Unknown,
+    Red,
+    Blue
   }
 
   public static Indexer getInstance() {
@@ -94,10 +95,9 @@ public class Indexer extends SubsystemBase {
     pollColor();
     if (lowerBeamBreakActuated()) {
       // System.out.println("beam break");
-      if (!isRed && !isBlue) {
+      if (ballColor == BallColor.Unknown) {
         System.out.println("IDLING");
         setState(IndexerState.IDLE);
-      
       // else if (isCorrectColor()) {
       //   System.out.println("correct color");
       //   ballCount += 1;
@@ -125,30 +125,27 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean isCorrectColor() {
-    return isRed && isRedAlliance || isBlue && !isRedAlliance;
+    return ballColor == BallColor.Red && isRedAlliance 
+      || ballColor == BallColor.Blue && !isRedAlliance;
   }
 
   public void pollColor() {
     Color color = colorSensor.getColor();
     // System.out.printf("%f %f %b\n", color.red, color.blue, isRed);
     //int green = colorSensor.getGreen();
-    isRed = false;
-    isBlue = false;
+    ballColor = BallColor.Unknown;
     if(color.blue > 0.27) {
-      if (isRed) {
+      if (ballColor != BallColor.Blue) {
         System.out.println("blue" + (m_timer.get() - m_startTime));
       }
-      isRed = false;
-      isBlue = true;
+      ballColor = BallColor.Blue;
     } else if(color.red > 0.33) {
-      if(isBlue) {
+      if(ballColor != BallColor.Red) {
         System.out.println("red: " + (m_timer.get() - m_startTime));
       } 
-      isBlue = false;
-      isRed = true;
+      ballColor = BallColor.Red;
     }
-    SmartDashboard.putBoolean("Blue", isBlue);
-    SmartDashboard.putBoolean("Red", isRed);
+    SmartDashboard.putString("Ball Color", ballColor.name());
   }
 
   public void setIntake() {
