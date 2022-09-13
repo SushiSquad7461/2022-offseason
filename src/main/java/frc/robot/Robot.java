@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.Gyro;
 import frc.robot.util.NavX;
+import frc.robot.util.Pigeon;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -20,6 +24,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private final Gyro gyro = Pigeon.getInstance();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -47,7 +53,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("Gyro: ", NavX.getInstance().getAngle());
+    SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

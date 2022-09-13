@@ -5,7 +5,7 @@ import com.kauailabs.navx.frc.AHRS;
 import SushiFrcLib.Math.Conversion;
 import edu.wpi.first.wpilibj.SPI;
 
-public class NavX {
+public class NavX extends Gyro {
    private final AHRS gyro;
    private double offset = 0;
    private static NavX instance;
