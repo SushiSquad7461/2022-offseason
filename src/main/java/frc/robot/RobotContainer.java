@@ -6,7 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.Swerve;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,9 +21,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // XboxController driver = new XboxController(0);
+  private final Swerve swerveDrive = new Swerve();
+  SendableChooser<SequentialCommandGroup> autoChooser;
+  AutoCommands autos;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    autos = new AutoCommands(swerveDrive);
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("Test", autos.test);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -34,6 +44,11 @@ public class RobotContainer {
   }
 
   public void teleopDrive() {
+    swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setChassisSpeedsPercentage(
+      OI.getLeftStickX(),
+      OI.getLeftStickY(), 
+      OI.getRightStickX()
+    ), swerveDrive));
   }
 
   /**
@@ -43,6 +58,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 }
