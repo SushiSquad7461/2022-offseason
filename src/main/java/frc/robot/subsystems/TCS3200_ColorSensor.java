@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -54,7 +53,7 @@ public class TCS3200_ColorSensor extends SubsystemBase {
   private double m_clear;
 
   public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, ColorSelect startColor) {
-    m_counter = new Counter(new DigitalInput(out));
+    m_counter = new Counter(out);
 
     // To save DIO ports, let user not set some
     m_s0 = s0 == -1 ? null : new DigitalOutput(s0);
@@ -91,6 +90,8 @@ public class TCS3200_ColorSensor extends SubsystemBase {
         m_s0.set(true);
         m_s1.set(true);
     }
+
+    m_counter.reset();
   }
 
   public FreqScaling getFreqScaling() {
@@ -124,6 +125,8 @@ public class TCS3200_ColorSensor extends SubsystemBase {
         m_s3.set(true);
         break;
     }
+
+    m_counter.reset();
   }
 
   public ColorSelect getOutputColor() {
@@ -156,6 +159,7 @@ public class TCS3200_ColorSensor extends SubsystemBase {
     m_green = 0;
     m_clear = 0;
 
+    // Scale the number counted to amount of time that passed since last check
     double freq = (m_counter.get() / (time - m_lastTimeStamp));
     switch (m_currColor) {
       case RED:
