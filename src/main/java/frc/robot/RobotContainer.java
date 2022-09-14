@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TCS3200_ColorSensor;
 import frc.robot.subsystems.TCS3200_ColorSensor.ColorSelect;
+import frc.robot.subsystems.TCS3200_ColorSensor.FreqScaling;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,7 +21,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
   
-  TCS3200_ColorSensor colorSensor = new TCS3200_ColorSensor(2, -1, -1, 1, 0, ColorSelect.BLUE); 
+  TCS3200_ColorSensor colorSensor = new TCS3200_ColorSensor(2, -1, -1, 1, 0, ColorSelect.BLUE, FreqScaling.PERCENT20); 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

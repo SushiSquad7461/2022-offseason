@@ -49,7 +49,7 @@ public class TCS3200_ColorSensor implements Sendable {
 
   private double m_output;
 
-  public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, ColorSelect startColor) {
+  public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, ColorSelect startColor, FreqScaling startFreq) {
     m_counter = new Counter(out);
 
     // To save DIO ports, let user not set some
@@ -58,7 +58,7 @@ public class TCS3200_ColorSensor implements Sendable {
     m_s2 = s2 == -1 ? null : new DigitalOutput(s2);
     m_s3 = s3 == -1 ? null : new DigitalOutput(s3);
 
-    setFreqScaling(FreqScaling.PERCENT100);
+    setFreqScaling(startFreq);
     setOutputColor(startColor);
 
     m_lastTimeStamp = Timer.getFPGATimestamp();
