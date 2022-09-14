@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TCS3200_ColorSensor extends SubsystemBase {
   // Output managment
-  private Counter m_counter;
+  private final Counter m_counter;
 
   // Configurable registers
-  private DigitalOutput m_s0;
-  private DigitalOutput m_s1;
-  private DigitalOutput m_s2;
-  private DigitalOutput m_s3;
+  private final DigitalOutput m_s0;
+  private final DigitalOutput m_s1;
+  private final DigitalOutput m_s2;
+  private final DigitalOutput m_s3;
 
   private FreqScaling m_freqScaling;
   private ColorSelect m_currColor;
@@ -57,21 +57,10 @@ public class TCS3200_ColorSensor extends SubsystemBase {
     m_counter = new Counter(new DigitalInput(out));
 
     // To save DIO ports, let user not set some
-    if (s0 != -1) {
-      m_s0 = new DigitalOutput(s0);
-    }
-
-    if (s1 != -1) {
-      m_s1 = new DigitalOutput(s1);
-    }
-
-    if (s2 != -1) {
-      m_s2 = new DigitalOutput(s2);
-    }
-
-    if (s3 != -1) {
-      m_s3 = new DigitalOutput(s3);
-    }
+    m_s0 = s0 == -1 ? null : new DigitalOutput(s0);
+    m_s1 = s1 == -1 ? null : new DigitalOutput(s1);
+    m_s2 = s2 == -1 ? null : new DigitalOutput(s2);
+    m_s3 = s3 == -1 ? null : new DigitalOutput(s3);
 
     setFreqScaling(FreqScaling.PERCENT100);
     setOutputColor(startColor);
