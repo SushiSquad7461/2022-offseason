@@ -35,6 +35,6 @@ public class NavX extends Gyro {
    }
 
    public double getAngle() {
-       return Conversion.normalizeAngle(gyro.getAngle());
+       return Conversion.normalizeAngle(gyro.getAngle() - offset);
    }
 }
