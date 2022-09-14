@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private final Gyro gyro = Pigeon.getInstance();
+  private final Pigeon gyro = Pigeon.getInstance();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     Constants.setup();
+    gyro.zero();
   }
 
   /**

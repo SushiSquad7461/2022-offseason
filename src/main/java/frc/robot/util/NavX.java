@@ -29,6 +29,11 @@ public class NavX extends Gyro {
         offset = newOffset;
    }
 
+   @Override
+   public void zero() {
+       setOffset(gyro.getAngle());
+   }
+
    public double getAngle() {
        return Conversion.normalizeAngle(gyro.getAngle());
    }

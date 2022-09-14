@@ -1,11 +1,12 @@
 package frc.robot.util;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
+import SushiFrcLib.Math.Conversion;
 import frc.robot.Constants;
 
 public class Pigeon extends Gyro {
-    private final Pigeon2 gyro;
+    private final WPI_Pigeon2 gyro;
     private static Pigeon instance;
 
     public static Pigeon getInstance() {
@@ -16,14 +17,16 @@ public class Pigeon extends Gyro {
     }
 
     private Pigeon() {
-        gyro = new Pigeon2(Constants.Ports.PIGEON);
+        gyro = new WPI_Pigeon2(Constants.Ports.PIGEON);
+    }
+
+    @Override
+    public void zero() {
+        gyro.setYaw(0);
     }
 
     @Override
     public double getAngle() {
-        return gyro.getAbsoluteCompassHeading();
+        return Conversion.normalizeAngle(gyro.getYaw());
     }
-
-
-    
 }
