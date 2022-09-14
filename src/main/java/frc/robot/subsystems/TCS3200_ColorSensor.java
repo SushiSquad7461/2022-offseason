@@ -1,12 +1,12 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class TCS3200_ColorSensor extends SubsystemBase {
+public class TCS3200_ColorSensor implements Sendable {
   // Output managment
   private final Counter m_counter;
 
@@ -149,8 +149,10 @@ public class TCS3200_ColorSensor extends SubsystemBase {
     return m_clear;
   }
 
-  @Override
-  public void periodic() {
+  /**
+   * This method should be called in a periodic loop.
+   */
+  public void update() {
 
     double time = Timer.getFPGATimestamp();
 
@@ -181,8 +183,6 @@ public class TCS3200_ColorSensor extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
-
     builder.addStringProperty("Frequency Scaling", () -> this.getFreqScaling().toString(), null);
     builder.addStringProperty("Current Color", () -> this.getOutputColor().toString(), null);
     builder.addDoubleProperty("Red", this::getRed, null);
