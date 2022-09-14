@@ -4,6 +4,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TCS3200_ColorSensor extends SubsystemBase {
@@ -11,13 +12,15 @@ public class TCS3200_ColorSensor extends SubsystemBase {
   private Counter m_counter;
 
   // Configurable registers
-  private DigitalOutput m_s0;  
-  private DigitalOutput m_s1;  
-  private DigitalOutput m_s2;  
-  private DigitalOutput m_s3;  
+  private DigitalOutput m_s0;
+  private DigitalOutput m_s1;
+  private DigitalOutput m_s2;
+  private DigitalOutput m_s3;
 
   private FreqScaling m_freqScaling;
   private ColorSelect m_currColor;
+
+  private double m_lastTimeStamp;
 
   public enum FreqScaling {
     POWER_DOWN(0),
@@ -42,14 +45,14 @@ public class TCS3200_ColorSensor extends SubsystemBase {
 
     ColorSelect(int i) {
       val = i;
-    } 
+    }
   }
 
-  private int m_red;
-  private int m_green;
-  private int m_blue;
-  private int m_clear;
-  
+  private double m_red;
+  private double m_green;
+  private double m_blue;
+  private double m_clear;
+
   public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, ColorSelect startColor) {
     m_counter = new Counter(new DigitalInput(out));
 
@@ -72,6 +75,8 @@ public class TCS3200_ColorSensor extends SubsystemBase {
 
     setFreqScaling(FreqScaling.PERCENT100);
     setOutputColor(startColor);
+
+    m_lastTimeStamp = Timer.getFPGATimestamp();
   }
 
   public void setFreqScaling(FreqScaling scale) {
@@ -136,30 +141,33 @@ public class TCS3200_ColorSensor extends SubsystemBase {
     return m_currColor;
   }
 
-  public int getGreen() {
+  public double getGreen() {
     return m_green;
   }
 
-  public int getRed() {
+  public double getRed() {
     return m_red;
   }
-  
-  public int getBlue() {
+
+  public double getBlue() {
     return m_blue;
   }
 
-  public int getClear() {
+  public double getClear() {
     return m_clear;
   }
 
   @Override
   public void periodic() {
+
+    double time = Timer.getFPGATimestamp();
+
     m_red = 0;
     m_blue = 0;
     m_green = 0;
     m_clear = 0;
 
-    int freq = m_counter.get();
+    double freq = (m_counter.get() / (time - m_lastTimeStamp));
     switch (m_currColor) {
       case RED:
         m_red = freq;
@@ -173,20 +181,20 @@ public class TCS3200_ColorSensor extends SubsystemBase {
       case CLEAR:
         m_clear = freq;
         break;
-    } 
+    }
 
     m_counter.reset();
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      super.initSendable(builder);
+    super.initSendable(builder);
 
-      builder.addStringProperty("Frequency Scaling", () -> this.getFreqScaling().toString(), null);
-      builder.addStringProperty("Current Color", () -> this.getOutputColor().toString(), null);
-      builder.addDoubleProperty("Red", this::getRed, null);
-      builder.addDoubleProperty("Green", this::getGreen, null);
-      builder.addDoubleProperty("Blue", this::getBlue, null);
-      builder.addDoubleProperty("Clear", this::getClear, null);
+    builder.addStringProperty("Frequency Scaling", () -> this.getFreqScaling().toString(), null);
+    builder.addStringProperty("Current Color", () -> this.getOutputColor().toString(), null);
+    builder.addDoubleProperty("Red", this::getRed, null);
+    builder.addDoubleProperty("Green", this::getGreen, null);
+    builder.addDoubleProperty("Blue", this::getBlue, null);
+    builder.addDoubleProperty("Clear", this::getClear, null);
   }
 }
