@@ -47,10 +47,7 @@ public class TCS3200_ColorSensor implements Sendable {
     }
   }
 
-  private double m_red;
-  private double m_green;
-  private double m_blue;
-  private double m_clear;
+  private double m_output;
 
   public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, ColorSelect startColor) {
     m_counter = new Counter(out);
@@ -133,20 +130,8 @@ public class TCS3200_ColorSensor implements Sendable {
     return m_currColor;
   }
 
-  public double getGreen() {
-    return m_green;
-  }
-
-  public double getRed() {
-    return m_red;
-  }
-
-  public double getBlue() {
-    return m_blue;
-  }
-
-  public double getClear() {
-    return m_clear;
+  public double get() {
+    return m_output;
   }
 
   /**
@@ -156,27 +141,8 @@ public class TCS3200_ColorSensor implements Sendable {
 
     double time = Timer.getFPGATimestamp();
 
-    m_red = 0;
-    m_blue = 0;
-    m_green = 0;
-    m_clear = 0;
-
     // Scale the number counted to amount of time that passed since last check
-    double freq = (m_counter.get() / (time - m_lastTimeStamp));
-    switch (m_currColor) {
-      case RED:
-        m_red = freq;
-        break;
-      case GREEN:
-        m_green = freq;
-        break;
-      case BLUE:
-        m_blue = freq;
-        break;
-      case CLEAR:
-        m_clear = freq;
-        break;
-    }
+    m_output = (m_counter.get() / (time - m_lastTimeStamp));
 
     m_counter.reset();
   }
@@ -185,9 +151,6 @@ public class TCS3200_ColorSensor implements Sendable {
   public void initSendable(SendableBuilder builder) {
     builder.addStringProperty("Frequency Scaling", () -> this.getFreqScaling().toString(), null);
     builder.addStringProperty("Current Color", () -> this.getOutputColor().toString(), null);
-    builder.addDoubleProperty("Red", this::getRed, null);
-    builder.addDoubleProperty("Green", this::getGreen, null);
-    builder.addDoubleProperty("Blue", this::getBlue, null);
-    builder.addDoubleProperty("Clear", this::getClear, null);
+    builder.addDoubleProperty("Output", this::get, null);
   }
 }
