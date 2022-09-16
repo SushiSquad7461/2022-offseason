@@ -7,8 +7,8 @@ import java.util.Queue;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.Robot;
 import frc.robot.subsystems.TCS3200_ColorReader.ColorSelect;
 import frc.robot.subsystems.TCS3200_ColorReader.FreqScaling;
 
@@ -24,13 +24,13 @@ public class TCS3200_ColorSensor implements Sendable {
   private double m_blue;
   private double m_clear;
 
-  public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, FreqScaling startFreq, ColorSelect... colorsToRead) {
+  public TCS3200_ColorSensor(TimedRobot robot, int out, int s0, int s1, int s2, int s3, FreqScaling startFreq, ColorSelect... colorsToRead) {
     m_colorsToRead = new LinkedList<>();
     m_colorsToRead.addAll(Arrays.asList(colorsToRead));
 
     m_reader = new TCS3200_ColorReader(out, s0, s1, s2, s3, ColorSelect.RED, startFreq);
 
-    Robot.getInstance().addPeriodic(() -> this.update(), MIN_COUNT_TIME);
+    robot.addPeriodic(() -> this.update(), MIN_COUNT_TIME);
 
     SendableRegistry.addLW(this, getClass().getSimpleName());
   }

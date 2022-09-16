@@ -21,7 +21,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
   
-  TCS3200_ColorSensor colorSensor = new TCS3200_ColorSensor(2, 3, 4, 1, 0, 
+  TCS3200_ColorSensor colorSensor = new TCS3200_ColorSensor(Robot.getInstance(), 2, 3, 4, 1, 0, 
     FreqScaling.PERCENT20, ColorSelect.RED, ColorSelect.GREEN, ColorSelect.BLUE, ColorSelect.CLEAR); 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
