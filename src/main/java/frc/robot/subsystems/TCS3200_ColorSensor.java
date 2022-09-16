@@ -1,156 +1,96 @@
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.DigitalOutput;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.Robot;
+import frc.robot.subsystems.TCS3200_ColorReader.ColorSelect;
+import frc.robot.subsystems.TCS3200_ColorReader.FreqScaling;
 
 public class TCS3200_ColorSensor implements Sendable {
-  // Output managment
-  private final Counter m_counter;
+  private static final double MIN_COUNT_TIME = 0.003;
 
-  // Configurable registers
-  private final DigitalOutput m_s0;
-  private final DigitalOutput m_s1;
-  private final DigitalOutput m_s2;
-  private final DigitalOutput m_s3;
+  private final TCS3200_ColorReader m_reader;
 
-  private FreqScaling m_freqScaling;
-  private ColorSelect m_currColor;
+  private final Queue<ColorSelect> m_colorsToRead;
 
-  private double m_lastTimeStamp;
+  private double m_red;
+  private double m_green;
+  private double m_blue;
+  private double m_clear;
 
-  public enum FreqScaling {
-    POWER_DOWN(0),
-    PERCENT2(1),
-    PERCENT20(2),
-    PERCENT100(3);
+  public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, FreqScaling startFreq, ColorSelect... colorsToRead) {
+    m_colorsToRead = new LinkedList<>();
+    m_colorsToRead.addAll(Arrays.asList(colorsToRead));
 
-    public final int val;
+    m_reader = new TCS3200_ColorReader(out, s0, s1, s2, s3, ColorSelect.RED, startFreq);
 
-    FreqScaling(int i) {
-      val = i;
-    }
+    Robot.getInstance().addPeriodic(() -> this.update(), MIN_COUNT_TIME);
+
+    SendableRegistry.addLW(this, getClass().getSimpleName());
   }
 
-  public enum ColorSelect {
-    RED(0),
-    GREEN(1),
-    BLUE(2),
-    CLEAR(3);
-
-    public final int val;
-
-    ColorSelect(int i) {
-      val = i;
-    }
+  public double getGreen() {
+    return m_green;
   }
 
-  private double m_output;
-
-  public TCS3200_ColorSensor(int out, int s0, int s1, int s2, int s3, ColorSelect startColor, FreqScaling startFreq) {
-    m_counter = new Counter(out);
-
-    // To save DIO ports, let user not set some
-    m_s0 = s0 == -1 ? null : new DigitalOutput(s0);
-    m_s1 = s1 == -1 ? null : new DigitalOutput(s1);
-    m_s2 = s2 == -1 ? null : new DigitalOutput(s2);
-    m_s3 = s3 == -1 ? null : new DigitalOutput(s3);
-
-    setFreqScaling(startFreq);
-    setOutputColor(startColor);
-
-    m_lastTimeStamp = Timer.getFPGATimestamp();
+  public double getRed() {
+    return m_red;
   }
 
-  public void setFreqScaling(FreqScaling scale) {
-    m_freqScaling = scale;
-
-    if (m_s0 == null || m_s1 == null) {
-      return;
-    }
-
-    // Check the data sheet pg 2 for the truth table
-    // https://www.mouser.com/catalog/specsheets/tcs3200-e11.pdf
-    switch (scale) {
-      case POWER_DOWN:
-        m_s0.set(false);
-        m_s1.set(false);
-      case PERCENT2:
-        m_s0.set(false);
-        m_s1.set(true);
-      case PERCENT20:
-        m_s0.set(true);
-        m_s1.set(false);
-      case PERCENT100:
-        m_s0.set(true);
-        m_s1.set(true);
-    }
-
-    m_counter.reset();
+  public double getBlue() {
+    return m_blue;
   }
 
-  public FreqScaling getFreqScaling() {
-    return m_freqScaling;
+  public double getClear() {
+    return m_clear;
   }
 
-  public void setOutputColor(ColorSelect color) {
-    m_currColor = color;
+  public Color getColor() {
+    double mag = m_clear;
 
-    if (m_s2 == null || m_s3 == null) {
-      return;
-    }
+    return new Color(m_red / mag, m_green / mag, m_blue / mag);
+  }
 
-    // Check the data sheet pg 2 for the truth table
-    // https://www.mouser.com/catalog/specsheets/tcs3200-e11.pdf
-    switch (color) {
+  public void update() {
+    m_reader.update();
+
+    switch (m_reader.getOutputColor()) {
       case RED:
-        m_s2.set(false);
-        m_s3.set(false);
-        break;
-      case BLUE:
-        m_s2.set(false);
-        m_s3.set(true);
-        break;
-      case CLEAR:
-        m_s2.set(true);
-        m_s3.set(false);
+        m_red = m_reader.get();
         break;
       case GREEN:
-        m_s2.set(true);
-        m_s3.set(true);
+        m_green = m_reader.get();
+        break;
+      case BLUE:
+        m_blue = m_reader.get();
+        break;
+      case CLEAR:
+        m_clear = m_reader.get();
         break;
     }
 
-    m_counter.reset();
-  }
-
-  public ColorSelect getOutputColor() {
-    return m_currColor;
-  }
-
-  public double get() {
-    return m_output;
-  }
-
-  /**
-   * This method should be called in a periodic loop.
-   */
-  public void update() {
-
-    double time = Timer.getFPGATimestamp();
-
-    // Scale the number counted to amount of time that passed since last check
-    m_output = (m_counter.get() / (time - m_lastTimeStamp));
-
-    m_counter.reset();
+    ColorSelect newColor = m_colorsToRead.remove();
+    m_reader.setOutputColor(newColor);
+    m_colorsToRead.add(newColor);
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.addStringProperty("Frequency Scaling", () -> this.getFreqScaling().toString(), null);
-    builder.addStringProperty("Current Color", () -> this.getOutputColor().toString(), null);
-    builder.addDoubleProperty("Output", this::get, null);
+    builder.setSmartDashboardType("TCS3200 Color Sensor");
+
+    builder.addDoubleProperty("red", this::getRed, null);
+    builder.addDoubleProperty("green", this::getGreen, null);
+    builder.addDoubleProperty("blue", this::getBlue, null);
+    builder.addDoubleProperty("clear", this::getClear, null);
+    builder.addStringProperty("color", () -> {
+      Color color = this.getColor();
+      return String.format("%.3f, %.3f, %.3f", color.red, color.green, color.blue);
+    }, null);
   }
 }
