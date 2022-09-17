@@ -7,10 +7,6 @@ import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
 import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
 
 public final class Constants {
-        public static class Ports {
-                public static final int HOOD_MOTOR = 47;
-        }
-
         public static class kHood {
                 public static final int CURRENT_LIMIT = 35;
                 public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
@@ -39,8 +35,9 @@ public final class Constants {
         }
 
         public static class Ports {
-                public static final int SHOOTER_LEFT_MOTOR = 1;
-                public static final int SHOOTER_RIGHT_MOTOR = 2;
+                public static final int SHOOTER_LEFT_MOTOR = 45;
+                public static final int SHOOTER_RIGHT_MOTOR = 46;
+                public static final int HOOD_MOTOR = 47;
         }
 
         public static void setup() {
