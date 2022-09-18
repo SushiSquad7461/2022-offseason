@@ -1,9 +1,13 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
+import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
+import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
 import SushiFrcLib.Motor.SDSSwerveModuleConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -34,10 +38,50 @@ public final class Constants {
                 public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(0.001, 0, 0,
                         new Constraints(kSwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 2.0));
         }
+        public static class kHood {
+                public static final int CURRENT_LIMIT = 35;
+                public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
+                public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
+                public static final double kP = 0.8;
+                public static final double kI = 0;
+                public static final double kD = 0.1;
+                public static final double kF = 0;
+                public static final double maxPos = 180;
+                public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> posMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
+
+                static {
+                        // First val is disntance from goal (TODO: INSERT UNITS), Second val is hood pos
+                        // in encoder tiks
+                        posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+                }  
+        }
+        public static class kShooter {
+                public static final double SETPOINT_RPM = 0;
+                public static final double ERROR_TOLERANCE = 10;
+                public static final int CURRENT_LIMIT = 40;
+                public static final double kP = 0.0;
+                public static final double kI = 0.0;
+                public static final double kD = 0.0;
+                public static final double kF = 0.0;
+        }
+
+        public static class kIndexer {
+                public static final double colorSensorThreasholdRed = 0.33;
+                public static final double colorSensorThreasholdBlue = 0.27;
+        }
 
         public static class Ports {
+                public static final int SHOOTER_LEFT_MOTOR = 45;
+                public static final int SHOOTER_RIGHT_MOTOR = 46;
+                public static final int KICKER_MOTOR = 43;
+                public static final int EJECTER_MOTOR = 44;
+                public static final int FEEDER_MOTOR = 41;
+                public static final int HOOD_MOTOR = 47;
         }
 
         public static void setup() {
         }
+
+        public static final boolean TUNING_MODE = true;
+
 }
