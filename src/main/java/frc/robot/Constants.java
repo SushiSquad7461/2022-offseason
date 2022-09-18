@@ -1,23 +1,28 @@
 package frc.robot;
 
-import SushiFrcLib.Motor.MotorConfig;
-import SushiFrcLib.Motor.SwerveModuleConfig;
-import SushiFrcLib.State.State.MotorDirection;
-import SushiFrcLib.State.State.MotorNeturalState;
-import SushiFrcLib.State.State.MotorType;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 
-public final class Constants{        
-        public static double convertRPMToTrans(double rpm) {
-                return rpm * 2048.0 / 600.0;
-        }
+import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
+import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
 
-        public static double convertTransToRPM(double trans) {
-                return trans * 600.0 / 2048.0;
+public final class Constants {
+        public static class kHood {
+                public static final int CURRENT_LIMIT = 35;
+                public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
+                public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
+                public static final double kP = 0.8;
+                public static final double kI = 0;
+                public static final double kD = 0.1;
+                public static final double kF = 0;
+                public static final double maxPos = 180;
+                public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> posMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
+
+                static {
+                        // First val is disntance from goal (TODO: INSERT UNITS), Second val is hood pos
+                        // in encoder tiks
+                        posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+                }  
         }
         public static class kShooter {
                 public static final double SETPOINT_RPM = 0;
@@ -40,8 +45,12 @@ public final class Constants{
                 public static final int KICKER_MOTOR = 43;
                 public static final int EJECTER_MOTOR = 44;
                 public static final int FEEDER_MOTOR = 41;
+                public static final int HOOD_MOTOR = 47;
         }
 
         public static void setup() {
         }
+
+        public static final boolean TUNING_MODE = true;
+
 }
