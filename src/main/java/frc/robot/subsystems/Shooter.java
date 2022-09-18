@@ -53,7 +53,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Right motor current draw", rightMotor.getStatorCurrent());
 
     runShooter();
-
+    
     if (shooterF.hasChanged()) {
       leftMotor.config_kF(0, shooterF.get());
     }

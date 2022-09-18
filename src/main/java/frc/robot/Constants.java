@@ -34,9 +34,17 @@ public final class Constants {
                 public static final double kF = 0.0;
         }
 
+        public static class kIndexer {
+                public static final double colorSensorThreasholdRed = 0.33;
+                public static final double colorSensorThreasholdBlue = 0.27;
+        }
+
         public static class Ports {
                 public static final int SHOOTER_LEFT_MOTOR = 45;
                 public static final int SHOOTER_RIGHT_MOTOR = 46;
+                public static final int KICKER_MOTOR = 43;
+                public static final int EJECTER_MOTOR = 44;
+                public static final int FEEDER_MOTOR = 41;
                 public static final int HOOD_MOTOR = 47;
         }
 

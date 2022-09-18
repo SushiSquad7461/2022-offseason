@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 
@@ -21,11 +23,14 @@ import frc.robot.subsystems.Shooter;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
+  Indexer mIndexer = Indexer.getInstance();
+  private final XboxController driveController;
   Hood hood = Hood.getInstance();
   Shooter shooter = new Shooter();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    driveController = new XboxController(0);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -37,11 +42,14 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(driveController, XboxController.Button.kY.value)
+      .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer));
     new JoystickButton(driver, XboxController.Button.kA.value).whenHeld(new InstantCommand(() -> hood.setPos(0), hood));
     new JoystickButton(driver, XboxController.Button.kX.value).whenHeld(new InstantCommand(() -> hood.setPos(100000), hood));
   }
 
   public void teleopDrive() {
+    mIndexer.setIntake();
   }
 
   /**
