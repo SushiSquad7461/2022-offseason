@@ -17,11 +17,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.kSwerveDrive;
 
-import java.util.ArrayList;
-
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
-import SushiFrcLib.Sensors.Gyro.NavX;
+import SushiFrcLib.Kinematics.KinematicsHelper;
+import SushiFrcLib.Sensors.Gyro.Gyro;
+import SushiFrcLib.Sensors.Gyro.Pigeon;
 
 public class Swerve extends SubsystemBase {
   private final SwerveModule frontLeft;
@@ -30,36 +30,35 @@ public class Swerve extends SubsystemBase {
   private final SwerveModule backRight;
 
   private SwerveModuleState[] moduleStates;
+  private final Gyro nav = Pigeon.getInstance(); 
 
-  private final NavX nav = NavX.getInstance(); 
-
-  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    // Front left
-    new Translation2d(kSwerveDrive.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-        kSwerveDrive.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    // Front right
-    new Translation2d(kSwerveDrive.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-        -kSwerveDrive.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    // Back left
-    new Translation2d(-kSwerveDrive.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-        kSwerveDrive.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    // Back right
-    new Translation2d(-kSwerveDrive.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-        -kSwerveDrive.DRIVETRAIN_WHEELBASE_METERS / 2.0)
-  );
-
+  private final SwerveDriveKinematics kinematics;
   private final SwerveDriveOdometry odometry;
   private final Field2d field;
+
+  private static Swerve mInstance;
+
+  public static Swerve getInstance() {
+    if (mInstance == null) {
+      mInstance = new Swerve();
+    }
+    return mInstance;
+  }
 
   public Swerve() {
     frontLeft = Constants.kSwerveDrive.FRONT_LEFT.createFourIFalconModule();
     frontRight = Constants.kSwerveDrive.FRONT_RIGHT.createFourIFalconModule();
     backLeft = Constants.kSwerveDrive.BACK_LEFT.createFourIFalconModule();
     backRight = Constants.kSwerveDrive.BACK_RIGHT.createFourIFalconModule();
+
+    kinematics = KinematicsHelper.getKinematics(Constants.kSwerveDrive.DRIVETRAIN_TRACKWIDTH_METERS, Constants.kSwerveDrive.DRIVETRAIN_WHEELBASE_METERS);
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(nav.getAngle()));
+
     setChassisSpeedsVelocity(0, 0, 0);
+
     field = new Field2d();
     SmartDashboard.putData("Field", field);
+
     nav.zero();
   }
 
@@ -80,24 +79,20 @@ public class Swerve extends SubsystemBase {
   }
 
   public void setChassisSpeedsVelocity(double forwardVelocity, double sidewaysVelocity, double angularVelocity) {
-    // this.chassisSpeeds = new ChassisSpeeds(forwardVelocity, sidewaysVelocity, angularVelocity);
     ChassisSpeeds newSpeed= ChassisSpeeds.fromFieldRelativeSpeeds(forwardVelocity, sidewaysVelocity, angularVelocity, Rotation2d.fromDegrees(nav.getAngle()));
     moduleStates = kinematics.toSwerveModuleStates(newSpeed);
   }
 
   @Override
   public void periodic() {
-    SwerveModuleState[] states = moduleStates; // i am lazy
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, kSwerveDrive.MAX_VELOCITY_METERS_PER_SECOND);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, kSwerveDrive.MAX_VELOCITY_METERS_PER_SECOND);
 
     SmartDashboard.putNumber("Curr angle  ", nav.getAngle());
-
     SmartDashboard.putNumber("x position", getPose().getX());
     SmartDashboard.putNumber("y position", getPose().getY());
     SmartDashboard.putNumber("angle", getPose().getRotation().getDegrees());
 
-    updateModules(states);
+    updateModules(moduleStates);
 
     field.setRobotPose(getPose());
   }

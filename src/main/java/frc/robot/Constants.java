@@ -15,15 +15,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 public final class Constants {
         public final static class kSwerveDrive {
-                public static final Mk4SwerveModuleHelper.GearRatio GEAR_RATIO = Mk4SwerveModuleHelper.GearRatio.L2;
                 public static final Mk4iSwerveModuleHelper.GearRatio FOUR_I_GEAR_RATIO = Mk4iSwerveModuleHelper.GearRatio.L2;
+
                 public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.52705;
                 public static final double DRIVETRAIN_WHEELBASE_METERS = 0.52705;
+
                 public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
                     SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
                     SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
                 public static final double MAX_ACCELERATION = 2.0;
-        
                 public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
                 Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
                 public static final double MAX_VOLTAGE = 12;
@@ -68,9 +68,16 @@ public final class Constants {
         public static class kIndexer {
                 public static final double colorSensorThreasholdRed = 0.33;
                 public static final double colorSensorThreasholdBlue = 0.27;
+
+                public static final double EJECTER_SPEED = 1;
+                public static final double KICKER_SPEED = 1;
+                public static final double FEADER_SPEED = 0.8;
         }
 
         public static class Ports {
+                public static final int BOTTOM_BEAM_BREAK = 0;
+                public static final int UPPER_BEAM_BREAK = 1;
+
                 public static final int SHOOTER_LEFT_MOTOR = 45;
                 public static final int SHOOTER_RIGHT_MOTOR = 46;
                 public static final int KICKER_MOTOR = 43;

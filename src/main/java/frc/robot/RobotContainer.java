@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import SushiFrcLib.Constants.SushiConstants;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,12 +28,14 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // XboxController driver = new XboxController(0);
   private final Swerve swerveDrive = new Swerve();
-  SendableChooser<SequentialCommandGroup> autoChooser;
-  AutoCommands autos;
-  Hood hood = Hood.getInstance();
-  Shooter shooter = new Shooter();
-  XboxController driver = new XboxController(0);
-  Indexer mIndexer = Indexer.getInstance();
+  private final SendableChooser<SequentialCommandGroup> autoChooser;
+  private final AutoCommands autos;
+
+  private final Hood hood = Hood.getInstance();
+  private final Shooter shooter = Shooter.getInstance();
+  private final Indexer mIndexer = Indexer.getInstance();
+
+  XboxController driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

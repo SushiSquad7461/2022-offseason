@@ -14,13 +14,13 @@ import frc.robot.Constants.kHood;
 
 public class Hood extends SubsystemBase {
     private final WPI_TalonFX motor;
-    private double pos = 0;
+    private double pos;
 
-    private TunableNumber hoodP = new TunableNumber("Hood P", Constants.kHood.kP, Constants.TUNING_MODE);
-    private TunableNumber hoodI = new TunableNumber("Hood I", Constants.kHood.kI, Constants.TUNING_MODE);
-    private TunableNumber hoodD = new TunableNumber("Hood D", Constants.kHood.kD, Constants.TUNING_MODE);
-    private TunableNumber hoodF = new TunableNumber("Hood F", Constants.kHood.kF, Constants.TUNING_MODE);
-    private TunableNumber targetPos = new TunableNumber("targetPos", 0, Constants.TUNING_MODE);
+    private final TunableNumber hoodP;
+    private final TunableNumber hoodI;
+    private final TunableNumber hoodD;
+    private final TunableNumber hoodF;
+    private final TunableNumber targetPos;
 
     private static Hood instance;
 
@@ -32,9 +32,16 @@ public class Hood extends SubsystemBase {
     }
 
     private Hood() {
-        motor = MotorHelper.createFalconMotor(Ports.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION,
-                kHood.NEUTRAL_MODE, hoodP.get(), hoodI.get(), hoodD.get(), hoodF.get());
+        hoodP = new TunableNumber("Hood P", Constants.kHood.kP, Constants.TUNING_MODE);
+        hoodI = new TunableNumber("Hood I", Constants.kHood.kI, Constants.TUNING_MODE);
+        hoodD = new TunableNumber("Hood D", Constants.kHood.kD, Constants.TUNING_MODE);
+        hoodF = new TunableNumber("Hood F", Constants.kHood.kF, Constants.TUNING_MODE);
+        targetPos = new TunableNumber("Target Pos", 0, Constants.TUNING_MODE);
+
+        motor = MotorHelper.createFalconMotor(Ports.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION, kHood.NEUTRAL_MODE, hoodP.get(), hoodI.get(), hoodD.get(), hoodF.get());
         motor.setSelectedSensorPosition(0);
+
+        pos = 0;
     }
 
     public void setPos(double newPos) {
@@ -51,11 +58,13 @@ public class Hood extends SubsystemBase {
     @Override
     public void periodic() {
         motor.set(ControlMode.Position, pos == 0 ? targetPos.get() : pos);
+
         SmartDashboard.putNumber("Hood Position", motor.getSelectedSensorPosition());
 
         if (hoodP.hasChanged()) {
             motor.config_kP(0, hoodP.get());
         }
+        
         if (hoodD.hasChanged()) {
             motor.config_kD(0, hoodD.get());
         }
