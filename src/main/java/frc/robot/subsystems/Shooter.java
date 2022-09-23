@@ -51,6 +51,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter error", getError());
     SmartDashboard.putNumber("Left motor current draw", leftMotor.getStatorCurrent());
     SmartDashboard.putNumber("Right motor current draw", rightMotor.getStatorCurrent());
+    SmartDashboard.putNumber("Shooter P", shooterP.get());
+    SmartDashboard.putNumber("Shooter F", shooterF.get());
 
     runShooter();
 
@@ -59,7 +61,7 @@ public class Shooter extends SubsystemBase {
     }
 
     if (shooterP.hasChanged()) {
-      leftMotor.config_kP(0, shooterF.get());
+      leftMotor.config_kP(0, shooterP.get());
     }
 
     if (shooterI.hasChanged()) {
