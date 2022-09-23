@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsytems.Swerve;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   XboxController driver = new XboxController(0);
+  Swerve m_swerve = new Swerve();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -31,6 +34,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    m_swerve.setDefaultCommand(new SwerveDriveCommand(
+      m_swerve, 
+      driver, 
+      XboxController.Axis.kLeftY.value,
+      XboxController.Axis.kLeftX.value, 
+      XboxController.Axis.kRightX.value,
+      false,
+      true
+    ));
   }
 
   public void teleopDrive() {
