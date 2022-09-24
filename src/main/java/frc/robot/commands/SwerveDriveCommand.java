@@ -29,8 +29,9 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double forwardBack = m_controller.getRawAxis(m_translationAxis);
+        // double forwardBack = m_controller.getRawAxis(m_translationAxis);
         double leftRight = m_controller.getRawAxis(m_strafeAxis);
+        double forwardBack = m_controller.getRawAxis(m_translationAxis);
         double rot = m_controller.getRawAxis(m_rotationsAxis);
 
         forwardBack = Math.abs(forwardBack) < Constants.stickDeadband ? 0 : forwardBack;

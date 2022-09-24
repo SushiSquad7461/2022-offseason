@@ -2,7 +2,9 @@ package frc.robot.subsytems;
 
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 
+import SushiFrcLib.Motor.SDSSwerveModuleConfig;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,9 +31,9 @@ public class Swerve extends SubsystemBase {
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)
+            // new SwerveModule(1, Constants.Swerve.Mod1.constants),
+            // new SwerveModule(2, Constants.Swerve.Mod2.constants),
+            // new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
     }
 
@@ -94,7 +96,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        swerveOdometry.update(getYaw(), getStates());  
+        // swerveOdometry.update(getYaw(), getStates());  
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
