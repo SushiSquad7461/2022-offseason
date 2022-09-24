@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.ejml.simple.SimpleMatrix;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import SushiFrcLib.Motor.MotorConfig;
@@ -7,10 +9,15 @@ import SushiFrcLib.Motor.SwerveModuleConfig;
 import SushiFrcLib.State.State.MotorDirection;
 import SushiFrcLib.State.State.MotorNeturalState;
 import SushiFrcLib.State.State.MotorType;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
@@ -39,6 +46,18 @@ public final class Constants{
                     new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                     new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
                     new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+
+            public static final Matrix<N3, N1> kOdomStateStdDevs = 
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0, 0.0, 0.0);
+
+            public static final Matrix<N1, N1> kOdomLocalMeasurementStdDevs = 
+                new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.0);
+
+            public static final Matrix<N3, N1> visionMeasurementStdDevs = 
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0, 0.0, 0.0);
+
+            public static final double kHubPosXMeters = 0.0;
+            public static final double kHubPosYMeters = 0.0;
     
             /* Swerve Current Limiting */
             public static final int angleContinuousCurrentLimit = 25;
@@ -140,6 +159,11 @@ public final class Constants{
             public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
                 new TrapezoidProfile.Constraints(
                     kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-          }
-    
+        }
+
+        public static final class Vision {
+            public static final double kLimeLightMountAngleDegrees = 0.0;
+            public static final double kLimeLightLensHeightMeters = 0.0;
+            public static final double kHubTargetHeightMeters = 0.0;
+        }    
 }

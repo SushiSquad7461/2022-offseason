@@ -3,20 +3,22 @@ package frc.robot.subsytems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import frc.robot.Constants;
-
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import SushiFrcLib.Math.Vector2;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.LimeLight;
 
 public class Swerve extends SubsystemBase {
-    public SwerveDriveOdometry swerveOdometry;
+    public SwerveDrivePoseEstimator swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public PigeonIMU gyro;
 
@@ -25,7 +27,14 @@ public class Swerve extends SubsystemBase {
         gyro.configFactoryDefault();
         zeroGyro();
         
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw());
+        swerveOdometry = new SwerveDrivePoseEstimator(
+            getYaw(),
+            new Pose2d(), // This should probably change in the future
+            Constants.Swerve.swerveKinematics, 
+            Constants.Swerve.kOdomStateStdDevs,
+            Constants.Swerve.kOdomLocalMeasurementStdDevs,
+            Constants.Swerve.visionMeasurementStdDevs
+        );
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -67,7 +76,7 @@ public class Swerve extends SubsystemBase {
     }    
 
     public Pose2d getPose() {
-        return swerveOdometry.getPoseMeters();
+        return swerveOdometry.getEstimatedPosition();
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -101,5 +110,43 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+
+        if (!LimeLight.getInstance().canSeeTarget()) return;
+
+        double limeLightDistance = LimeLight.getInstance().getDistance();
+        double limeLightHeading = LimeLight.getInstance().getHeading();
+        
+
+        Pose2d robotPos = getPose();
+        Vector2 robotRelativeToHub = new Vector2(
+            robotPos.getX() - Constants.Swerve.kHubPosXMeters,
+            robotPos.getY() - Constants.Swerve.kHubPosYMeters
+        );
+
+        // Since we don't care where around the hub we are, let's just rotate
+        // the limelight pos to be in the same direction as robot pos
+        Vector2 limeLightRelativeToHub = robotRelativeToHub.normal()
+            .scale(limeLightDistance);
+
+        Vector2 robotForward = new Vector2(
+            robotPos.getRotation().getSin(),
+            robotPos.getRotation().getCos() // Y+ is always forward
+        );
+
+        // Since getAngleBetween will only return the smallest angle, we can't use it
+        // Reference: https://stackoverflow.com/a/2150475
+        double limeLightOdomAngleToHubDiff = Math.atan2(
+            robotForward.cross(robotRelativeToHub),
+            robotForward.dot(robotRelativeToHub)
+        ) - limeLightHeading;
+
+        swerveOdometry.addVisionMeasurement(
+            new Pose2d(
+                limeLightRelativeToHub.x,
+                limeLightRelativeToHub.y,
+                robotPos.getRotation().rotateBy(Rotation2d.fromDegrees(limeLightOdomAngleToHubDiff))
+            ), 
+            Timer.getFPGATimestamp()
+        );
     }
 }
