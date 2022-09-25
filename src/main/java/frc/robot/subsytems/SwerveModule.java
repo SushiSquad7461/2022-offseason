@@ -32,15 +32,15 @@ public class SwerveModule {
         angleOffset = moduleConstants.angleOffset;
         
         /* Angle Encoder Config */
-        angleEncoder = new WPI_CANCoder(moduleConstants.cancoderID);
+        angleEncoder = new WPI_CANCoder(moduleConstants.cancoderID, "Sussy Squad");                
         configAngleEncoder();
 
         /* Angle Motor Config */
-        mAngleMotor = new WPI_TalonFX(moduleConstants.angleMotorID);
+        mAngleMotor = new WPI_TalonFX(moduleConstants.angleMotorID, "Sussy Squad");
         configAngleMotor();
 
         /* Drive Motor Config */
-        mDriveMotor = new WPI_TalonFX(moduleConstants.driveMotorID);
+        mDriveMotor = new WPI_TalonFX(moduleConstants.driveMotorID, "Sussy Squad");
         configDriveMotor();
 
         lastAngle = getState().angle.getDegrees();
@@ -63,8 +63,9 @@ public class SwerveModule {
     }
 
     private void resetToAbsolute() {
-        double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset, Constants.Swerve.angleGearRatio);
+        double absolutePosition = Conversions.degreesToFalcon(getAngle(), Constants.Swerve.angleGearRatio);
         mAngleMotor.setSelectedSensorPosition(absolutePosition);
+        System.out.println(absolutePosition);
     }
 
     private void configAngleEncoder() {        
@@ -90,6 +91,10 @@ public class SwerveModule {
 
     public Rotation2d getCanCoder() {
         return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
+    }
+
+    public double getAngle() {
+        return getCanCoder().getDegrees() - angleOffset;
     }
 
     public SwerveModuleState getState() {
