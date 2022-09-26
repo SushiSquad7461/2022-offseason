@@ -119,8 +119,8 @@ public class Swerve extends SubsystemBase {
 
         Pose2d robotPos = getPose();
         Vector2 robotRelativeToHub = new Vector2(
-            robotPos.getX() - Constants.Swerve.kHubPosXMeters,
-            robotPos.getY() - Constants.Swerve.kHubPosYMeters
+            robotPos.getX() + Constants.Swerve.kHubPosXMeters,
+            robotPos.getY() + Constants.Swerve.kHubPosYMeters
         );
 
         // Since we don't care where around the hub we are, let's just rotate
@@ -142,8 +142,8 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry.addVisionMeasurement(
             new Pose2d(
-                limeLightRelativeToHub.x,
-                limeLightRelativeToHub.y,
+                limeLightRelativeToHub.x - Constants.Swerve.kHubPosXMeters,
+                limeLightRelativeToHub.y - Constants.Swerve.kHubPosYMeters,
                 robotPos.getRotation().rotateBy(Rotation2d.fromDegrees(limeLightOdomAngleToHubDiff))
             ), 
             Timer.getFPGATimestamp()
