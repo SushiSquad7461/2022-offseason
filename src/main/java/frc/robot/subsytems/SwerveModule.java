@@ -17,6 +17,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
+import SushiFrcLib.SmartDashboard.TunableNumber;
+
 public class SwerveModule {
     public int moduleNumber;
     private double angleOffset;
@@ -24,6 +26,9 @@ public class SwerveModule {
     private TalonFX mDriveMotor;
     private CANCoder angleEncoder;
     private double lastAngle;
+
+    private final TunableNumber mDriveP;
+    private final TunableNumber mDriveD;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
@@ -44,9 +49,18 @@ public class SwerveModule {
         configDriveMotor();
 
         lastAngle = getState().angle.getDegrees();
+
+        mDriveP = new TunableNumber("Mod " + moduleNumber + " drive P", 0.0, true);
+        mDriveD = new TunableNumber("Mod " + moduleNumber + " drive D", 0.0, true);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
+        if (mDriveP.hasChanged()) {
+            mDriveMotor.config_kP(0, mDriveP.get());
+        } if (mDriveD.hasChanged()) {
+            mDriveMotor.config_kD(0, mDriveD.get());
+        } 
+
         desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
 
         if (isOpenLoop) {
@@ -65,7 +79,6 @@ public class SwerveModule {
     private void resetToAbsolute() {
         double absolutePosition = Conversions.degreesToFalcon(getAngle(), Constants.Swerve.angleGearRatio);
         mAngleMotor.setSelectedSensorPosition(absolutePosition);
-        System.out.println(absolutePosition);
     }
 
     private void configAngleEncoder() {        

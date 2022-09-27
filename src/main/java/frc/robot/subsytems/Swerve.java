@@ -2,9 +2,7 @@ package frc.robot.subsytems;
 
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 
-import SushiFrcLib.Motor.SDSSwerveModuleConfig;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
