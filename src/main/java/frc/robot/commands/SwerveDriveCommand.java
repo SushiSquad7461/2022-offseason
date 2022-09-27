@@ -1,7 +1,9 @@
 package frc.robot.commands;
 
+import SushiFrcLib.Math.Normalization;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsytems.Swerve;
@@ -29,14 +31,13 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        // double forwardBack = m_controller.getRawAxis(m_translationAxis);
+        double forwardBack = -m_controller.getRawAxis(m_translationAxis);
         double leftRight = m_controller.getRawAxis(m_strafeAxis);
-        double forwardBack = m_controller.getRawAxis(m_translationAxis);
         double rot = m_controller.getRawAxis(m_rotationsAxis);
 
-        forwardBack = Math.abs(forwardBack) < Constants.stickDeadband ? 0 : forwardBack;
-        leftRight = Math.abs(leftRight) < Constants.stickDeadband ? 0 : leftRight;
-        rot = Math.abs(rot) < Constants.stickDeadband ? 0 : rot;
+        forwardBack = Normalization.cube(Normalization.linearDeadzone(forwardBack, Constants.stickDeadband));
+        leftRight = Normalization.cube(Normalization.linearDeadzone(leftRight, Constants.stickDeadband));
+        rot = Normalization.cube(Normalization.linearDeadzone(rot, Constants.stickDeadband));
 
         Translation2d translation = new Translation2d(forwardBack, leftRight).times(Constants.Swerve.maxSpeed);
         rot *= Constants.Swerve.maxAngularVelocity;
