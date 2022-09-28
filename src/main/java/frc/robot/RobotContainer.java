@@ -85,11 +85,6 @@ public class RobotContainer {
   }
 
   public void teleopDrive() {
-    swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setChassisSpeedsPercentage(
-        OI.getLeftStickX(),
-        OI.getLeftStickY(),
-        OI.getRightStickX()), swerveDrive));
-
     mIndexer.setIntake();
   }
 
