@@ -16,8 +16,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 public final class Constants {
 
         public final static class kIntake {
-                public static final double INTAKE_SPEED = 0;
-                public static final double HOPPER_SPEED = 0;
+                public static final double INTAKE_SPEED = 0.3;
+                public static final double HOPPER_SPEED = 0.3;
 
                 public static final TalonFXInvertType INTAKE_INVERSION = TalonFXInvertType.Clockwise;
                 public static final TalonFXInvertType HOPPER_INVERSION = TalonFXInvertType.Clockwise;
@@ -102,8 +102,8 @@ public final class Constants {
                 public static final int FEEDER_MOTOR = 41;
                 public static final int HOOD_MOTOR = 47;
 
-                public static final int INTAKE_MOTOR = 48;
-                public static final int HOPPER_MOTOR = 49;
+                public static final int INTAKE_MOTOR = 49;
+                public static final int HOPPER_MOTOR = 48;
 
         }
 
