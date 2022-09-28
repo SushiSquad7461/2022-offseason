@@ -1,6 +1,5 @@
 package frc.robot.subsytems;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -11,7 +10,6 @@ import frc.robot.Robot;
 import frc.robot.SwerveModuleConstants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -29,8 +27,7 @@ public class SwerveModule {
 
     private final TunableNumber mDriveP;
     private final TunableNumber mDriveD;
-
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
+    private final TunableNumber mDriveF;
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants) {
         this.moduleNumber = moduleNumber;
@@ -52,6 +49,7 @@ public class SwerveModule {
 
         mDriveP = new TunableNumber("Mod " + moduleNumber + " drive P", 0.0, true);
         mDriveD = new TunableNumber("Mod " + moduleNumber + " drive D", 0.0, true);
+        mDriveF = new TunableNumber("Mod " + moduleNumber + " drive F", 0.0, true);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -59,7 +57,9 @@ public class SwerveModule {
             mDriveMotor.config_kP(0, mDriveP.get());
         } if (mDriveD.hasChanged()) {
             mDriveMotor.config_kD(0, mDriveD.get());
-        } 
+        } if (mDriveF.hasChanged()) {
+            mDriveMotor.config_kF(0, mDriveF.get());
+        }
 
         desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
 
@@ -68,7 +68,7 @@ public class SwerveModule {
             mDriveMotor.set(ControlMode.PercentOutput, percentOutput);
         } else {
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-            mDriveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
+            mDriveMotor.set(ControlMode.Velocity, velocity);
         }
 
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
