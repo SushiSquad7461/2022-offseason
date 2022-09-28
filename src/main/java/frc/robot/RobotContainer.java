@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -30,7 +31,6 @@ import frc.robot.subsystems.Shooter;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  // XboxController driver = new XboxController(0);
   private final Swerve swerveDrive = new Swerve();
   private final SendableChooser<SequentialCommandGroup> autoChooser;
   private final AutoCommands autos;
@@ -40,7 +40,7 @@ public class RobotContainer {
   private final Indexer mIndexer = Indexer.getInstance();
   private final Intake mIntake = Intake.getInstance();
 
-  XboxController driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
+  private final XboxController driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -63,6 +63,16 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    swerveDrive.setDefaultCommand(new SwerveDriveCommand(
+      swerveDrive, 
+      driver, 
+      XboxController.Axis.kLeftY.value,
+      XboxController.Axis.kLeftX.value, 
+      XboxController.Axis.kRightX.value,
+      false,
+      true
+    ));
+
     new JoystickButton(driver, XboxController.Button.kY.value)
         .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer));
     new JoystickButton(driver, XboxController.Button.kB.value)
@@ -75,11 +85,6 @@ public class RobotContainer {
   }
 
   public void teleopDrive() {
-    swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setChassisSpeedsPercentage(
-        OI.getLeftStickX(),
-        OI.getLeftStickY(),
-        OI.getRightStickX()), swerveDrive));
-
     mIndexer.setIntake();
   }
 
