@@ -14,6 +14,17 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 public final class Constants {
+
+        public final static class kIntake {
+                public static final double INTAKE_SPEED = 0;
+                public static final double HOPPER_SPEED = 0;
+
+                public static final TalonFXInvertType INTAKE_INVERSION = TalonFXInvertType.Clockwise;
+                public static final TalonFXInvertType HOPPER_INVERSION = TalonFXInvertType.Clockwise;
+
+                public static final int CURRENT_LIMIT = 30;
+        }
+
         public final static class kSwerveDrive {
                 public static final Mk4iSwerveModuleHelper.GearRatio FOUR_I_GEAR_RATIO = Mk4iSwerveModuleHelper.GearRatio.L2;
 
@@ -21,23 +32,28 @@ public final class Constants {
                 public static final double DRIVETRAIN_WHEELBASE_METERS = 0.52705;
 
                 public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-                    SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
-                    SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+                                SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
+                                SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
                 public static final double MAX_ACCELERATION = 2.0;
                 public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-                Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+                                Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
                 public static final double MAX_VOLTAGE = 12;
-        
-                public static final SDSSwerveModuleConfig FRONT_LEFT = new SDSSwerveModuleConfig(1, 3, 2, -Math.toRadians(268.021537162), "Front Left Module", 2); // module 1
-                public static final SDSSwerveModuleConfig FRONT_RIGHT = new SDSSwerveModuleConfig(10, 12, 11, -Math.toRadians(164.53125), "Front Right Module", 4); // module 4
-                public static final SDSSwerveModuleConfig BACK_LEFT = new SDSSwerveModuleConfig(4, 6, 5, -Math.toRadians(114.43359375), "Back Left Module", 6); // module 2
-                public static final SDSSwerveModuleConfig BACK_RIGHT = new SDSSwerveModuleConfig(7, 9, 8, -Math.toRadians(110.21484375), "Back Right Module", 8); // module 3
-        
+
+                public static final SDSSwerveModuleConfig FRONT_LEFT = new SDSSwerveModuleConfig(1, 3, 2,
+                                -Math.toRadians(268.021537162), "Front Left Module", 2); // module 1
+                public static final SDSSwerveModuleConfig FRONT_RIGHT = new SDSSwerveModuleConfig(10, 12, 11,
+                                -Math.toRadians(164.53125), "Front Right Module", 4); // module 4
+                public static final SDSSwerveModuleConfig BACK_LEFT = new SDSSwerveModuleConfig(4, 6, 5,
+                                -Math.toRadians(114.43359375), "Back Left Module", 6); // module 2
+                public static final SDSSwerveModuleConfig BACK_RIGHT = new SDSSwerveModuleConfig(7, 9, 8,
+                                -Math.toRadians(110.21484375), "Back Right Module", 8); // module 3
+
                 public static final PIDController X_CONTROLLER = new PIDController(0.001, 0, 0);
                 public static final PIDController Y_CONTROLLER = new PIDController(0.001, 0, 0);
                 public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(0.001, 0, 0,
-                        new Constraints(kSwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 2.0));
+                                new Constraints(kSwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 2.0));
         }
+
         public static class kHood {
                 public static final int CURRENT_LIMIT = 35;
                 public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
@@ -53,8 +69,9 @@ public final class Constants {
                         // First val is disntance from goal (TODO: INSERT UNITS), Second val is hood pos
                         // in encoder tiks
                         posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
-                }  
+                }
         }
+
         public static class kShooter {
                 public static final double SETPOINT_RPM = 0;
                 public static final double ERROR_TOLERANCE = 10;
@@ -84,6 +101,10 @@ public final class Constants {
                 public static final int EJECTER_MOTOR = 44;
                 public static final int FEEDER_MOTOR = 41;
                 public static final int HOOD_MOTOR = 47;
+
+                public static final int INTAKE_MOTOR = 48;
+                public static final int HOPPER_MOTOR = 49;
+
         }
 
         public static void setup() {
