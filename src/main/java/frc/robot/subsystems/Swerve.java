@@ -19,7 +19,7 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public PigeonIMU gyro;
 
-    public Swerve() {
+    private Swerve() {
         gyro = new PigeonIMU(Constants.Swerve.pigeonID);
         gyro.configFactoryDefault();
         zeroGyro();
@@ -32,6 +32,14 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
+    }
+
+    private static Swerve swerve = null;
+    public static Swerve getInstance() {
+        if(swerve == null) {
+        swerve = new Swerve();
+        }
+        return swerve;
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
