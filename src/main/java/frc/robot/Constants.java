@@ -63,6 +63,10 @@ public final class Constants {
                 public static final double kI = 0.0;
                 public static final double kD = 0.0;
                 public static final double kF = 0.0;
+
+                public static final double TX_OFFSET = 0;
+                public static final double PID_TOLERANCE_DEGREES = 0.5;
+                public static final double PID_SPEED_TOLERANCE_DEGREES_PER_SECOND = 720; // TODO: pick actual values lol
         }
 
         public static class kIndexer {
