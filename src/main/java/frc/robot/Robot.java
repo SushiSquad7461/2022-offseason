@@ -4,16 +4,13 @@
 
 package frc.robot;
 
-<<<<<<< HEAD
 import org.opencv.photo.Photo;
 
-=======
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import SushiFrcLib.Sensors.Gyro.Gyro;
 import SushiFrcLib.Sensors.Gyro.NavX;
 import SushiFrcLib.Sensors.Gyro.Pigeon;
->>>>>>> 2859afcdf437d11f3ec2a32dff9bf2013e96433b
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,11 +38,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-<<<<<<< HEAD
-    Constants.setup();
+    //Constants.setup(); TODO: dependency injection
     vision = PhotonVision.getInstance();
-=======
->>>>>>> 2859afcdf437d11f3ec2a32dff9bf2013e96433b
   }
 
   /**
