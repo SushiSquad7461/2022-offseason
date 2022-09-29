@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.util.Units;
@@ -30,7 +31,7 @@ public class PhotonVision {
         List<Double> ret = new ArrayList<Double>();
 
         for (var i : result) {
-            ret.add(i.getYaw());
+            ret.add(i.getArea());
         }
 
         return ret;
@@ -40,7 +41,33 @@ public class PhotonVision {
         return camera.getLatestResult().getBestTarget().getArea();
     }
 
+    private double getBestPitch() {
+        return camera.getLatestResult().getBestTarget().getPitch();
+    }
+
+    private double getBestHeading() {
+        return camera.getLatestResult().getBestTarget().getYaw();
+    }
+
+    private double getLeftMostHeading() {
+        PhotonPipelineResult result = camera.getLatestResult();
+        List<PhotonTrackedTarget> targets = result.getTargets();
+        if (result.hasTargets()) {
+            double LeftestYaw = targets.get(0).getYaw();
+
+            for (var target : targets) {
+                if (target.getYaw() < LeftestYaw) {
+                    LeftestYaw = target.getYaw();
+                }
+            }
+
+            return LeftestYaw;
+        }
+        return 0;
+    }
+
     public double getDistance() {
-        return getBestArea();
+        //return getBestArea();
+        return getBestPitch();
     }
 }
