@@ -49,4 +49,15 @@ private static Limelight limelight = null;
         SmartDashboard.putNumber("LimelightArea", area);
     }
 
+    public double getx() {
+        return x;
+    }
+
+    public double gety(){
+        return y; 
+    }
+
+    public double getArea() {
+        return area;
+    }
 }
