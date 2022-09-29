@@ -72,15 +72,15 @@ public class Shooter extends SubsystemBase {
     }
 
     if (shooterP.hasChanged()) {
-      leftMotor.config_kP(0, shooterF.get());
+      leftMotor.config_kP(0, shooterP.get());
     }
 
     if (shooterI.hasChanged()) {
-      leftMotor.config_kF(0, shooterI.get());
+      leftMotor.config_kI(0, shooterI.get());
     }
 
     if (shooterD.hasChanged()) {
-      leftMotor.config_kF(0, shooterD.get());
+      leftMotor.config_kD(0, shooterD.get());
     }
   }
 
