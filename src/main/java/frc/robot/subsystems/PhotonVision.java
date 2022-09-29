@@ -66,8 +66,13 @@ public class PhotonVision {
         return 0;
     }
 
+    public double getHeading() {
+        //return getLeftMostHeading(); //TODO: switch to this if not working
+        return getBestHeading();
+    }
+
     public double getDistance() {
-        //return getBestArea();
+        //return getBestArea(); //TODO: switch to this if not working
         return getBestPitch();
     }
 }
