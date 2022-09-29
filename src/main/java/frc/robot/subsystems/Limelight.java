@@ -11,13 +11,22 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 /** Add your docs here. */
 public class Limelight extends SubsystemBase{
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-    double x;
-    double y;
-    double area;
+
+private static Limelight limelight = null;
+  public static Limelight getInstance() {
+    if(limelight == null) {
+      limelight = new Limelight();
+    }
+    return limelight;
+  }
+
+    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    private NetworkTableEntry tx = table.getEntry("tx");
+    private NetworkTableEntry ty = table.getEntry("ty");
+    private NetworkTableEntry ta = table.getEntry("ta");
+    public double x;
+    public double y;
+    public double area;
 
     public Limelight() {  
     //read values periodically
