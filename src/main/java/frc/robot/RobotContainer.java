@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
@@ -31,7 +32,7 @@ import frc.robot.subsystems.Shooter;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Swerve swerveDrive = new Swerve();
+  private final Swerve swerveDrive = Swerve.getInstance();
   private final SendableChooser<SequentialCommandGroup> autoChooser;
   private final AutoCommands autos;
 
@@ -75,9 +76,11 @@ public class RobotContainer {
 
     new JoystickButton(driver, XboxController.Button.kY.value)
         .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer));
+
     new JoystickButton(driver, XboxController.Button.kB.value)
-        .whenPressed(new InstantCommand(mIntake::runIntake, mIntake))
+        .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake), new InstantCommand(mIndexer::setIntake, mIntake)))
         .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+      
     new JoystickButton(driver, XboxController.Button.kA.value)
         .whenHeld(new InstantCommand(() -> hood.setPos(0), hood));
     new JoystickButton(driver, XboxController.Button.kX.value)

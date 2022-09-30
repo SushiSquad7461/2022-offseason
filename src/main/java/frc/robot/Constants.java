@@ -13,13 +13,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
 import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
-import SushiFrcLib.Motor.SDSSwerveModuleConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 

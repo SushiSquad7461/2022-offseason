@@ -109,7 +109,12 @@ public class Indexer extends SubsystemBase {
 
     pollColor();
 
-    if (lowerBeamBreakActuated()) {
+    if (currState == IndexerState.SHOOTING && !upperBeamBreakActuated()) {
+      setState(IndexerState.IDLE);
+      ballCount = 0;
+    } else if (!canIntake()) {
+      setState(IndexerState.IDLE);
+    } else if (lowerBeamBreakActuated()) {
       if (ballColor == BallColor.Unknown && currState == IndexerState.INTAKING) { 
         setState(IndexerState.IDLE);
       } else if (isCorrectColor() && canCount) {
@@ -187,6 +192,11 @@ public class Indexer extends SubsystemBase {
         feeder.set(kIndexer.FEADER_SPEED);
         break;
       case MOVING_UP:
+        kicker.set(kIndexer.KICKER_SPEED);
+        ejecter.set(kIndexer.EJECTER_SPEED);
+        feeder.set(kIndexer.FEADER_SPEED);
+        break;
+      case SHOOTING:
         kicker.set(kIndexer.KICKER_SPEED);
         ejecter.set(kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);

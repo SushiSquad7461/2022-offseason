@@ -84,16 +84,16 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  public void setMotorSpeed(ControlMode controlMode, double speed) {
+  public void directSetMotor(ControlMode controlMode, double speed) {
     leftMotor.set(controlMode, speed);
   }
 
   public void runShooter() {
-    setMotorSpeed(ControlMode.Velocity, setPointRPM);
+    directSetMotor(ControlMode.Velocity, setPointRPM);
   }
 
   public void stopShooter() {
-    setMotorSpeed(ControlMode.PercentOutput, 0);
+    directSetMotor(ControlMode.PercentOutput, 0);
   }
 
   public boolean isAtSpeed() {
