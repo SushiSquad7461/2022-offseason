@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Indexer.IndexerState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -70,21 +71,32 @@ public class RobotContainer {
       XboxController.Axis.kLeftY.value,
       XboxController.Axis.kLeftX.value, 
       XboxController.Axis.kRightX.value,
-      false,
+      true,
       true
     ));
 
     new JoystickButton(driver, XboxController.Button.kY.value)
         .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer))
         .whenReleased(new InstantCommand(mIndexer::setIdle, mIndexer));
+
+    // new JoystickButton(driver, XboxController.Button.kB.value)
+    //     .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake), new InstantCommand(mIndexer::setIntake, mIndexer)))
+    //     .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+
     new JoystickButton(driver, XboxController.Button.kB.value)
-        .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake), new InstantCommand(mIndexer::setIntake, mIntake)))
-        .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+    .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer))
+    .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+
+    
       
     new JoystickButton(driver, XboxController.Button.kA.value)
         .whenHeld(new InstantCommand(() -> hood.setPos(0), hood));
+
+    // new JoystickButton(driver, XboxController.Button.kX.value)
+    //     .whenHeld(new InstantCommand(() -> hood.setPos(100000), hood));
+
     new JoystickButton(driver, XboxController.Button.kX.value)
-        .whenHeld(new InstantCommand(() -> hood.setPos(100000), hood));
+        .whenHeld(new InstantCommand(() -> mIndexer.setState(IndexerState.MOVING_UP), mIndexer));
   }
 
   public void teleopDrive() {

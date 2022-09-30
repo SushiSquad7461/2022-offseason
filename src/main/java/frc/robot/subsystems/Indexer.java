@@ -96,15 +96,16 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean canIntake() {
-    return ballCount < 2;
+    // return ballCount < 2;
+    return true;
   }
 
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
-    // SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
-    // SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
-    // SmartDashboard.putString("Indexer State", currState.toString());
+    SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
+    SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
+    SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
+    SmartDashboard.putString("Indexer State", currState.toString());
     // SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
 
     boolean lowerBeamBreak = lowerBeamBreakActuated();
@@ -132,6 +133,10 @@ public class Indexer extends SubsystemBase {
       setState(IndexerState.INTAKING);
       canCount = true;
     }
+  }
+
+  public void setShooting() {
+    currState = IndexerState.SHOOTING;
   }
 
   public boolean lowerBeamBreakActuated() {
@@ -200,7 +205,7 @@ public class Indexer extends SubsystemBase {
         feeder.set(kIndexer.FEADER_SPEED);
         break;
       case MOVING_UP:
-        kicker.set(kIndexer.KICKER_SPEED);
+        kicker.set(kIndexer.KICKER_SPEED * -1);
         ejecter.set(kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);
         break;

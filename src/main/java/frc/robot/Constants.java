@@ -21,7 +21,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
         public static final double stickDeadband = 0.1;
-        public static final boolean TUNING_MODE = false;
+        public static final boolean TUNING_MODE = true;
 
         public final static class kIntake {
                 public static final double INTAKE_SPEED = 0.3;
@@ -55,10 +55,10 @@ public final class Constants {
                 public static final double SETPOINT_RPM = 0;
                 public static final double ERROR_TOLERANCE = 10;
                 public static final int CURRENT_LIMIT = 40;
-                public static final double kP = 0.0;
+                public static final double kP = 0.0047;
                 public static final double kI = 0.0;
                 public static final double kD = 0.0;
-                public static final double kF = 0.0;
+                public static final double kF = 0.184;
 
                 public static final double TX_OFFSET = 0;
                 public static final double PID_TOLERANCE_DEGREES = 0.5;

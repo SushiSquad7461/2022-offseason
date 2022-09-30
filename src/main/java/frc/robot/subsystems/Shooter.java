@@ -41,7 +41,7 @@ public class Shooter extends SubsystemBase {
     shooterI = new TunableNumber("Shooter I", Constants.kShooter.kI, Constants.TUNING_MODE);
     shooterD = new TunableNumber("Shooter D", Constants.kShooter.kD, Constants.TUNING_MODE);
     shooterF = new TunableNumber("Shooter F", Constants.kShooter.kF, Constants.TUNING_MODE);
-    shooterRPM = new TunableNumber("shooter rpm", Constants.kShooter.kF, Constants.TUNING_MODE);
+    shooterRPM = new TunableNumber("shooter rpm", 0, Constants.TUNING_MODE);
 
     leftMotor = MotorHelper.createFalconMotor(Constants.Ports.SHOOTER_LEFT_MOTOR, Constants.kShooter.CURRENT_LIMIT,
         TalonFXInvertType.Clockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
@@ -52,7 +52,7 @@ public class Shooter extends SubsystemBase {
 
     rightMotor.follow(leftMotor);
 
-    setPointRPM = 0;
+    setPointRPM = shooterRPM.get();
   }
 
   @Override
@@ -61,10 +61,11 @@ public class Shooter extends SubsystemBase {
         Conversion.convertTransToRPM(leftMotor.getSelectedSensorVelocity()));
     SmartDashboard.putNumber("Shooter set rpm", setPointRPM);
     SmartDashboard.putNumber("Shooter error", getError());
-    SmartDashboard.putNumber("Left motor current draw", leftMotor.getStatorCurrent());
-    SmartDashboard.putNumber("Right motor current draw", rightMotor.getStatorCurrent());
+    // SmartDashboard.putNumber("Left motor current draw", leftMotor.getStatorCurrent());
+    // SmartDashboard.putNumber("Right motor current draw", rightMotor.getStatorCurrent());
 
     setPointRPM = shooterRPM.get();
+    
     runShooter();
     
     if (shooterF.hasChanged()) {

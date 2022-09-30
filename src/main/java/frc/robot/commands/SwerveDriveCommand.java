@@ -34,9 +34,9 @@ public class SwerveDriveCommand extends CommandBase {
         double leftRight = m_controller.getRawAxis(m_strafeAxis);
         double rot = m_controller.getRawAxis(m_rotationsAxis);
 
-        forwardBack = Normalization.cube(Normalization.linearDeadzone(forwardBack, Constants.stickDeadband));
-        leftRight = Normalization.cube(Normalization.linearDeadzone(leftRight, Constants.stickDeadband));
-        rot = Normalization.cube(Normalization.linearDeadzone(rot, Constants.stickDeadband));
+        forwardBack = Normalization.cube(Normalization.cube(forwardBack));
+        leftRight = Normalization.cube(Normalization.cube(leftRight));
+        rot = Normalization.cube(Normalization.cube(rot));
 
         Translation2d translation = new Translation2d(forwardBack, leftRight).times(Constants.Swerve.maxSpeed);
         rot *= Constants.Swerve.maxAngularVelocity;

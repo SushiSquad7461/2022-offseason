@@ -57,7 +57,7 @@ public class Hood extends SubsystemBase {
 
     @Override
     public void periodic() {
-        motor.set(ControlMode.Position, pos == 0 ? targetPos.get() : pos);
+        motor.set(ControlMode.Position, targetPos.get());
 
         SmartDashboard.putNumber("Hood Position", motor.getSelectedSensorPosition());
 
