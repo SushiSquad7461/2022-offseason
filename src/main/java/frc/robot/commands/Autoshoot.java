@@ -12,6 +12,7 @@ import frc.robot.Constants.kShooter;
 import frc.robot.Constants;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PhotonVision;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -33,29 +34,22 @@ public class Autoshoot extends PIDCommand {
         // This should return the setpoint (can also be a constant)
         Constants.kShooter.TX_OFFSET,
         // This uses the output
-        output -> Swerve.getInstance().drive(new Translation2d(0, 0), output, false, true), // TODO: change drive to closed loop.
+        output -> Swerve.getInstance().drive(new Translation2d(0, 0), output, false, true), // TODO: change drive to
+                                                                                            // closed loop.
         // This requires subsystems
-        Swerve.getInstance()
-        );
-    
+        Swerve.getInstance());
+
     m_shooter = Shooter.getInstance();
     m_photonvision = PhotonVision.getInstance();
     m_swerve = Swerve.getInstance();
 
-
-    addRequirements(m_photonvision);
+    // addRequirements(m_photonvision);
     addRequirements(m_swerve);
-    
+
     getController().enableContinuousInput(-180, 180);
     getController().setTolerance(kShooter.PID_TOLERANCE_DEGREES, kShooter.PID_SPEED_TOLERANCE_DEGREES_PER_SECOND);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
-  }
-
-  @Override
-  public void initialize() {
-    shooter.se;
-
   }
 
   // Returns true when the command should end.
