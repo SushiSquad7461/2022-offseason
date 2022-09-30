@@ -75,8 +75,8 @@ public class RobotContainer {
     ));
 
     new JoystickButton(driver, XboxController.Button.kY.value)
-        .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer));
-
+        .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer))
+        .whenReleased(new InstantCommand(mIndexer::setIdle, mIndexer));
     new JoystickButton(driver, XboxController.Button.kB.value)
         .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake), new InstantCommand(mIndexer::setIntake, mIntake)))
         .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
@@ -88,7 +88,6 @@ public class RobotContainer {
   }
 
   public void teleopDrive() {
-    mIndexer.setIntake();
   }
 
   /**
