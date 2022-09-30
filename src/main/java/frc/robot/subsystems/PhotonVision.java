@@ -11,48 +11,47 @@ import edu.wpi.first.math.util.Units;
 
 public class PhotonVision {
     PhotonCamera camera;
-    final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
-    final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
-    private static PhotonVision sInstance;
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
 
+    private PhotonPipelineResult result;
+    private PhotonTrackedTarget bestTarget;
+    private boolean hasTargets;
+
+    private static PhotonVision sInstance;
     public static PhotonVision getInstance() {
         if (sInstance == null) {
             sInstance = new PhotonVision();
         }
         return sInstance;
     }
+    
+    @Override
+    public void periodic() {
+        result = camera.getResult();
+        bestTarget = result.getBestTarget();
+        hasTargets = restult.hasTargets();
+    }
 
     private PhotonVision() {
         camera = new PhotonCamera("gloworm");
     }
 
-    private List<Double> getAreas() {
-        List<PhotonTrackedTarget> result = camera.getLatestResult().getTargets();
-        List<Double> ret = new ArrayList<Double>();
-
-        for (var i : result) {
-            ret.add(i.getArea());
-        }
-
-        return ret;
-    }
-
     private double getBestArea() {
-        return camera.getLatestResult().getBestTarget().getArea();
+        return hasTargets ? bestTarget.getArea() : 0;
     }
 
     private double getBestPitch() {
-        return camera.getLatestResult().getBestTarget().getPitch();
+        return hasTargets ? bestTarget.getPitch(): 0;
     }
 
     private double getBestHeading() {
-        return camera.getLatestResult().getBestTarget().getYaw();
+        return hasTargets ? bestTarget.getYaw(): 0;
     }
 
     private double getLeftMostHeading() {
-        PhotonPipelineResult result = camera.getLatestResult();
-        List<PhotonTrackedTarget> targets = result.getTargets();
-        if (result.hasTargets()) {
+        if (hasTargets) {
+            List<PhotonTrackedTarget> targets = result.getTargets();
             double LeftestYaw = targets.get(0).getYaw();
 
             for (var target : targets) {
