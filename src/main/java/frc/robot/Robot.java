@@ -12,6 +12,7 @@ import SushiFrcLib.Sensors.Gyro.Gyro;
 import SushiFrcLib.Sensors.Gyro.NavX;
 import SushiFrcLib.Sensors.Gyro.Pigeon;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     //Constants.setup(); TODO: dependency injection
     vision = PhotonVision.getInstance();
+    LiveWindow.disableAllTelemetry();
   }
 
   /**
