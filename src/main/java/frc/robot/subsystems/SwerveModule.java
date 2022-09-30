@@ -47,9 +47,9 @@ public class SwerveModule {
 
         lastAngle = getState().angle.getDegrees();
 
-        mDriveP = new TunableNumber("Mod " + moduleNumber + " drive P", 0.0, true);
-        mDriveD = new TunableNumber("Mod " + moduleNumber + " drive D", 0.0, true);
-        mDriveF = new TunableNumber("Mod " + moduleNumber + " drive F", 0.0, true);
+        mDriveP = new TunableNumber("Mod " + moduleNumber + " drive P", 0.0, Constants.TUNING_MODE);
+        mDriveD = new TunableNumber("Mod " + moduleNumber + " drive D", 0.0, Constants.TUNING_MODE);
+        mDriveF = new TunableNumber("Mod " + moduleNumber + " drive F", 0.0, Constants.TUNING_MODE);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {

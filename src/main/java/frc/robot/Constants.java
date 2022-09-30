@@ -21,7 +21,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
         public static final double stickDeadband = 0.1;
-        public static final boolean TUNING_MODE = true;
+        public static final boolean TUNING_MODE = false;
 
         public final static class kIntake {
                 public static final double INTAKE_SPEED = 0.3;
