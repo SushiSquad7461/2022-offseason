@@ -101,30 +101,34 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
-    SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
-    SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
-    SmartDashboard.putString("Indexer State", currState.toString());
-    SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
+    // SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
+    // SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
+    // SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
+    // SmartDashboard.putString("Indexer State", currState.toString());
+    // SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
 
-    pollColor();
+    boolean lowerBeamBreak = lowerBeamBreakActuated();
+    boolean upperBeamBreak = upperBeamBreakActuated();
 
-    if (currState == IndexerState.SHOOTING && !upperBeamBreakActuated()) {
+    boolean correctColor = isCorrectColor();
+
+    if (currState == IndexerState.SHOOTING && !upperBeamBreak) {
       setState(IndexerState.IDLE);
       ballCount = 0;
     } else if (!canIntake()) {
       setState(IndexerState.IDLE);
-    } else if (lowerBeamBreakActuated()) {
+    } else if (lowerBeamBreak) {
+      pollColor();
       if (ballColor == BallColor.Unknown && currState == IndexerState.INTAKING) { 
         setState(IndexerState.IDLE);
-      } else if (isCorrectColor() && canCount) {
+      } else if (correctColor && canCount) {
         ballCount += 1;
         canCount = false;
-        setState(canIntake() ? IndexerState.MOVING_UP : IndexerState.IDLE);
+        setState(correctColor ? IndexerState.MOVING_UP : IndexerState.IDLE);
       } else if (!isCorrectColor()) {
         setState(IndexerState.EJECTING);
       }
-    } else if ((currState == IndexerState.EJECTING && !lowerBeamBreakActuated()) || (currState == IndexerState.MOVING_UP && !upperBeamBreakActuated())) {
+    } else if ((currState == IndexerState.EJECTING && !lowerBeamBreak) || (currState == IndexerState.MOVING_UP && !upperBeamBreak)) {
       setState(IndexerState.INTAKING);
       canCount = true;
     }
@@ -167,6 +171,10 @@ public class Indexer extends SubsystemBase {
 
   public void setIntake() {
     setState(IndexerState.INTAKING);
+  }
+
+  public void setIdle() {
+    setState(IndexerState.IDLE);
   }
 
   public void setState(IndexerState newState) {
