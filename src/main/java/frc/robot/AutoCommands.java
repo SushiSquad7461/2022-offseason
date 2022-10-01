@@ -4,6 +4,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Swerve;
 
@@ -25,10 +27,23 @@ public class AutoCommands {
         );
     }
 
-    private PPSwerveControllerCommand getCommand(String pathName) {
+    private Command getCommand(String pathName) {
         PathPlannerTrajectory path = PathPlanner.loadPath(pathName, Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAcceleration);
-        return new PPSwerveControllerCommand(
-            path, swerve::getPose, Constants.Swerve.swerveKinematics, Constants.Swerve.xController, Constants.Swerve.yController, Constants.Swerve.angleController, (s -> swerve.setModuleStates(s)), swerve);
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> {
+                swerve.resetOdometry(path.sample(0).poseMeters);
+            }, swerve),
+            new PPSwerveControllerCommand(
+                path, 
+                swerve::getPose, 
+                Constants.Swerve.swerveKinematics, 
+                Constants.Swerve.xController, 
+                Constants.Swerve.yController, 
+                Constants.Swerve.angleController, 
+                (s -> swerve.setModuleStates(s)), 
+                swerve
+            )
+        );
     }
 }
 
