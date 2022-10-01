@@ -28,14 +28,14 @@ public class AutoShoot extends CommandBase{
         m_shooter.setVelocity(shooterSpeed);
         m_hood.setPos(hoodPos);
         if( m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot) {
-            m_indexer.setState(IndexerState.SHOOTING);
+            m_indexer.setShooting();
             shoot = true;
         }
     }
 
     @Override
     public boolean isFinished() {
-        return shoot && !m_indexer.isShooting();
+        return shoot && !m_indexer.getShooting();
     }
 
     @Override
