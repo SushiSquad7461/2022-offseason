@@ -198,6 +198,10 @@ public class Indexer extends SubsystemBase {
     }
   }
 
+  public boolean getShooting() {
+    return isShooting;
+  }
+
   public boolean lowerBeamBreakActuated() {
     return !lowerBeamBreak.get();
   }
