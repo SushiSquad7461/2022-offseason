@@ -77,6 +77,8 @@ public final class Constants {
                 public static final double colorSensorThreasholdRed = 0.33;
                 public static final double colorSensorThreasholdBlue = 0.27;
 
+                public static final double ejectDelaySeconds = 0.1;
+
                 public static final double EJECTER_SPEED = 1;
                 public static final double KICKER_SPEED = 1;
                 public static final double FEADER_SPEED = 0.8;

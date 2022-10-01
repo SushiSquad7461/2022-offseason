@@ -43,6 +43,7 @@ public class Indexer extends SubsystemBase {
 
   private final Timer m_timer = new Timer();
   private double m_startTime = 0;
+  private double m_startEjectTime = 0;
 
 
   public enum IndexerState {
@@ -150,7 +151,7 @@ public class Indexer extends SubsystemBase {
         }
         break;
       case EJECTING:
-        if (!lowerBeamBreak) {
+        if (!lowerBeamBreak && m_timer.get() - m_startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
           ballCount--;
           setState(IndexerState.INTAKING);
         }
@@ -276,6 +277,7 @@ public class Indexer extends SubsystemBase {
       case EJECTING:
         ejecter.set(-kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);
+        m_startEjectTime = m_timer.get();
         break;
       case MOVING_UP:
         ejecter.set(kIndexer.EJECTER_SPEED);
