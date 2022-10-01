@@ -19,14 +19,14 @@ import frc.robot.subsystems.Swerve;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class Autoshoot extends PIDCommand {
+public class TeleopShoot extends PIDCommand {
   /** Creates a new Autoshoot. */
 
   private static final Shooter m_shooter = Shooter.getInstance();
   private static final PhotonVision m_photonvision = PhotonVision.getInstance();
   private static final Swerve m_swerve = Swerve.getInstance();
 
-  public Autoshoot() {
+  public TeleopShoot() {
     super(
         // The controller that the command will use
         new PIDController(0.1, 0, 0),

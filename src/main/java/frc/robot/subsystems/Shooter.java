@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
 import SushiFrcLib.Math.Conversion;
 import SushiFrcLib.Motor.MotorHelper;
 import SushiFrcLib.SmartDashboard.TunableNumber;
@@ -111,5 +112,13 @@ public class Shooter extends SubsystemBase {
 
   public double getRightMotorPosition() {
     return rightMotor.getSelectedSensorPosition();
+  }
+
+  public void setVelocity(double speed) {
+    shooterRPM.setDefault(speed);
+  }
+
+  public void setVelocityBasedOnDistance(double distance) {
+    shooterRPM.setDefault(Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
   }
 }
