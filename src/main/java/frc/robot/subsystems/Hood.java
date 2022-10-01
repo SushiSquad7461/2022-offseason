@@ -14,13 +14,13 @@ import frc.robot.Constants.kHood;
 
 public class Hood extends SubsystemBase {
     private final WPI_TalonFX motor;
-    private double pos;
 
     private final TunableNumber hoodP;
     private final TunableNumber hoodI;
     private final TunableNumber hoodD;
     private final TunableNumber hoodF;
     private final TunableNumber targetPos;
+    private double hoodPos;
 
     private static Hood instance;
 
@@ -32,6 +32,7 @@ public class Hood extends SubsystemBase {
     }
 
     private Hood() {
+        hoodPos = 0;
         hoodP = new TunableNumber("Hood P", Constants.kHood.kP, Constants.TUNING_MODE);
         hoodI = new TunableNumber("Hood I", Constants.kHood.kI, Constants.TUNING_MODE);
         hoodD = new TunableNumber("Hood D", Constants.kHood.kD, Constants.TUNING_MODE);
@@ -40,26 +41,25 @@ public class Hood extends SubsystemBase {
 
         motor = MotorHelper.createFalconMotor(Ports.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION, kHood.NEUTRAL_MODE, hoodP.get(), hoodI.get(), hoodD.get(), hoodF.get());
         motor.setSelectedSensorPosition(0);
-
-        pos = 0;
     }
 
     public void setPos(double newPos) {
         // if (0 <= newPos && newPos <= kHood.maxPos) {
         // pos = newPos;
         // }
-        pos = newPos;
+        targetPos.setDefault(newPos);
     }
 
     public void setPosBasedOnDistance(double distance) {
-        pos = kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value;
+        targetPos.setDefault(Constants.kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
     }
 
     @Override
     public void periodic() {
         motor.set(ControlMode.Position, targetPos.get());
+        hoodPos = motor.getSelectedSensorPosition();
 
-        SmartDashboard.putNumber("Hood Position", motor.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Hood Position", hoodPos);
 
         if (hoodP.hasChanged()) {
             motor.config_kP(0, hoodP.get());
@@ -68,5 +68,9 @@ public class Hood extends SubsystemBase {
         if (hoodD.hasChanged()) {
             motor.config_kD(0, hoodD.get());
         }
+    }
+
+    public boolean isAtPos() {
+        return Math.abs(targetPos.get() - hoodPos) < Constants.kHood.kHoodError;
     }
 }
