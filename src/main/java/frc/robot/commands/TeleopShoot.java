@@ -56,4 +56,9 @@ public class TeleopShoot extends PIDCommand {
   public boolean isFinished() {
     return getController().atSetpoint();
   }
+
+  @Override
+  public void end(boolean inturrupted) {
+    new Autoshoot();
+  }
 }
