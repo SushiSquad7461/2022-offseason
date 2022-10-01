@@ -29,7 +29,7 @@ public class Indexer extends SubsystemBase {
   private final CANSparkMax feeder;
   private final CANSparkMax ejecter;
 
-  private final DigitalInput bottomBeamBreak;
+  private final DigitalInput lowerBeamBreak;
   private final DigitalInput upperBeamBreak;
 
   private final ColorSensorV3 colorSensor;
@@ -39,19 +39,17 @@ public class Indexer extends SubsystemBase {
   private final boolean isRedAlliance;
   private BallColor ballColor;
   // This prevents it from counting the same ball multiple balls
-  private boolean canCount = true;
-
+  private boolean isShooting = false;
 
   private final Timer m_timer = new Timer();
   private double m_startTime = 0;
 
 
   public enum IndexerState {
+    WAITING_FOR_COLOR,
     IDLE,
     INTAKING,
     EJECTING,
-    STORING,
-    SHOOTING,
     MOVING_UP
   }
 
@@ -87,7 +85,7 @@ public class Indexer extends SubsystemBase {
       GainFactor.kGain3x
     );
 
-    bottomBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
+    lowerBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
     upperBeamBreak = new DigitalInput(Ports.UPPER_BEAM_BREAK);
 
     ballCount = 0;
@@ -111,36 +109,97 @@ public class Indexer extends SubsystemBase {
     boolean lowerBeamBreak = lowerBeamBreakActuated();
     boolean upperBeamBreak = upperBeamBreakActuated();
 
+    pollColor();
     boolean correctColor = isCorrectColor();
 
-    if (currState == IndexerState.SHOOTING && !upperBeamBreak) {
-      setState(IndexerState.IDLE);
+    if (ballCount < 0) {
       ballCount = 0;
-    } else if (!canIntake()) {
-      setState(IndexerState.IDLE);
-    } else if (lowerBeamBreak) {
-      pollColor();
-      if (ballColor == BallColor.Unknown && currState == IndexerState.INTAKING) { 
-        setState(IndexerState.IDLE);
-      } else if (correctColor && canCount) {
-        ballCount += 1;
-        canCount = false;
-        setState(correctColor ? IndexerState.MOVING_UP : IndexerState.IDLE);
-      } else if (!isCorrectColor()) {
-        setState(IndexerState.EJECTING);
-      }
-    } else if ((currState == IndexerState.EJECTING && !lowerBeamBreak) || (currState == IndexerState.MOVING_UP && !upperBeamBreak)) {
-      setState(IndexerState.INTAKING);
-      canCount = true;
+    }
+
+    if (isShooting && !upperBeamBreak) {
+      ballCount--;
+      setShooting(false);
+    } 
+
+    switch (currState) {
+      case INTAKING:
+        if (!canIntake()) {
+          setState(IndexerState.IDLE);
+        } else if (lowerBeamBreak) {
+          // Don't worry about multiple counts because the state will always change
+          ballCount++;
+
+          if (ballColor == BallColor.Unknown) {
+            setState(IndexerState.WAITING_FOR_COLOR);
+          } else {
+            ballColorCheck(correctColor, upperBeamBreak);
+          }
+        }
+        break;
+      case WAITING_FOR_COLOR:
+        ballColorCheck(correctColor, upperBeamBreak);
+        break;
+      case EJECTING:
+        if (!lowerBeamBreak) {
+          ballCount--;
+          setState(IndexerState.INTAKING);
+        }
+      case MOVING_UP:
+        if (upperBeamBreak) {
+          setState(IndexerState.INTAKING);
+        }
+      case IDLE:
+        if (canIntake()) {
+          setState(IndexerState.INTAKING);
+        }
+    }
+
+    // if (currState == IndexerState.SHOOTING && !upperBeamBreak) {
+    //   setState(IndexerState.IDLE);
+    //   ballCount = 0;
+    // } else if (!canIntake()) {
+    //   setState(IndexerState.IDLE);
+    // } else if (lowerBeamBreak) {
+    //   pollColor();
+    //   if (ballColor == BallColor.Unknown && currState == IndexerState.INTAKING) { 
+    //     setState(IndexerState.IDLE);
+    //   } else if (correctColor && canCount) {
+    //     ballCount += 1;
+    //     canCount = false;
+    //     setState(correctColor ? IndexerState.MOVING_UP : IndexerState.IDLE);
+    //   } else if (!isCorrectColor()) {
+    //     setState(IndexerState.EJECTING);
+    //   }
+    // } else if ((currState == IndexerState.EJECTING && !lowerBeamBreak) || (currState == IndexerState.MOVING_UP && !upperBeamBreak)) {
+    //   setState(IndexerState.INTAKING);
+    //   canCount = true;
+    // }
+  }
+
+  private void ballColorCheck(boolean correctColor, boolean upperBeamBreak) {
+    if (correctColor) {
+      setState(upperBeamBreak
+        ? IndexerState.IDLE
+        : IndexerState.MOVING_UP);
+    } else {
+      setState(IndexerState.EJECTING);
     }
   }
 
   public void setShooting() {
-    currState = IndexerState.SHOOTING;
+    setShooting(true);
+  }
+
+  public void setShooting(boolean shooting) {
+    if (shooting) {
+      kicker.set(-kIndexer.KICKER_SPEED);
+    } else {
+      kicker.set(0);
+    }
   }
 
   public boolean lowerBeamBreakActuated() {
-    return !bottomBeamBreak.get();
+    return !lowerBeamBreak.get();
   }
 
   public boolean upperBeamBreakActuated() {
@@ -189,28 +248,20 @@ public class Indexer extends SubsystemBase {
     currState = newState;
 
     switch (currState) {
+      case WAITING_FOR_COLOR:
       case IDLE:
-        kicker.set(0);
         ejecter.set(0);
         feeder.set(0);
         break;
       case INTAKING:
-        kicker.set(0);
         ejecter.set(0);
         feeder.set(0.5); // diffrent from other feeder speeds, is this needed?
         break;
       case EJECTING:
-        kicker.set(0);
         ejecter.set(-kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);
         break;
       case MOVING_UP:
-        kicker.set(kIndexer.KICKER_SPEED * -1);
-        ejecter.set(kIndexer.EJECTER_SPEED);
-        feeder.set(kIndexer.FEADER_SPEED);
-        break;
-      case SHOOTING:
-        kicker.set(kIndexer.KICKER_SPEED);
         ejecter.set(kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);
         break;
