@@ -24,7 +24,7 @@ public final class Constants {
     public static final boolean TUNING_MODE = true;
 
     public final static class kIntake {
-        public static final double INTAKE_SPEED = 0.7;
+        public static final double INTAKE_SPEED = 0.5;
         public static final double HOPPER_SPEED = 0.3;
 
         public static final TalonFXInvertType INTAKE_INVERSION = TalonFXInvertType.Clockwise;
@@ -49,13 +49,12 @@ public final class Constants {
             // First val is disntance from goal (TODO: INSERT UNITS), Second val is hood pos
             // in encoder tiks
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(2.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(0.0));
+            posMap.put(new InterpolatingDouble(3.0), new InterpolatingDouble(12000.0));
+            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(20000.0));
             posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(0.0));
             posMap.put(new InterpolatingDouble(8.0), new 
             InterpolatingDouble(0.0));
             posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(12.0), new InterpolatingDouble(0.0));
             posMap.put(new InterpolatingDouble(14.0), new InterpolatingDouble(0.0));
         }
     }
@@ -77,12 +76,11 @@ public final class Constants {
         static {
             // First val is disntance from goal in feet, Second val is shooterRPM
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(2.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(0.0));
+            posMap.put(new InterpolatingDouble(3.0), new InterpolatingDouble(3100.0));
+            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(3200.0));
             posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(0.0));
             posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(0.0));
             posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(12.0), new InterpolatingDouble(0.0));
             posMap.put(new InterpolatingDouble(14.0), new InterpolatingDouble(0.0));
         }
     }
@@ -225,10 +223,10 @@ public final class Constants {
 
     public static final class VisionConstants {
         public static final double kLimeLightHeight = 2.75; // Limelight height in feet
-        public static final double kHubHeight = 8.66; // hub height in feet
+        public static final double kHubHeight = 8.666667; // hub height in feet
         public static final double kLimeLightToHubHeight = kHubHeight - kLimeLightHeight; // height difference between
-                                                                                          // the hub and limelight
-        public static final double kLimeLightMountAngle = 50; // Limelight angle in degrees from the horizon
+                                                                                           // the hub and limelight
+        public static final double kLimeLightMountAngle = 39.5; // Limelight angle in degrees from the horizon
         public static final double kLimeLightVerticalFOV = 49.7; // Limelight vertical field of view in degrees
         public static final double kLimeLightHorizontalFOV = 59.6; // Limelight horizontal field of view in degrees
     }

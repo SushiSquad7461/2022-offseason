@@ -75,7 +75,11 @@ public class PhotonVision extends SubsystemBase{
 
     public double getDistance() {
         //return getBestArea(); //TODO: switch to this if not working
-        double angle = Constants.VisionConstants.kLimeLightMountAngle - (Constants.VisionConstants.kLimeLightVerticalFOV * 0.5) + getBestPitch();
+        if (!camera.getLatestResult().hasTargets()) {
+            return 0;
+        }
+        
+        double angle = Constants.VisionConstants.kLimeLightMountAngle + getBestPitch();
         return (1 / Math.tan(Conversion.degreesToRadians(angle))) * Constants.VisionConstants.kLimeLightToHubHeight;
     }
 }
