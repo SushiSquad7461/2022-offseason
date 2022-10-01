@@ -69,6 +69,9 @@ public class Indexer extends SubsystemBase {
 
   /** Creates a new Indexer. */
   private Indexer() {
+    SmartDashboard.putString("setBallColor", "Unknown");
+    SmartDashboard.putBoolean("setShooting", false);
+
     NetworkTable table = NetworkTableInstance.getDefault().getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
 
@@ -94,8 +97,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean canIntake() {
-    // return ballCount < 2;
-    return true;
+    return ballCount < 2;
   }
 
   @Override
@@ -104,6 +106,7 @@ public class Indexer extends SubsystemBase {
     SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
     SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
     SmartDashboard.putString("Indexer State", currState.toString());
+    SmartDashboard.putNumber("Ball count", ballCount);
     // SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
 
     boolean lowerBeamBreak = lowerBeamBreakActuated();
@@ -117,7 +120,9 @@ public class Indexer extends SubsystemBase {
     }
 
     if (isShooting && !upperBeamBreak) {
-      ballCount--;
+      if (ballCount > 0) {
+        ballCount--;
+      }
       setShooting(false);
     } 
 
@@ -125,33 +130,51 @@ public class Indexer extends SubsystemBase {
       case INTAKING:
         if (!canIntake()) {
           setState(IndexerState.IDLE);
+          break;
         } else if (lowerBeamBreak) {
           // Don't worry about multiple counts because the state will always change
           ballCount++;
+        } else {
+          break;
+        }
 
-          if (ballColor == BallColor.Unknown) {
-            setState(IndexerState.WAITING_FOR_COLOR);
+        // This case purposefully spills into the waiting for color one
+      case WAITING_FOR_COLOR:
+        if (ballColor == BallColor.Unknown) {
+          setState(IndexerState.WAITING_FOR_COLOR);
+        } else {
+          if (correctColor) {
+            setState(upperBeamBreak
+              ? IndexerState.IDLE
+              : IndexerState.MOVING_UP);
           } else {
-            ballColorCheck(correctColor, upperBeamBreak);
+            setState(IndexerState.EJECTING);
           }
         }
-        break;
-      case WAITING_FOR_COLOR:
-        ballColorCheck(correctColor, upperBeamBreak);
         break;
       case EJECTING:
         if (!lowerBeamBreak) {
           ballCount--;
           setState(IndexerState.INTAKING);
         }
+        break;
       case MOVING_UP:
-        if (upperBeamBreak) {
+        if (upperBeamBreak && !lowerBeamBreak) {
           setState(IndexerState.INTAKING);
         }
+        break;
       case IDLE:
+      default:
         if (canIntake()) {
-          setState(IndexerState.INTAKING);
+          if (upperBeamBreak) {
+            setState(IndexerState.INTAKING);
+          } else {
+            setState(IndexerState.MOVING_UP);
+          }
+        } else {
+          setState(IndexerState.IDLE);
         }
+        break;
     }
 
     // if (currState == IndexerState.SHOOTING && !upperBeamBreak) {
@@ -176,26 +199,18 @@ public class Indexer extends SubsystemBase {
     // }
   }
 
-  private void ballColorCheck(boolean correctColor, boolean upperBeamBreak) {
-    if (correctColor) {
-      setState(upperBeamBreak
-        ? IndexerState.IDLE
-        : IndexerState.MOVING_UP);
-    } else {
-      setState(IndexerState.EJECTING);
-    }
-  }
-
   public void setShooting() {
     setShooting(true);
   }
 
   public void setShooting(boolean shooting) {
+    isShooting = shooting;
     if (shooting) {
       kicker.set(-kIndexer.KICKER_SPEED);
     } else {
       kicker.set(0);
     }
+    SmartDashboard.putBoolean("isShooting", isShooting);
   }
 
   public boolean getShooting() {
