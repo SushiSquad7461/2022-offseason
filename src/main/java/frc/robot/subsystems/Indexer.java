@@ -69,9 +69,6 @@ public class Indexer extends SubsystemBase {
 
   /** Creates a new Indexer. */
   private Indexer() {
-    SmartDashboard.putString("setBallColor", "Unknown");
-    SmartDashboard.putBoolean("setShooting", false);
-
     NetworkTable table = NetworkTableInstance.getDefault().getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
 
@@ -166,10 +163,10 @@ public class Indexer extends SubsystemBase {
       case IDLE:
       default:
         if (canIntake()) {
-          if (upperBeamBreak) {
-            setState(IndexerState.INTAKING);
-          } else {
+          if (!upperBeamBreak && lowerBeamBreak) {
             setState(IndexerState.MOVING_UP);
+          } else {
+            setState(IndexerState.INTAKING);
           }
         } else {
           setState(IndexerState.IDLE);
