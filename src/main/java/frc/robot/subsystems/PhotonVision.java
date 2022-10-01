@@ -26,11 +26,11 @@ public class PhotonVision {
         return sInstance;
     }
     
-    @Override
+    // @Override
     public void periodic() {
-        result = camera.getResult();
+        result = camera.getLatestResult();
         bestTarget = result.getBestTarget();
-        hasTargets = restult.hasTargets();
+        hasTargets = result.hasTargets();
     }
 
     private PhotonVision() {

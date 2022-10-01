@@ -14,15 +14,20 @@ public class AutoCommands {
     //command groups for autos
     public final SequentialCommandGroup test;
 
+    public final SequentialCommandGroup back;
+
     //names of pathplanner paths for autos
-    private final String[] testPaths = {"Test"};
+    private final String[] testPaths = {"Test", "Test2"};
 
     public AutoCommands(Swerve swerve) {
         this.swerve = swerve;
 
         test = new SequentialCommandGroup(
-            getCommand(testPaths[0])
+            // getCommand(testPaths[0])
+            getCommand(testPaths[1])
         );
+
+        back = new SequentialCommandGroup(getCommand(testPaths[1]));
     }
 
     private PPSwerveControllerCommand getCommand(String pathName) {
