@@ -7,9 +7,12 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import SushiFrcLib.Math.Conversion;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-public class PhotonVision {
+public class PhotonVision extends SubsystemBase{
     PhotonCamera camera;
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
     public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
@@ -72,6 +75,7 @@ public class PhotonVision {
 
     public double getDistance() {
         //return getBestArea(); //TODO: switch to this if not working
-        return getBestPitch();
+        double angle = Constants.VisionConstants.kLimeLightMountAngle - (Constants.VisionConstants.kLimeLightVerticalFOV * 0.5) + getBestPitch();
+        return (1 / Math.tan(Conversion.degreesToRadians(angle))) * Constants.VisionConstants.kLimeLightToHubHeight;
     }
 }
