@@ -42,7 +42,7 @@ public class RobotContainer {
 
   private final Hood hood = Hood.getInstance();
   private final Shooter shooter = Shooter.getInstance();
-  // private final Indexer mIndexer = Indexer.getInstance();
+  private final Indexer mIndexer = Indexer.getInstance();
   private final Intake mIntake = Intake.getInstance();
 
   private final XboxController driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
@@ -78,9 +78,15 @@ public class RobotContainer {
         true,
         false));
 
-    // new JoystickButton(driver, XboxController.Button.kY.value)
-    // .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer))
-    // .whenReleased(new InstantCommand(mIndexer::setIdle, mIndexer));
+    new JoystickButton(driver, XboxController.Button.kY.value)
+      .whenPressed(new InstantCommand(mIntake::runIntake, mIntake))
+      .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+
+    new JoystickButton(driver, XboxController.Button.kRightBumper.value)
+      .whenPressed(new InstantCommand(mIndexer::setShooting, mIndexer));
+
+    new JoystickButton(driver, XboxController.Button.kB.value)
+      .whenPressed(new InstantCommand(() -> mIndexer.setOverrideIdle(!mIndexer.getOverrideIdle()), mIndexer));
 
     // new JoystickButton(driver, XboxController.Button.kB.value)
     // .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake,
@@ -93,9 +99,6 @@ public class RobotContainer {
 
     new JoystickButton(driver, XboxController.Button.kA.value)
         .whenHeld(new InstantCommand(() -> hood.setPos(0), hood));
-
-    new JoystickButton(driver, XboxController.Button.kB.value)
-        .whenPressed(new Autoshoot());
 
     // new JoystickButton(driver, XboxController.Button.kX.value)
     // .whenHeld(new InstantCommand(() -> hood.setPos(100000), hood));

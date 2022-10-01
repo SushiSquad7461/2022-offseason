@@ -40,6 +40,7 @@ public class Indexer extends SubsystemBase {
   private BallColor ballColor;
   // This prevents it from counting the same ball multiple balls
   private boolean isShooting = false;
+  private boolean overrideIdle = false;
 
   private final Timer m_timer = new Timer();
   private double m_startTime = 0;
@@ -167,7 +168,11 @@ public class Indexer extends SubsystemBase {
           if (!upperBeamBreak && lowerBeamBreak) {
             setState(IndexerState.MOVING_UP);
           } else {
-            setState(IndexerState.INTAKING);
+            if (!overrideIdle) {
+              setState(IndexerState.INTAKING);
+            } else {
+              setState(IndexerState.IDLE);
+            }
           }
         } else {
           setState(IndexerState.IDLE);
@@ -213,6 +218,14 @@ public class Indexer extends SubsystemBase {
 
   public boolean getShooting() {
     return isShooting;
+  }
+
+  public void setOverrideIdle(boolean value) {
+    overrideIdle = value;
+  }
+
+  public boolean getOverrideIdle() {
+    return overrideIdle;
   }
 
   public boolean lowerBeamBreakActuated() {
