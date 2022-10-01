@@ -199,6 +199,15 @@ public final class Constants {
             }
     
         }
+
+        public static final class VisionConstants {
+                public static final double kLimeLightHeight = 2.75; // Limelight height in feet
+                public static final double kHubHeight = 8.66; //hub height in feet
+                public static final double kLimeLightToHubHeight = kHubHeight - kLimeLightHeight; //height difference between the hub and limelight
+                public static final double kLimeLightMountAngle = 50; //Limelight angle in degrees from the horizon
+                public static final double kLimeLightVerticalFOV = 49.7; // Limelight vertical field of view in degrees
+                public static final double kLimeLightHorizontalFOV = 59.6; // Limelight horizontal field of view in degrees
+        }
     
         public static final class AutoConstants {
             public static final double kMaxSpeedMetersPerSecond = 3;
