@@ -46,7 +46,6 @@ public class Indexer extends SubsystemBase {
   private double m_startTime = 0;
   private double m_startEjectTime = 0;
 
-
   public enum IndexerState {
     WAITING_FOR_COLOR,
     IDLE,
@@ -62,8 +61,9 @@ public class Indexer extends SubsystemBase {
   }
 
   private static Indexer indexer = null;
+
   public static Indexer getInstance() {
-    if( indexer == null) {
+    if (indexer == null) {
       indexer = new Indexer();
     }
     return indexer;
@@ -80,12 +80,11 @@ public class Indexer extends SubsystemBase {
 
     currState = IndexerState.IDLE;
 
-    colorSensor = new ColorSensorV3(Port.kOnboard);
+    colorSensor = new ColorSensorV3(Port.kMXP);
     colorSensor.configureColorSensor(
-      ColorSensorResolution.kColorSensorRes13bit,
-      ColorSensorMeasurementRate.kColorRate25ms,
-      GainFactor.kGain3x
-    );
+        ColorSensorResolution.kColorSensorRes13bit,
+        ColorSensorMeasurementRate.kColorRate25ms,
+        GainFactor.kGain3x);
 
     lowerBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
     upperBeamBreak = new DigitalInput(Ports.UPPER_BEAM_BREAK);
@@ -123,7 +122,7 @@ public class Indexer extends SubsystemBase {
         ballCount--;
       }
       setShooting(false);
-    } 
+    }
 
     switch (currState) {
       case INTAKING:
@@ -144,8 +143,8 @@ public class Indexer extends SubsystemBase {
         } else {
           if (correctColor) {
             setState(upperBeamBreak
-              ? IndexerState.IDLE
-              : IndexerState.MOVING_UP);
+                ? IndexerState.IDLE
+                : IndexerState.MOVING_UP);
           } else {
             setState(IndexerState.EJECTING);
           }
@@ -181,24 +180,25 @@ public class Indexer extends SubsystemBase {
     }
 
     // if (currState == IndexerState.SHOOTING && !upperBeamBreak) {
-    //   setState(IndexerState.IDLE);
-    //   ballCount = 0;
+    // setState(IndexerState.IDLE);
+    // ballCount = 0;
     // } else if (!canIntake()) {
-    //   setState(IndexerState.IDLE);
+    // setState(IndexerState.IDLE);
     // } else if (lowerBeamBreak) {
-    //   pollColor();
-    //   if (ballColor == BallColor.Unknown && currState == IndexerState.INTAKING) { 
-    //     setState(IndexerState.IDLE);
-    //   } else if (correctColor && canCount) {
-    //     ballCount += 1;
-    //     canCount = false;
-    //     setState(correctColor ? IndexerState.MOVING_UP : IndexerState.IDLE);
-    //   } else if (!isCorrectColor()) {
-    //     setState(IndexerState.EJECTING);
-    //   }
-    // } else if ((currState == IndexerState.EJECTING && !lowerBeamBreak) || (currState == IndexerState.MOVING_UP && !upperBeamBreak)) {
-    //   setState(IndexerState.INTAKING);
-    //   canCount = true;
+    // pollColor();
+    // if (ballColor == BallColor.Unknown && currState == IndexerState.INTAKING) {
+    // setState(IndexerState.IDLE);
+    // } else if (correctColor && canCount) {
+    // ballCount += 1;
+    // canCount = false;
+    // setState(correctColor ? IndexerState.MOVING_UP : IndexerState.IDLE);
+    // } else if (!isCorrectColor()) {
+    // setState(IndexerState.EJECTING);
+    // }
+    // } else if ((currState == IndexerState.EJECTING && !lowerBeamBreak) ||
+    // (currState == IndexerState.MOVING_UP && !upperBeamBreak)) {
+    // setState(IndexerState.INTAKING);
+    // canCount = true;
     // }
   }
 
@@ -237,26 +237,27 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean isCorrectColor() {
-    return ballColor == BallColor.Red && isRedAlliance || ballColor == BallColor.Blue && !isRedAlliance;
+    return true; // ballColor == BallColor.Red && isRedAlliance || ballColor == BallColor.Blue &&
+                 // !isRedAlliance;
   }
 
   public void pollColor() {
     Color color = colorSensor.getColor();
-    
-    if(color.blue > Constants.kIndexer.colorSensorThreasholdBlue) {
+
+    if (color.blue > Constants.kIndexer.colorSensorThreasholdBlue) {
       if (ballColor != BallColor.Blue) {
         System.out.println("blue: " + (m_timer.get() - m_startTime));
       }
       ballColor = BallColor.Blue;
-    } else if(color.red > Constants.kIndexer.colorSensorThreasholdRed) {
-      if(ballColor != BallColor.Red) {
+    } else if (color.red > Constants.kIndexer.colorSensorThreasholdRed) {
+      if (ballColor != BallColor.Red) {
         System.out.println("red: " + (m_timer.get() - m_startTime));
-      } 
+      }
       ballColor = BallColor.Red;
     } else {
-      if(ballColor != BallColor.Unknown) {
+      if (ballColor != BallColor.Unknown) {
         System.out.println("unknown: " + (m_timer.get() - m_startTime));
-      } 
+      }
       ballColor = BallColor.Unknown;
     }
 

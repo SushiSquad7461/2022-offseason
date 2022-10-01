@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.kShooter;
 import frc.robot.Constants;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Shooter;
@@ -25,6 +26,7 @@ public class TeleopShoot extends PIDCommand {
   private static final Shooter m_shooter = Shooter.getInstance();
   private static final PhotonVision m_photonvision = PhotonVision.getInstance();
   private static final Swerve m_swerve = Swerve.getInstance();
+  private static final Hood m_hood = Hood.getInstance();
 
   public TeleopShoot() {
     super(
@@ -44,7 +46,9 @@ public class TeleopShoot extends PIDCommand {
     // addRequirements(m_photonvision);
     addRequirements(m_swerve);
     addRequirements(m_shooter);
-
+    double distance = m_photonvision.getDistance();
+    m_shooter.setVelocityBasedOnDistance(distance);
+    m_hood.setPos(distance);
     getController().enableContinuousInput(-180, 180);
     getController().setTolerance(kShooter.PID_TOLERANCE_DEGREES, kShooter.PID_SPEED_TOLERANCE_DEGREES_PER_SECOND);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -59,6 +63,5 @@ public class TeleopShoot extends PIDCommand {
 
   @Override
   public void end(boolean inturrupted) {
-    new Autoshoot();
   }
 }

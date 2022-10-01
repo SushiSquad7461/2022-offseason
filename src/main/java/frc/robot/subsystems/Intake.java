@@ -46,6 +46,11 @@ public class Intake extends SubsystemBase {
     HopperMotor.set(ControlMode.PercentOutput, 0);
   }
 
+  public void ejectIntake() {
+    intakeMotor.set(ControlMode.PercentOutput, Constants.kIntake.INTAKE_SPEED * -1);
+    HopperMotor.set(ControlMode.PercentOutput, Constants.kIntake.HOPPER_SPEED * -1);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

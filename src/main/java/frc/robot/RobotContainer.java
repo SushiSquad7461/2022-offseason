@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Autoshoot;
+import frc.robot.commands.AutoShoot;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
@@ -81,6 +81,10 @@ public class RobotContainer {
     new JoystickButton(driver, XboxController.Button.kY.value)
       .whenPressed(new InstantCommand(mIntake::runIntake, mIntake))
       .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+
+      new JoystickButton(driver, XboxController.Button.kX.value)
+        .whenPressed(new InstantCommand(mIntake::ejectIntake, mIntake))
+        .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
 
     new JoystickButton(driver, XboxController.Button.kRightBumper.value)
       .whenPressed(new InstantCommand(mIndexer::setShooting, mIndexer));
