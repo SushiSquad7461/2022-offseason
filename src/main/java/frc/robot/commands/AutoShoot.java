@@ -68,8 +68,8 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("ASFJSDSLDFKSDFASDF");
     m_shooter.stopShooter();
+    m_hood.setPos(0);
     m_indexer.setState(IndexerState.IDLE);
   }
 }
