@@ -209,7 +209,8 @@ public class Indexer extends SubsystemBase {
   public void setShooting(boolean shooting) {
     isShooting = shooting;
     if (shooting) {
-      kicker.set(-kIndexer.KICKER_SPEED);
+      kicker.
+      set(-kIndexer.KICKER_SPEED);
     } else {
       kicker.set(0);
     }
@@ -237,7 +238,9 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean isCorrectColor() {
-    return ballColor == BallColor.Red && isRedAlliance || ballColor == BallColor.Blue && !isRedAlliance;
+    return true;
+    // return ballColor == BallColor.Red && isRedAlliance || ballColor ==
+    // BallColor.Blue && !isRedAlliance;
   }
 
   public void pollColor() {

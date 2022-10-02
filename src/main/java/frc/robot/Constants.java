@@ -52,20 +52,19 @@ public final class Constants {
             posMap.put(new InterpolatingDouble(3.0), new InterpolatingDouble(36000.0));
             posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(35000.0));
             posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(50000.0));
-            posMap.put(new InterpolatingDouble(8.0), new 
-            InterpolatingDouble(85000.0));
+            posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(85000.0));
             posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(80000.0));
         }
     }
 
     public static class kShooter {
         public static final double SETPOINT_RPM = 0;
-        public static final double ERROR_TOLERANCE = 10;
+        public static final double ERROR_TOLERANCE = 100;
         public static final int CURRENT_LIMIT = 40;
-        public static final double kP = 0.0047;
+        public static final double kP = 0.2;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kF = 0.184;
+        public static final double kF = 0.060500;
 
         public static final double TX_OFFSET = 0;
         public static final double PID_TOLERANCE_DEGREES = 0.5;
@@ -112,7 +111,7 @@ public final class Constants {
 
     public static final class Swerve {
         public static final int pigeonID = 13;
-        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+        public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(21.73);
@@ -223,7 +222,7 @@ public final class Constants {
         public static final double kLimeLightHeight = 2.75; // Limelight height in feet
         public static final double kHubHeight = 8.666667; // hub height in feet
         public static final double kLimeLightToHubHeight = kHubHeight - kLimeLightHeight; // height difference between
-                                                                                           // the hub and limelight
+                                                                                          // the hub and limelight
         public static final double kLimeLightMountAngle = 39.5; // Limelight angle in degrees from the horizon
         public static final double kLimeLightVerticalFOV = 49.7; // Limelight vertical field of view in degrees
         public static final double kLimeLightHorizontalFOV = 59.6; // Limelight horizontal field of view in degrees

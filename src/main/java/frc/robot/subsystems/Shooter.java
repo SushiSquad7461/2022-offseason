@@ -20,14 +20,13 @@ import frc.robot.Constants;
 public class Shooter extends SubsystemBase {
   private final WPI_TalonFX leftMotor;
   private final WPI_TalonFX rightMotor;
-  public double setPointRPM;
 
   private final TunableNumber shooterP;
   private final TunableNumber shooterI;
   private final TunableNumber shooterD;
   private final TunableNumber shooterF;
-  private final TunableNumber shooterRPM;
-  private double rpm = 0;
+  // private final TunableNumber shooterRPM;
+  private double shooterRPM = 0;
 
   private static Shooter mInstance;
 
@@ -43,7 +42,8 @@ public class Shooter extends SubsystemBase {
     shooterI = new TunableNumber("Shooter I", Constants.kShooter.kI, Constants.TUNING_MODE);
     shooterD = new TunableNumber("Shooter D", Constants.kShooter.kD, Constants.TUNING_MODE);
     shooterF = new TunableNumber("Shooter F", Constants.kShooter.kF, Constants.TUNING_MODE);
-    shooterRPM = new TunableNumber("shooter rpm", 0, Constants.TUNING_MODE);
+    // shooterRPM = new TunableNumber("shooter rpm", 0, Constants.TUNING_MODE);
+    shooterRPM = 0;
 
     leftMotor = MotorHelper.createFalconMotor(Constants.Ports.SHOOTER_LEFT_MOTOR, Constants.kShooter.CURRENT_LIMIT,
         TalonFXInvertType.Clockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
@@ -53,23 +53,22 @@ public class Shooter extends SubsystemBase {
         shooterF.get());
 
     rightMotor.follow(leftMotor);
-
-    setPointRPM = shooterRPM.get();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Shooter current rpm",
         Conversion.convertTransToRPM(leftMotor.getSelectedSensorVelocity()));
-    SmartDashboard.putNumber("Shooter set rpm", setPointRPM);
+    SmartDashboard.putNumber("Shooter set rpm", shooterRPM);
     SmartDashboard.putNumber("Shooter error", getError());
-    // SmartDashboard.putNumber("Left motor current draw", leftMotor.getStatorCurrent());
-    // SmartDashboard.putNumber("Right motor current draw", rightMotor.getStatorCurrent());
+    SmartDashboard.putNumber("Loop error", leftMotor.getClosedLoopError());
+    // SmartDashboard.putNumber("Left motor current draw",
+    // leftMotor.getStatorCurrent());
+    // SmartDashboard.putNumber("Right motor current draw",
+    // rightMotor.getStatorCurrent());
 
-    setPointRPM = shooterRPM.get();
-    
     runShooter();
-    
+
     if (shooterF.hasChanged()) {
       leftMotor.config_kF(0, shooterF.get());
     }
@@ -87,24 +86,22 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  public void directSetMotor(ControlMode controlMode, double speed) {
-    leftMotor.set(controlMode, speed);
-  }
-
   public void runShooter() {
-    directSetMotor(ControlMode.Velocity, rpm);
+    leftMotor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(shooterRPM));
   }
 
   public void stopShooter() {
-    directSetMotor(ControlMode.PercentOutput, 0);
+    leftMotor.set(ControlMode.PercentOutput, 0);
+    shooterRPM = 0;
   }
 
   public boolean isAtSpeed() {
-    return getError() <= Constants.kShooter.ERROR_TOLERANCE;
+    return shooterRPM != 0 && getError() <= Constants.kShooter.ERROR_TOLERANCE;
+    // return true;
   }
 
   private double getError() {
-    return Math.abs(Conversion.convertTransToRPM(leftMotor.getSelectedSensorVelocity()) - setPointRPM);
+    return Math.abs(shooterRPM - Conversion.convertTransToRPM(leftMotor.getSelectedSensorVelocity()));
   }
 
   public double getLeftMotorPosition() {
@@ -116,10 +113,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setVelocity(double speed) {
-    shooterRPM.setDefault(speed);
+    // shooterRPM.setDefault(speed);
+    shooterRPM = speed;
   }
 
   public void setVelocityBasedOnDistance(double distance) {
-    rpm = (Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
+    shooterRPM = Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value;
   }
 }
