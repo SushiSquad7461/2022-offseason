@@ -49,13 +49,12 @@ public final class Constants {
             // First val is disntance from goal (TODO: INSERT UNITS), Second val is hood pos
             // in encoder tiks
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(3.0), new InterpolatingDouble(12000.0));
-            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(20000.0));
-            posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(0.0));
+            posMap.put(new InterpolatingDouble(3.0), new InterpolatingDouble(36000.0));
+            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(35000.0));
+            posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(50000.0));
             posMap.put(new InterpolatingDouble(8.0), new 
-            InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(14.0), new InterpolatingDouble(0.0));
+            InterpolatingDouble(85000.0));
+            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(80000.0));
         }
     }
 
@@ -76,12 +75,11 @@ public final class Constants {
         static {
             // First val is disntance from goal in feet, Second val is shooterRPM
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(3.0), new InterpolatingDouble(3100.0));
+            posMap.put(new InterpolatingDouble(3.0), new InterpolatingDouble(2880.0));
             posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(3200.0));
-            posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(0.0));
-            posMap.put(new InterpolatingDouble(14.0), new InterpolatingDouble(0.0));
+            posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(3100.0));
+            posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(3350.0));
+            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(3250.0));
         }
     }
 

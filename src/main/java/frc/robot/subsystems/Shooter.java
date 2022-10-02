@@ -27,6 +27,7 @@ public class Shooter extends SubsystemBase {
   private final TunableNumber shooterD;
   private final TunableNumber shooterF;
   private final TunableNumber shooterRPM;
+  private double rpm = 0;
 
   private static Shooter mInstance;
 
@@ -91,7 +92,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooter() {
-    directSetMotor(ControlMode.Velocity, setPointRPM);
+    directSetMotor(ControlMode.Velocity, rpm);
   }
 
   public void stopShooter() {
@@ -119,6 +120,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setVelocityBasedOnDistance(double distance) {
-    shooterRPM.setDefault(Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
+    rpm = (Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
   }
 }

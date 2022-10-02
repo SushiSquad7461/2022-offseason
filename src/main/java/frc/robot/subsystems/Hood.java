@@ -20,6 +20,7 @@ public class Hood extends SubsystemBase {
     private final TunableNumber hoodD;
     private final TunableNumber hoodF;
     private final TunableNumber targetPos;
+    private double posHelp = 0;
     private double hoodPos;
 
     private static Hood instance;
@@ -51,12 +52,12 @@ public class Hood extends SubsystemBase {
     }
 
     public void setPosBasedOnDistance(double distance) {
-        targetPos.setDefault(Constants.kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
+        posHelp = Constants.kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value;
     }
 
     @Override
     public void periodic() {
-        motor.set(ControlMode.Position, targetPos.get());
+        motor.set(ControlMode.Position, posHelp);
         hoodPos = motor.getSelectedSensorPosition();
 
         SmartDashboard.putNumber("Hood Position", hoodPos);

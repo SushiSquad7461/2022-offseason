@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
@@ -11,18 +12,16 @@ public class AutoShoot extends CommandBase {
   private final Shooter m_shooter;
   private final Hood m_hood;
   private final Indexer m_indexer;
+  private final PhotonVision camera;
   private final Swerve m_swerve;
-  private final double shooterSpeed;
-  private final double hoodPos;
   private boolean shoot;
 
-  public AutoShoot(double speed, double pos) {
-    shooterSpeed = speed;
-    hoodPos = pos;
+  public AutoShoot() {
     m_shooter = Shooter.getInstance();
     m_swerve = Swerve.getInstance();
     m_indexer = Indexer.getInstance();
     m_hood = Hood.getInstance();
+    camera = PhotonVision.getInstance();
     shoot = false;
 
     addRequirements(m_swerve);
@@ -33,8 +32,10 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public void execute() {
-    m_shooter.setVelocity(shooterSpeed);
-    m_hood.setPos(hoodPos);
+    double distance = camera.getDistance();
+    m_shooter.setVelocityBasedOnDistance(distance);
+    m_hood.setPosBasedOnDistance(distance);
+
     if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot) {
       m_indexer.setShooting();
       shoot = true;
