@@ -94,7 +94,7 @@ public class RobotContainer {
     //   .whenPressed(new AutoShoot());   
 
     new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-    .whenPressed(new InstantCommand(() -> mIndexer::setShooting(true), mIndexer));
+    .whenPressed(new InstantCommand(() -> mIndexer.setShooting(true), mIndexer));
 
     new JoystickButton(driver, XboxController.Button.kB.value)
       .whenPressed(new InstantCommand(() -> mIndexer.setOverrideIdle(!mIndexer.getOverrideIdle()), mIndexer));
