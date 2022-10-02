@@ -237,26 +237,29 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean isCorrectColor() {
-    return true; // ballColor == BallColor.Red && isRedAlliance || ballColor == BallColor.Blue &&
-                 // !isRedAlliance;
+    return ballColor == BallColor.Red && isRedAlliance || ballColor == BallColor.Blue && !isRedAlliance;
   }
 
   public void pollColor() {
     Color color = colorSensor.getColor();
+    double colorRatio = color.red / color.blue;
 
-    if (color.blue > Constants.kIndexer.colorSensorThreasholdBlue) {
+    if (colorRatio < 0.75) {
       if (ballColor != BallColor.Blue) {
         System.out.println("blue: " + (m_timer.get() - m_startTime));
+        System.out.println(colorRatio);
       }
       ballColor = BallColor.Blue;
-    } else if (color.red > Constants.kIndexer.colorSensorThreasholdRed) {
+    } else if (colorRatio > 2.0) {
       if (ballColor != BallColor.Red) {
         System.out.println("red: " + (m_timer.get() - m_startTime));
+        System.out.println(colorRatio);
       }
       ballColor = BallColor.Red;
     } else {
       if (ballColor != BallColor.Unknown) {
         System.out.println("unknown: " + (m_timer.get() - m_startTime));
+        System.out.println(colorRatio);
       }
       ballColor = BallColor.Unknown;
     }

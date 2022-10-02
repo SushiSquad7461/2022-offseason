@@ -54,8 +54,8 @@ public class Swerve extends SubsystemBase {
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
                         translation.getX(),
                         translation.getY(),
-                        -rotation,
-                        Rotation2d.fromDegrees(gyro.getAngle()))
+                        rotation,
+                        Rotation2d.fromDegrees(gyro.getAngle()).unaryMinus())
                 : new ChassisSpeeds(
                         translation.getX(),
                         translation.getY(),

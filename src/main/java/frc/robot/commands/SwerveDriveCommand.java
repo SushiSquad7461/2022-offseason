@@ -3,6 +3,7 @@ package frc.robot.commands;
 import SushiFrcLib.Math.Normalization;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
@@ -31,14 +32,17 @@ public class SwerveDriveCommand extends CommandBase {
     @Override
     public void execute() {
         double forwardBack = -m_controller.getRawAxis(m_translationAxis);
-        double leftRight = m_controller.getRawAxis(m_strafeAxis);
-        double rot = m_controller.getRawAxis(m_rotationsAxis);
+        double leftRight = -m_controller.getRawAxis(m_strafeAxis);
+        double rot = -m_controller.getRawAxis(m_rotationsAxis);
 
-        forwardBack = Normalization.cube(Normalization.cube(forwardBack));
-        leftRight = Normalization.cube(Normalization.cube(leftRight));
-        rot = Normalization.cube(Normalization.cube(rot));
+        forwardBack = Normalization.linearDeadzone(forwardBack, Constants.stickDeadband);
+        leftRight = Normalization.linearDeadzone(leftRight, Constants.stickDeadband);
 
-        Translation2d translation = new Translation2d(forwardBack, leftRight).times(Constants.Swerve.maxSpeed);
+        double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
+        double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
+        Translation2d translation = new Translation2d(forwardBack, leftRight).times(Constants.Swerve.maxSpeed * magnitudeRatio);
+        
+        rot = Normalization.cube(Normalization.linearDeadzone(rot, Constants.stickDeadband));
         rot *= Constants.Swerve.maxAngularVelocity;
 
         m_swerve.drive(translation, rot, m_fieldRelative, m_openLoop);
