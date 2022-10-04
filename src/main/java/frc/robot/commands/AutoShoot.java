@@ -43,12 +43,9 @@ public class AutoShoot extends CommandBase {
     m_shooter.setVelocityBasedOnDistance(distance);
     m_hood.setPosBasedOnDistance(distance);
 
-    System.out.printf("%b, %b, %b\n", m_shooter.isAtSpeed(), m_hood.isAtPos(), shoot);
-
     if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot) {
       m_indexer.setShooting();
       shoot = true;
-      System.out.println("GETTING CALLED");
     }
   }
 

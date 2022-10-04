@@ -17,7 +17,8 @@ public class SwerveDriveCommand extends CommandBase {
     private final boolean m_fieldRelative;
     private final boolean m_openLoop;
 
-    public SwerveDriveCommand(Swerve swerve, GenericHID controller, int translationAxis, int strafeAxis, int rotationsAxis, boolean fieldRelative, boolean openLoop) {
+    public SwerveDriveCommand(Swerve swerve, GenericHID controller, int translationAxis, int strafeAxis,
+            int rotationsAxis, boolean fieldRelative, boolean openLoop) {
         m_swerve = swerve;
         m_controller = controller;
         m_translationAxis = translationAxis;
@@ -32,16 +33,17 @@ public class SwerveDriveCommand extends CommandBase {
     @Override
     public void execute() {
         double forwardBack = -m_controller.getRawAxis(m_translationAxis);
-        double leftRight = -m_controller.getRawAxis(m_strafeAxis);
-        double rot = -m_controller.getRawAxis(m_rotationsAxis);
+        double leftRight = m_controller.getRawAxis(m_strafeAxis);
+        double rot = m_controller.getRawAxis(m_rotationsAxis);
 
         forwardBack = Normalization.linearDeadzone(forwardBack, Constants.stickDeadband);
         leftRight = Normalization.linearDeadzone(leftRight, Constants.stickDeadband);
 
         double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
         double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
-        Translation2d translation = new Translation2d(forwardBack, leftRight).times(Constants.Swerve.maxSpeed * magnitudeRatio);
-        
+        Translation2d translation = new Translation2d(forwardBack, leftRight)
+                .times(Constants.Swerve.maxSpeed * magnitudeRatio);
+
         rot = Normalization.cube(Normalization.linearDeadzone(rot, Constants.stickDeadband));
         rot *= Constants.Swerve.maxAngularVelocity;
 

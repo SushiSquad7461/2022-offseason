@@ -78,26 +78,33 @@ public class RobotContainer {
         true,
         false));
 
-    new JoystickButton(driver, XboxController.Button.kY.value)
-      .whenPressed(new InstantCommand(mIntake::runIntake, mIntake))
-      .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+    new JoystickButton(driver, XboxController.Button.kLeftBumper.value)
+        .whenPressed(new InstantCommand(swerveDrive::zeroGyro));
 
-      new JoystickButton(driver, XboxController.Button.kX.value)
+    new JoystickButton(driver, XboxController.Button.kY.value)
+        .whenPressed(new InstantCommand(mIntake::runIntake, mIntake))
+        .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
+
+    new JoystickButton(driver, XboxController.Button.kX.value)
         .whenPressed(new InstantCommand(mIntake::ejectIntake, mIntake))
         .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
 
     // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-      // .whenPressed(new InstantCommand(mIndexer::setShooting, mIndexer));
+    // .whenPressed(new InstantCommand(mIndexer::setShooting, mIndexer));
 
-    
     new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-      .whenPressed(new AutoShoot());   
+        .whenPressed(new TeleopShoot(driver,
+            XboxController.Axis.kLeftY.value,
+            XboxController.Axis.kLeftX.value,
+            XboxController.Axis.kRightX.value,
+            true,
+            false));
 
     // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
     // .whenPressed(new InstantCommand(() -> mIndexer.setShooting(true), mIndexer));
 
     new JoystickButton(driver, XboxController.Button.kB.value)
-      .whenPressed(new InstantCommand(() -> mIndexer.setOverrideIdle(!mIndexer.getOverrideIdle()), mIndexer));
+        .whenPressed(new InstantCommand(() -> mIndexer.setOverrideIdle(!mIndexer.getOverrideIdle()), mIndexer));
 
     // new JoystickButton(driver, XboxController.Button.kB.value)
     // .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake,

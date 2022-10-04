@@ -12,7 +12,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class PhotonVision extends SubsystemBase{
+public class PhotonVision extends SubsystemBase {
     PhotonCamera camera;
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
     public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
@@ -22,13 +22,14 @@ public class PhotonVision extends SubsystemBase{
     private boolean hasTargets;
 
     private static PhotonVision sInstance;
+
     public static PhotonVision getInstance() {
         if (sInstance == null) {
             sInstance = new PhotonVision();
         }
         return sInstance;
     }
-    
+
     // @Override
     public void periodic() {
         result = camera.getLatestResult();
@@ -45,11 +46,11 @@ public class PhotonVision extends SubsystemBase{
     }
 
     private double getBestPitch() {
-        return hasTargets ? bestTarget.getPitch(): 0;
+        return hasTargets ? bestTarget.getPitch() : 0;
     }
 
     private double getBestHeading() {
-        return hasTargets ? bestTarget.getYaw(): 0;
+        return hasTargets ? bestTarget.getYaw() : 10;
     }
 
     private double getLeftMostHeading() {
@@ -69,16 +70,16 @@ public class PhotonVision extends SubsystemBase{
     }
 
     public double getHeading() {
-        //return getLeftMostHeading(); //TODO: switch to this if not working
-        return getBestHeading();
+        // return getLeftMostHeading(); //TODO: switch to this if not working
+        return -getBestHeading();
     }
 
     public double getDistance() {
-        //return getBestArea(); //TODO: switch to this if not working
+        // return getBestArea(); //TODO: switch to this if not working
         if (!camera.getLatestResult().hasTargets()) {
             return 0;
         }
-        
+
         double angle = Constants.VisionConstants.kLimeLightMountAngle + getBestPitch();
         return (1 / Math.tan(Conversion.degreesToRadians(angle))) * Constants.VisionConstants.kLimeLightToHubHeight;
     }
