@@ -241,13 +241,13 @@ public class Indexer extends SubsystemBase {
     Color color = colorSensor.getColor();
     double colorRatio = color.red / color.blue;
 
-    if (colorRatio < 0.75) {
+    if (colorRatio < Constants.kIndexer.colorSensorRatioThresholdBlue) {
       if (ballColor != BallColor.Blue) {
         System.out.println("blue: " + (m_timer.get() - m_startTime));
         System.out.println(colorRatio);
       }
       ballColor = BallColor.Blue;
-    } else if (colorRatio > 2.0) {
+    } else if (colorRatio > Constants.kIndexer.colorSensorRatioThresholdRed) {
       if (ballColor != BallColor.Red) {
         System.out.println("red: " + (m_timer.get() - m_startTime));
         System.out.println(colorRatio);
