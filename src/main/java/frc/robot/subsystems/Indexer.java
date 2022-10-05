@@ -238,9 +238,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean isCorrectColor() {
-    return true;
-    // return ballColor == BallColor.Red && isRedAlliance || ballColor ==
-    // BallColor.Blue && !isRedAlliance;
+    return ballColor == BallColor.Red && isRedAlliance || ballColor == BallColor.Blue && !isRedAlliance;
   }
 
   public void pollColor() {
