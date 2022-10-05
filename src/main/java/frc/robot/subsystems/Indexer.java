@@ -35,7 +35,7 @@ public class Indexer extends SubsystemBase {
   private final ColorSensorV3 colorSensor;
   private IndexerState currState;
 
-  private int ballCount;
+  private int ballCount = 0;
   private final boolean isRedAlliance;
   private BallColor ballColor;
   // This prevents it from counting the same ball multiple balls
@@ -90,8 +90,6 @@ public class Indexer extends SubsystemBase {
     lowerBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
     upperBeamBreak = new DigitalInput(Ports.UPPER_BEAM_BREAK);
 
-    ballCount = 0;
-
     m_timer.start();
   }
 
@@ -114,14 +112,14 @@ public class Indexer extends SubsystemBase {
     pollColor();
     boolean correctColor = isCorrectColor();
 
-    if (ballCount < 0) {
-      ballCount = 0;
+    ballCount = 0;
+    if (lowerBeamBreak) {
+      ballCount++;
+    } if (upperBeamBreak) {
+      ballCount++;
     }
 
     if (isShooting && !upperBeamBreak) {
-      if (ballCount > 0) {
-        ballCount--;
-      }
       setShooting(false);
     }
 
@@ -130,12 +128,9 @@ public class Indexer extends SubsystemBase {
         if (!canIntake()) {
           setState(IndexerState.IDLE);
           break;
-        } else if (lowerBeamBreak) {
-          // Don't worry about multiple counts because the state will always change
-          ballCount++;
-        } else {
+        } else if (!lowerBeamBreak) {
           break;
-        }
+        } 
 
         // This case purposefully spills into the waiting for color one
       case WAITING_FOR_COLOR:
@@ -153,7 +148,6 @@ public class Indexer extends SubsystemBase {
         break;
       case EJECTING:
         if (!lowerBeamBreak && m_timer.get() - m_startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
-          ballCount--;
           setState(IndexerState.INTAKING);
         }
         break;
