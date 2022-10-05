@@ -37,6 +37,10 @@ public class Intake extends SubsystemBase {
   }
 
   public void runIntake() {
+    if (!Indexer.getInstance().canIntake()) {
+      return;
+    }
+
     intakeMotor.set(ControlMode.PercentOutput, Constants.kIntake.INTAKE_SPEED);
     HopperMotor.set(ControlMode.PercentOutput, Constants.kIntake.HOPPER_SPEED);
   }
@@ -53,6 +57,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (!Indexer.getInstance().canIntake()) {
+      stopIntake();
+    }
   }
 }
