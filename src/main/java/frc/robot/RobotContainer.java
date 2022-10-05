@@ -53,8 +53,9 @@ public class RobotContainer {
   public RobotContainer() {
     autos = new AutoCommands(swerveDrive);
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Test", autos.test);
+    autoChooser.setDefaultOption("Forward", autos.forward);
     autoChooser.addOption("Back", autos.back);
+    autoChooser.addOption("Complex", autos.complex);
     SmartDashboard.putData("Auto Selector", autoChooser);
     // Configure the button bindings
     configureButtonBindings();

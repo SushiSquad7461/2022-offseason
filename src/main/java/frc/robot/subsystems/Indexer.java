@@ -218,7 +218,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean getShooting() {
-    return isShooting;
+    return isShooting; //|| ballCount!=0;
   }
 
   public void setOverrideIdle(boolean value) {
@@ -238,9 +238,9 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean isCorrectColor() {
-    return true;
-    // return ballColor == BallColor.Red && isRedAlliance || ballColor ==
-    // BallColor.Blue && !isRedAlliance;
+    //return true;
+    return ballColor == BallColor.Red && isRedAlliance || ballColor ==
+    BallColor.Blue && !isRedAlliance;
   }
 
   public void pollColor() {

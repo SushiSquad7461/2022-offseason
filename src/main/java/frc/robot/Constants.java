@@ -162,8 +162,8 @@ public final class Constants {
         public static final double maxAngularVelocity = 8.5; // 11.5
 
         public static final PIDController xController = new PIDController(0.05, 0, 0);
-        public static final PIDController yController = new PIDController(0.0, 0, 0);
-        public static final ProfiledPIDController angleController = new ProfiledPIDController(0.00, 0, 0,
+        public static final PIDController yController = new PIDController(0.05, 0, 0);
+        public static final ProfiledPIDController angleController = new ProfiledPIDController(0.05, 0, 0,
                 new Constraints(Constants.Swerve.maxAngularVelocity, 2.0));
 
         /* Neutral Modes */

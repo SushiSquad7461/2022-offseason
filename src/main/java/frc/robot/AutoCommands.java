@@ -14,22 +14,25 @@ public class AutoCommands {
     private final Swerve swerve;
 
     //command groups for autos
-    public final SequentialCommandGroup test;
+    public final SequentialCommandGroup forward;
 
     public final SequentialCommandGroup back;
 
+    public final SequentialCommandGroup complex;
+
     //names of pathplanner paths for autos
-    private final String[] testPaths = {"Test", "Test2"};
+    private final String[] testPaths = {"Test", "Test2", "Test3"};
 
     public AutoCommands(Swerve swerve) {
         this.swerve = swerve;
 
-        test = new SequentialCommandGroup(
-            // getCommand(testPaths[0])
-            getCommand(testPaths[1])
+        forward = new SequentialCommandGroup(
+            getCommand(testPaths[0])
         );
 
         back = new SequentialCommandGroup(getCommand(testPaths[1]));
+
+        complex = new SequentialCommandGroup(getCommand(testPaths[2]));
     }
 
     private Command getCommand(String pathName) {
