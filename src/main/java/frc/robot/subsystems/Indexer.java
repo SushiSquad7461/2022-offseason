@@ -45,6 +45,7 @@ public class Indexer extends SubsystemBase {
   private final Timer m_timer = new Timer();
   private double m_startTime = 0;
   private double m_startEjectTime = 0;
+  private double m_startMovingUpTime = 0;
 
   public enum IndexerState {
     WAITING_FOR_COLOR,
@@ -157,7 +158,8 @@ public class Indexer extends SubsystemBase {
         }
         break;
       case MOVING_UP:
-        if (upperBeamBreak && !lowerBeamBreak) {
+        if (upperBeamBreak && !lowerBeamBreak
+          && m_timer.get() - m_startMovingUpTime > Constants.kIndexer.movingUpDelaySeconds) {
           setState(IndexerState.INTAKING);
         }
         break;
@@ -300,6 +302,7 @@ public class Indexer extends SubsystemBase {
       case MOVING_UP:
         ejecter.set(kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);
+        m_startMovingUpTime = m_timer.get();
         break;
       default:
         break;
