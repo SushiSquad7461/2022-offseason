@@ -60,7 +60,7 @@ public final class Constants {
 
     public static class kShooter {
         public static final double SETPOINT_RPM = 0;
-        public static final double ERROR_TOLERANCE = 100;
+        public static final double ERROR_TOLERANCE = 60;
         public static final int CURRENT_LIMIT = 40;
         public static final double kP = 0.2;
         public static final double kI = 0.0;

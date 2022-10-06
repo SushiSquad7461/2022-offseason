@@ -100,7 +100,7 @@ public class TeleopShoot extends CommandBase {
     m_shooter.setVelocityBasedOnDistance(distance);
     m_hood.setPosBasedOnDistance(distance);
     if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot && pid.atSetpoint()) {
-      m_indexer.setShooting();
+      m_indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
   }
@@ -112,7 +112,8 @@ public class TeleopShoot extends CommandBase {
       return true;
     }
 
-    boolean isFinished = shoot && !m_indexer.getShooting();
+    // boolean isFinished = shoot && !m_indexer.getShooting();
+    boolean isFinished = shoot;
     if (isFinished) {
       if (finishDelay == 0) {
         finishDelay = Timer.getFPGATimestamp();

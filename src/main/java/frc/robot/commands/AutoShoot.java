@@ -39,19 +39,21 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public void execute() {
-    double distance = camera.getDistance();
+    double distance = camera.getDistance() + 1;
     m_shooter.setVelocityBasedOnDistance(distance);
     m_hood.setPosBasedOnDistance(distance);
 
     if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot) {
-      m_indexer.setShooting();
+      m_indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
   }
 
   @Override
   public boolean isFinished() {
-    boolean isFinished = shoot && !m_indexer.getShooting();
+    // boolean isFinished = shoot && !m_indexer.getShooting();
+      boolean isFinished = shoot;
+
     if (isFinished) {
       if (finishDelay == 0) {
         finishDelay = Timer.getFPGATimestamp();

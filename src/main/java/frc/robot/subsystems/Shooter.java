@@ -98,8 +98,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void stopShooter() {
-    leftMotor.set(ControlMode.PercentOutput, 0);
-    rightMotor.set(ControlMode.PercentOutput, 0);
+    // leftMotor.set(ControlMode.PercentOutput, 0);
+    // rightMotor.set(ControlMode.PercentOutput, 0);
     shooterRPM.setDefault(0);
   }
 

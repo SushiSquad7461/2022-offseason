@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
@@ -35,12 +36,13 @@ public class Indexer extends SubsystemBase {
   private final ColorSensorV3 colorSensor;
   private IndexerState currState;
 
-  private int ballCount;
+  // private int ballCount;
   private final boolean isRedAlliance;
   private BallColor ballColor;
   // This prevents it from counting the same ball multiple balls
-  private boolean isShooting = false;
-  private boolean overrideIdle = false;
+  // private boolean isShooting = false;
+  // private boolean overrideIdle = false;
+  private int ballCount;
 
   private final Timer m_timer = new Timer();
   private double m_startTime = 0;
@@ -51,7 +53,9 @@ public class Indexer extends SubsystemBase {
     IDLE,
     INTAKING,
     EJECTING,
-    MOVING_UP
+    MOVING_UP,
+    BACKING,
+    SHOOTING
   }
 
   private enum BallColor {
@@ -100,9 +104,9 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
-    SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
-    SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
+    // SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
+    // SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
+    // SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
     SmartDashboard.putString("Indexer State", currState.toString());
     SmartDashboard.putNumber("Ball count", ballCount);
     // SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
@@ -117,19 +121,20 @@ public class Indexer extends SubsystemBase {
       ballCount = 0;
     }
 
-    if (isShooting && !upperBeamBreak) {
-      if (ballCount > 0) {
-        ballCount--;
-      }
-      setShooting(false);
-    }
+    // if (isShooting && !upperBeamBreak) {
+    //   if (ballCount > 0) {
+    //     ballCount--;
+    //   }
+    //   setShooting(false);
+    // }
 
     switch (currState) {
       case INTAKING:
-        if (!canIntake()) {
-          setState(IndexerState.IDLE);
-          break;
-        } else if (lowerBeamBreak) {
+        // if (!canIntake()) {
+        //   setState(IndexerState.IDLE);
+        //   break;
+        // } else 
+        if (lowerBeamBreak) {
           // Don't worry about multiple counts because the state will always change
           ballCount++;
         } else {
@@ -162,20 +167,25 @@ public class Indexer extends SubsystemBase {
         }
         break;
       case IDLE:
+        break;
+      case BACKING:
+        break;
+      case SHOOTING:
+        break;
       default:
-        if (canIntake()) {
+        // if (canIntake()) {
           if (!upperBeamBreak && lowerBeamBreak) {
             setState(IndexerState.MOVING_UP);
           } else {
-            if (!overrideIdle) {
-              setState(IndexerState.INTAKING);
-            } else {
-              setState(IndexerState.IDLE);
-            }
+            // if (!overrideIdle) {
+              // setState(IndexerState.INTAKING);
+            // } else {
+            //   setState(IndexerState.IDLE);
+            // }
           }
-        } else {
-          setState(IndexerState.IDLE);
-        }
+        // } else {
+        //   setState(IndexerState.IDLE);
+        // }
         break;
     }
 
@@ -202,32 +212,31 @@ public class Indexer extends SubsystemBase {
     // }
   }
 
-  public void setShooting() {
-    setShooting(true);
-  }
+  // public void setShooting() {
+  //   setShooting(true);
+  // }
 
-  public void setShooting(boolean shooting) {
-    isShooting = shooting;
-    if (shooting) {
-      kicker.
-      set(-kIndexer.KICKER_SPEED);
-    } else {
-      kicker.set(0);
-    }
-    SmartDashboard.putBoolean("isShooting", isShooting);
-  }
+  // public void setShooting(boolean shooting) {
+  //   isShooting = shooting;
+  //   if (shooting) {
+  //     kicker.set(-kIndexer.KICKER_SPEED);
+  //   } else {
+  //     kicker.set(0);
+  //   }
+  //   SmartDashboard.putBoolean("isShooting", isShooting);
+  // }
 
-  public boolean getShooting() {
-    return isShooting; //|| ballCount!=0;
-  }
+  // public boolean getShooting() {
+  //   return isShooting; //|| ballCount!=0;
+  // }
 
-  public void setOverrideIdle(boolean value) {
-    overrideIdle = value;
-  }
+  // public void setOverrideIdle(boolean value) {
+  //   overrideIdle = value;
+  // }
 
-  public boolean getOverrideIdle() {
-    return overrideIdle;
-  }
+  // public boolean getOverrideIdle() {
+  //   return overrideIdle;
+  // }
 
   public boolean lowerBeamBreakActuated() {
     return !lowerBeamBreak.get();
@@ -289,6 +298,7 @@ public class Indexer extends SubsystemBase {
       case IDLE:
         ejecter.set(0);
         feeder.set(0);
+        kicker.set(0);
         break;
       case INTAKING:
         ejecter.set(0);
@@ -303,6 +313,15 @@ public class Indexer extends SubsystemBase {
         ejecter.set(kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);
         break;
+      case SHOOTING:
+        kicker.set(-kIndexer.KICKER_SPEED);
+        feeder.set(kIndexer.FEADER_SPEED);
+        ejecter.set(kIndexer.EJECTER_SPEED);
+        break;
+      case BACKING:
+        ballCount = 0;
+        ejecter.set(kIndexer.EJECTER_SPEED * -1);
+        feeder.set(kIndexer.FEADER_SPEED * -1);
       default:
         break;
     }
