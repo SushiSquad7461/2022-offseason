@@ -163,12 +163,10 @@ public class Indexer extends SubsystemBase {
       case IDLE:
       default:
         if (canIntake()) {
-          if (!upperBeamBreak && lowerBeamBreak) {
-            setState(IndexerState.MOVING_UP);
-          } else {
-            if (!overrideIdle) {
-              setState(IndexerState.INTAKING);
-            }
+          if (lowerBeamBreak) {
+            setState(IndexerState.WAITING_FOR_COLOR);
+          } else if (!overrideIdle) {
+            setState(IndexerState.INTAKING);
           }
         }
         break;
@@ -204,8 +202,7 @@ public class Indexer extends SubsystemBase {
   public void setShooting(boolean shooting) {
     isShooting = shooting;
     if (shooting) {
-      kicker.
-      set(-kIndexer.KICKER_SPEED);
+      kicker.set(-kIndexer.KICKER_SPEED);
     } else {
       kicker.set(0);
     }
