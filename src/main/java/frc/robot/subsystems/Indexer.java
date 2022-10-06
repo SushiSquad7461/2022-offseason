@@ -289,12 +289,12 @@ public class Indexer extends SubsystemBase {
         break;
       case EJECTING:
         ejecter.set(-kIndexer.EJECTER_SPEED);
-        feeder.set(kIndexer.FEADER_SPEED);
+        feeder.set(kIndexer.FEEDER_SPEED);
         m_startEjectTime = m_timer.get();
         break;
       case MOVING_UP:
         ejecter.set(kIndexer.EJECTER_SPEED);
-        feeder.set(kIndexer.FEADER_SPEED);
+        feeder.set(kIndexer.FEEDER_SPEED);
         m_startMovingUpTime = m_timer.get();
         break;
       default:

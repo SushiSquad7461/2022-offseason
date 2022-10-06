@@ -93,7 +93,7 @@ public final class Constants {
 
         public static final double EJECTER_SPEED = 1;
         public static final double KICKER_SPEED = 1;
-        public static final double FEADER_SPEED = 0.8;
+        public static final double FEEDER_SPEED = 0.8;
     }
 
     public static class Ports {
