@@ -129,6 +129,9 @@ public class Indexer extends SubsystemBase {
           setState(IndexerState.IDLE);
           break;
         } else if (!lowerBeamBreak) {
+          if (overrideIdle) {
+            setState(IndexerState.IDLE);
+          }
           break;
         } 
 
@@ -165,12 +168,8 @@ public class Indexer extends SubsystemBase {
           } else {
             if (!overrideIdle) {
               setState(IndexerState.INTAKING);
-            } else {
-              setState(IndexerState.IDLE);
             }
           }
-        } else {
-          setState(IndexerState.IDLE);
         }
         break;
     }
