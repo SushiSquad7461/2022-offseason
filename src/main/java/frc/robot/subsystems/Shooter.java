@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.net.Socket;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -49,10 +51,10 @@ public class Shooter extends SubsystemBase {
         TalonFXInvertType.Clockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
         shooterF.get());
     rightMotor = MotorHelper.createFalconMotor(Constants.Ports.SHOOTER_RIGHT_MOTOR, Constants.kShooter.CURRENT_LIMIT,
-        TalonFXInvertType.CounterClockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
+        TalonFXInvertType.OpposeMaster, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
         shooterF.get());
 
-    // rightMotor.follow(leftMotor);
+    rightMotor.follow(leftMotor);
   }
 
   @Override
@@ -93,8 +95,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooter() {
-    leftMotor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(shooterRPM.get()));
-    rightMotor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(shooterRPM.get()));
+    double speed = Conversion.convertRPMtoTrans(shooterRPM.get());
+    // speed = 3000;
+    
+    leftMotor.set(ControlMode.Velocity, speed);
+    // rightMotor.set(ControlMode.Velocity, speed);
   }
 
   public void stopShooter() {

@@ -42,7 +42,7 @@ public class Indexer extends SubsystemBase {
   // This prevents it from counting the same ball multiple balls
   // private boolean isShooting = false;
   // private boolean overrideIdle = false;
-  private int ballCount;
+  // private int ballCount;
 
   private final Timer m_timer = new Timer();
   private double m_startTime = 0;
@@ -93,14 +93,14 @@ public class Indexer extends SubsystemBase {
     lowerBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
     upperBeamBreak = new DigitalInput(Ports.UPPER_BEAM_BREAK);
 
-    ballCount = 0;
+    // ballCount = 0;
 
     m_timer.start();
   }
 
-  public boolean canIntake() {
-    return ballCount < 2;
-  }
+  // public boolean canIntake() {
+  //   return ballCount < 2;
+  // }
 
   @Override
   public void periodic() {
@@ -108,7 +108,7 @@ public class Indexer extends SubsystemBase {
     // SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
     // SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
     SmartDashboard.putString("Indexer State", currState.toString());
-    SmartDashboard.putNumber("Ball count", ballCount);
+    // SmartDashboard.putNumber("Ball count", ballCount);
     // SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
 
     boolean lowerBeamBreak = lowerBeamBreakActuated();
@@ -117,9 +117,9 @@ public class Indexer extends SubsystemBase {
     pollColor();
     boolean correctColor = isCorrectColor();
 
-    if (ballCount < 0) {
-      ballCount = 0;
-    }
+    // if (ballCount < 0) {
+    //   ballCount = 0;
+    // }
 
     // if (isShooting && !upperBeamBreak) {
     //   if (ballCount > 0) {
@@ -134,18 +134,21 @@ public class Indexer extends SubsystemBase {
         //   setState(IndexerState.IDLE);
         //   break;
         // } else 
+        
         if (lowerBeamBreak) {
           // Don't worry about multiple counts because the state will always change
-          ballCount++;
+          // ballCount++;
+          setState(IndexerState.WAITING_FOR_COLOR);
         } else {
           break;
         }
 
         // This case purposefully spills into the waiting for color one
       case WAITING_FOR_COLOR:
-        if (ballColor == BallColor.Unknown) {
-          setState(IndexerState.WAITING_FOR_COLOR);
-        } else {
+        // if (ballColor == BallColor.Unknown) {
+          // setState(IndexerState.WAITING_FOR_COLOR);
+        // } else {
+        if (ballColor != BallColor.Unknown) {
           if (correctColor) {
             setState(upperBeamBreak
                 ? IndexerState.IDLE
@@ -157,7 +160,7 @@ public class Indexer extends SubsystemBase {
         break;
       case EJECTING:
         if (!lowerBeamBreak && m_timer.get() - m_startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
-          ballCount--;
+          // ballCount--;
           setState(IndexerState.INTAKING);
         }
         break;
@@ -291,10 +294,15 @@ public class Indexer extends SubsystemBase {
     if (newState != currState) {
       System.out.println(newState);
     }
+
     currState = newState;
 
     switch (currState) {
       case WAITING_FOR_COLOR:
+        ejecter.set(0);
+        feeder.set(0);
+        kicker.set(0);
+        break;
       case IDLE:
         ejecter.set(0);
         feeder.set(0);
@@ -319,7 +327,7 @@ public class Indexer extends SubsystemBase {
         ejecter.set(kIndexer.EJECTER_SPEED);
         break;
       case BACKING:
-        ballCount = 0;
+        // ballCount = 0;
         ejecter.set(kIndexer.EJECTER_SPEED * -1);
         feeder.set(kIndexer.FEADER_SPEED * -1);
       default:

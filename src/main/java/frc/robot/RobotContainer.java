@@ -85,7 +85,7 @@ public class RobotContainer {
 
     new JoystickButton(driver, XboxController.Button.kLeftBumper.value)
         .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake), new InstantCommand(mIndexer::setIntake, mIndexer)))
-        .whenReleased(new SequentialCommandGroup(new InstantCommand(mIntake::stopIntake, mIntake), new WaitCommand(0.1),new InstantCommand(mIndexer::setIdle, mIndexer)));
+        .whenReleased(new SequentialCommandGroup(new InstantCommand(mIntake::stopIntake, mIntake), new WaitCommand(0.5),new InstantCommand(mIndexer::setIdle, mIndexer)));
 
     new JoystickButton(driver, XboxController.Button.kX.value)
         .whenPressed(new InstantCommand(mIntake::ejectIntake, mIntake))
@@ -124,7 +124,7 @@ public class RobotContainer {
 
     new JoystickButton(driver, XboxController.Button.kY.value)
       .whenPressed(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.BACKING), mIndexer), new InstantCommand(mIntake::ejectIntake, mIntake)))
-      .whenReleased(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.INTAKING), mIndexer), new InstantCommand(mIntake::stopIntake, mIntake)));
+      .whenReleased(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.IDLE), mIndexer), new InstantCommand(mIntake::stopIntake, mIntake)));
 
     new JoystickButton(driver, XboxController.Button.kA.value)
         .whenHeld(new ParallelCommandGroup(new InstantCommand(() -> hood.setPos(0), hood), new InstantCommand(shooter::stopShooter, shooter)));
