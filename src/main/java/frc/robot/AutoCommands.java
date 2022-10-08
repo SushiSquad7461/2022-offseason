@@ -4,6 +4,9 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import SushiFrcLib.Math.Conversion;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -38,9 +41,15 @@ public class AutoCommands {
         nothing = new SequentialCommandGroup();
 
         oneBall = new SequentialCommandGroup(
-            new Shoot(0.0, 2300.0),
-            new WaitCommand(10),
-            new RunCommand(() -> swerve.drive(new Translation2d(0, 0.1), 0, true, true), swerve)
+            new InstantCommand(() -> swerve.resetOdometry(
+                new Pose2d(
+                    new Translation2d(0,0),
+                    new Rotation2d(Conversion.degreesToRadians(180))   
+                )
+            )),
+            new Shoot(30000, 2300.0),
+            new WaitCommand(9),
+            new RunCommand(() -> swerve.drive(new Translation2d(-0.4, 0), 0, true, true), swerve)
         );
 
         back = new SequentialCommandGroup(getCommand(testPaths[1]));

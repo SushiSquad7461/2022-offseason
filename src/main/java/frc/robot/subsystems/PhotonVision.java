@@ -21,6 +21,7 @@ public class PhotonVision extends SubsystemBase {
     private PhotonPipelineResult result;
     private PhotonTrackedTarget bestTarget;
     private boolean hasTargets;
+    private boolean lastHeadingPositive = true;
 
     private static PhotonVision sInstance;
 
@@ -36,6 +37,9 @@ public class PhotonVision extends SubsystemBase {
         result = camera.getLatestResult();
         bestTarget = result.getBestTarget();
         hasTargets = result.hasTargets();
+        if (hasTargets) {
+            lastHeadingPositive = bestTarget.getYaw() > 0;
+        }
         SmartDashboard.putNumber("Heading", getBestHeading());
     }
 
@@ -52,7 +56,7 @@ public class PhotonVision extends SubsystemBase {
     }
 
     private double getBestHeading() {
-        return hasTargets ? bestTarget.getYaw() : 50;
+        return hasTargets ? bestTarget.getYaw() : (lastHeadingPositive ? 30 : -30);
     }
 
     private double getLeftMostHeading() {

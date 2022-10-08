@@ -35,9 +35,10 @@ public class Indexer extends SubsystemBase {
 
   private final ColorSensorV3 colorSensor;
   private IndexerState currState;
+  private NetworkTable table;
 
   // private int ballCount;
-  private final boolean isRedAlliance;
+  private boolean isRedAlliance;
   private BallColor ballColor;
   // This prevents it from counting the same ball multiple balls
   // private boolean isShooting = false;
@@ -75,7 +76,7 @@ public class Indexer extends SubsystemBase {
 
   /** Creates a new Indexer. */
   private Indexer() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("FMSInfo");
+    table = NetworkTableInstance.getDefault().getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
 
     kicker = MotorHelper.createSparkMax(Constants.Ports.KICKER_MOTOR, MotorType.kBrushless);
@@ -104,6 +105,7 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
+    isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
     // SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
     // SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
     // SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
@@ -322,9 +324,9 @@ public class Indexer extends SubsystemBase {
         feeder.set(kIndexer.FEADER_SPEED);
         break;
       case SHOOTING:
-        kicker.set(-kIndexer.KICKER_SPEED);
+        kicker.set(-kIndexer.KICKER_SPEED * 0.5);
         feeder.set(kIndexer.FEADER_SPEED);
-        ejecter.set(kIndexer.EJECTER_SPEED);
+        ejecter.set(kIndexer.EJECTER_SPEED * 0.5);
         break;
       case BACKING:
         // ballCount = 0;

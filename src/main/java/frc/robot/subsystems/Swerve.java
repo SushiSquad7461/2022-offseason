@@ -24,7 +24,8 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.configFactoryDefault();
         // gyro.configMountPose(AxisDirection.PositiveY, AxisDirection.NegativeZ);
-        zeroGyro();
+        //zeroGyro();
+        gyro.setYaw(180);
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw());
 
