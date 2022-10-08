@@ -94,18 +94,19 @@ public class RobotContainer {
     // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
     // .whenPressed(new InstantCommand(mIndexer::setShooting, mIndexer));
 
-    // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-    //     .whenPressed(new TeleopShoot(driver,
-    //         XboxController.Axis.kLeftY.value,
-    //         XboxController.Axis.kLeftX.value,
-    //         XboxController.Axis.kRightX.value,
-    //         true,
-    //         false));
-
-    
+    // hahaha ur having a stroke, if the turn to target doesnt work use ur big brain and comment this and uncoment auto shoot 🤡🤡🤡🤡🤡🤡🤡🤡
     new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-        .whenPressed(new AutoShoot())
-        .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
+        .whenPressed(new TeleopShoot(driver,
+            XboxController.Axis.kLeftY.value,
+            XboxController.Axis.kLeftX.value,
+            XboxController.Axis.kRightX.value,
+            true,
+            false));
+    //
+    
+    // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
+    //     .whenPressed(new AutoShoot())
+    //     .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
 
     // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
     // .whenPressed(new InstantCommand(() -> mIndexer.setShooting(true), mIndexer));

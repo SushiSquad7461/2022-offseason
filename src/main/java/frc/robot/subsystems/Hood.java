@@ -55,7 +55,7 @@ public class Hood extends SubsystemBase {
     }
 
     public void setPosBasedOnDistance(double distance) {
-        targetPos.setDefault(Constants.kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
+        targetPos.setDefault(Constants.kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value + Constants.kHood.kOffset);
     }
 
     @Override

@@ -131,6 +131,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setVelocityBasedOnDistance(double distance) {
-    shooterRPM.setDefault(Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value);
+    shooterRPM.setDefault(Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value + Constants.kShooter.kOffset);
   }
 }

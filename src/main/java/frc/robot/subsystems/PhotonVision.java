@@ -50,7 +50,7 @@ public class PhotonVision extends SubsystemBase {
     }
 
     private double getBestHeading() {
-        return hasTargets ? bestTarget.getYaw() : 10;
+        return hasTargets ? bestTarget.getYaw() : 50;
     }
 
     private double getLeftMostHeading() {

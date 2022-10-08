@@ -18,7 +18,6 @@ import frc.robot.Constants.kShooter;
 import frc.robot.Constants;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
@@ -37,7 +36,7 @@ public class TeleopShoot extends CommandBase {
   private final boolean m_fieldRelative;
   private final boolean m_openLoop;
 
-  private final PIDController pid = new PIDController(0.05, 0, 0);
+  private final PIDController pid = new PIDController(0.04, 0, 0);
 
   private final Shooter m_shooter;
   private final PhotonVision m_photonvision;
@@ -103,6 +102,8 @@ public class TeleopShoot extends CommandBase {
       m_indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
+
+    SmartDashboard.putNumber("Turn to Target Error", m_photonvision.getHeading());
   }
 
   // Returns true when the command should end.
@@ -128,7 +129,7 @@ public class TeleopShoot extends CommandBase {
   @Override
   public void end(boolean inturrupted) {
     m_shooter.stopShooter();
-    m_hood.setPos(0);
+    m_hood.setPos(-1000);
     m_indexer.setState(IndexerState.IDLE);
   }
 }

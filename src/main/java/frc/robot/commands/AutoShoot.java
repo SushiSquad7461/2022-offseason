@@ -39,7 +39,7 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public void execute() {
-    double distance = camera.getDistance() + 1;
+    double distance = camera.getDistance();
     m_shooter.setVelocityBasedOnDistance(distance);
     m_hood.setPosBasedOnDistance(distance);
 
@@ -68,7 +68,7 @@ public class AutoShoot extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_shooter.stopShooter();
-    m_hood.setPos(0);
+    m_hood.setPos(-1000);
     m_indexer.setState(IndexerState.IDLE);
   }
 }
