@@ -54,7 +54,8 @@ public class RobotContainer {
   public RobotContainer() {
     autos = new AutoCommands(swerveDrive);
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Forward", autos.forward);
+    autoChooser.setDefaultOption("Nothing", autos.nothing);
+    autoChooser.addOption("One Ball", autos.oneBall);
     autoChooser.addOption("Back", autos.back);
     autoChooser.addOption("Complex", autos.complex);
     SmartDashboard.putData("Auto Selector", autoChooser);
@@ -104,9 +105,9 @@ public class RobotContainer {
             false));
     //
     
-    // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-    //     .whenPressed(new AutoShoot())
-    //     .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
+    new JoystickButton(driver, XboxController.Button.kB.value)
+        .whenPressed(new Shoot(0.0, 2300.0))
+        .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
 
     // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
     // .whenPressed(new InstantCommand(() -> mIndexer.setShooting(true), mIndexer));

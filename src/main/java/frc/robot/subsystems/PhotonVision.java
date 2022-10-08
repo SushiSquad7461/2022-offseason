@@ -9,6 +9,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import SushiFrcLib.Math.Conversion;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -35,6 +36,7 @@ public class PhotonVision extends SubsystemBase {
         result = camera.getLatestResult();
         bestTarget = result.getBestTarget();
         hasTargets = result.hasTargets();
+        SmartDashboard.putNumber("Heading", getBestHeading());
     }
 
     private PhotonVision() {

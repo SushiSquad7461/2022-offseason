@@ -102,8 +102,6 @@ public class TeleopShoot extends CommandBase {
       m_indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
-
-    SmartDashboard.putNumber("Turn to Target Error", m_photonvision.getHeading());
   }
 
   // Returns true when the command should end.
