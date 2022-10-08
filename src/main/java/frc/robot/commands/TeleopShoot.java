@@ -36,7 +36,7 @@ public class TeleopShoot extends CommandBase {
   private final boolean m_fieldRelative;
   private final boolean m_openLoop;
 
-  private final PIDController pid = new PIDController(0.2, 0, 0);
+  private final PIDController pid = new PIDController(0.1, 0, 0);
 
   private final Shooter m_shooter;
   private final PhotonVision m_photonvision;
@@ -88,6 +88,8 @@ public class TeleopShoot extends CommandBase {
     if(!pid.atSetpoint()) {
       distance = m_photonvision.getDistance();
       heading = m_photonvision.getHeading();
+    } else {
+      heading = 0;
     }
 
     double output = pid.calculate(heading);

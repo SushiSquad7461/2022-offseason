@@ -59,6 +59,20 @@ public class PhotonVision extends SubsystemBase {
         return hasTargets ? bestTarget.getYaw() : (lastHeadingPositive ? 30 : -30);
     }
 
+    private double getAvreageHeading() {
+        if (hasTargets) {
+            List<PhotonTrackedTarget> targets = result.getTargets();
+            double sum = 0;
+
+            for (var target : targets) {
+                sum += target.getYaw();
+            }
+
+            return sum / targets.size();
+        }
+        return 0; 
+    }
+
     private double getLeftMostHeading() {
         if (hasTargets) {
             List<PhotonTrackedTarget> targets = result.getTargets();
@@ -77,7 +91,7 @@ public class PhotonVision extends SubsystemBase {
 
     public double getHeading() {
         // return getLeftMostHeading(); //TODO: switch to this if not working
-        return -getBestHeading();
+        return -getAvreageHeading();
     }
 
     public double getDistance() {

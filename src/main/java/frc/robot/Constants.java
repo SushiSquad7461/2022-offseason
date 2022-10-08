@@ -21,7 +21,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
-    public static final boolean TUNING_MODE = false;
+    public static final boolean TUNING_MODE = true;
 
     public final static class kIntake {
         public static final double INTAKE_SPEED = 0.5;
@@ -49,11 +49,16 @@ public final class Constants {
         static {
             // First val is disntance from goal (TODO: INSERT UNITS), Second val is hood pos
             // in encoder tiks
-            posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(10000.0));
-            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(30000.0));
-            posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(40000.0));
-            posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(50000.0));
-            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(70000.0));
+            // posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(10000.0));
+            // posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(30000.0));
+            // posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(40000.0));
+            // posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(50000.0));
+            // posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(70000.0));
+            // posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(90000.0));
+            posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(20000.0));
+            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(40000.0));
+            posMap.put(new InterpolatingDouble(7.0), new InterpolatingDouble(50000.0));
+            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(80000.0));
             posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(90000.0));
         }
     }
@@ -65,7 +70,7 @@ public final class Constants {
         public static final double kP = 0.07;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kF = 0.0524;
+        public static final double kF = 0.0527;
         public static final double kOffset = 0;
 
         public static final double TX_OFFSET = 0;
@@ -76,11 +81,11 @@ public final class Constants {
         static {
             // First val is disntance from goal in feet, Second val is shooterRPM
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2300.0));
-            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2200.0));
-            posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(2400.0));
-            posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(2500.0));
-            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(2700.0));
-            posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0));
+            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0)); //2200
+            posMap.put(new InterpolatingDouble(7.0), new InterpolatingDouble(2550.0)); // 2400
+            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(2700.0)); // 2500
+            posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0)); // 2700
+            // posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0)); // 3100
         }
     }
 
