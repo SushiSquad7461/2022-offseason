@@ -69,7 +69,7 @@ public class TeleopShoot extends CommandBase {
 
     pid.setSetpoint(0);
     pid.enableContinuousInput(-180, 180);
-    pid.setTolerance(kShooter.PID_TOLERANCE_DEGREES, kShooter.PID_SPEED_TOLERANCE_DEGREES_PER_SECOND);
+    pid.setTolerance(kShooter.PID_TOLERANCE_DEGREES);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
@@ -80,12 +80,17 @@ public class TeleopShoot extends CommandBase {
     finishDelay = 0.0;
     distance = m_photonvision.getDistance();
     heading = m_photonvision.getHeading();
+    pid.calculate(30.0);
+    SmartDashboard.putNumber("thingy error", pid.getPositionError());
+
   }
 
   @Override
   public void execute() {
     SmartDashboard.putBoolean("TT at Setpoint", pid.atSetpoint());
-    if(!pid.atSetpoint()) {
+    SmartDashboard.putNumber("thingy error", pid.getPositionError());
+
+    if (!pid.atSetpoint()) {
       distance = m_photonvision.getDistance();
       heading = m_photonvision.getHeading();
     } else {
@@ -93,6 +98,7 @@ public class TeleopShoot extends CommandBase {
     }
 
     double output = pid.calculate(heading);
+    System.out.println(pid.atSetpoint());
 
     double forwardBack = -m_controller.getRawAxis(m_translationAxis);
     double leftRight = m_controller.getRawAxis(m_strafeAxis);

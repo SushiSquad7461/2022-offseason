@@ -68,9 +68,11 @@ public class PhotonVision extends SubsystemBase {
                 sum += target.getYaw();
             }
 
-            return sum / targets.size();
+            System.out.println(sum / targets.size());
+
+            return -(sum / targets.size());
         }
-        return 0; 
+        return (lastHeadingPositive ? 30 : -30);
     }
 
     private double getLeftMostHeading() {
@@ -91,7 +93,7 @@ public class PhotonVision extends SubsystemBase {
 
     public double getHeading() {
         // return getLeftMostHeading(); //TODO: switch to this if not working
-        return -getAvreageHeading();
+        return getAvreageHeading();
     }
 
     public double getDistance() {

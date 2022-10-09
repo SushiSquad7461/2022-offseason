@@ -52,7 +52,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer() {
+  public RobotContainer() { 
     autos = new AutoCommands(swerveDrive);
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("Nothing", autos.nothing);
