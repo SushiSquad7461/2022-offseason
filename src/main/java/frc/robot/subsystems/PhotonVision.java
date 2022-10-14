@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class PhotonVision extends SubsystemBase {
-    PhotonCamera camera;
+    private final PhotonCamera camera;
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
     public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
 
@@ -32,7 +32,7 @@ public class PhotonVision extends SubsystemBase {
         return sInstance;
     }
 
-    // @Override
+    @Override
     public void periodic() {
         result = camera.getLatestResult();
         bestTarget = result.getBestTarget();
@@ -92,12 +92,10 @@ public class PhotonVision extends SubsystemBase {
     }
 
     public double getHeading() {
-        // return getLeftMostHeading(); //TODO: switch to this if not working
         return getAvreageHeading();
     }
 
     public double getDistance() {
-        // return getBestArea(); //TODO: switch to this if not working
         if (!camera.getLatestResult().hasTargets()) {
             return 0;
         }

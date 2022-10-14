@@ -28,7 +28,6 @@ public class Shooter extends SubsystemBase {
   private final TunableNumber shooterD;
   private final TunableNumber shooterF;
   private final TunableNumber shooterRPM;
-  // private double shooterRPM = 0;
 
   private static Shooter mInstance;
 
@@ -45,7 +44,6 @@ public class Shooter extends SubsystemBase {
     shooterD = new TunableNumber("Shooter D", Constants.kShooter.kD, Constants.TUNING_MODE);
     shooterF = new TunableNumber("Shooter F", Constants.kShooter.kF, Constants.TUNING_MODE);
     shooterRPM = new TunableNumber("shooter rpm", 0, Constants.TUNING_MODE);
-    // shooterRPM = 0;
 
     leftMotor = MotorHelper.createFalconMotor(Constants.Ports.SHOOTER_LEFT_MOTOR, Constants.kShooter.CURRENT_LIMIT,
         TalonFXInvertType.Clockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
@@ -63,13 +61,6 @@ public class Shooter extends SubsystemBase {
         Conversion.convertTransToRPM(leftMotor.getSelectedSensorVelocity()));
     SmartDashboard.putNumber("Shooter set rpm", shooterRPM.get());
     SmartDashboard.putNumber("Shooter error", getError());
-    SmartDashboard.putNumber("Loop error", leftMotor.getClosedLoopError());
-    SmartDashboard.putNumber("right current", rightMotor.getSupplyCurrent());
-    SmartDashboard.putNumber("left current", leftMotor.getSupplyCurrent());
-    // SmartDashboard.putNumber("Left motor current draw",
-    // leftMotor.getStatorCurrent());
-    // SmartDashboard.putNumber("Right motor current draw",
-    // rightMotor.getStatorCurrent());
 
     runShooter();
 
@@ -95,22 +86,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooter() {
-    double speed = Conversion.convertRPMtoTrans(shooterRPM.get());
-    // speed = 3000;
-    
-    leftMotor.set(ControlMode.Velocity, speed);
-    // rightMotor.set(ControlMode.Velocity, speed);
+    leftMotor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(shooterRPM.get()));
   }
 
   public void stopShooter() {
-    // leftMotor.set(ControlMode.PercentOutput, 0);
-    // rightMotor.set(ControlMode.PercentOutput, 0);
     shooterRPM.setDefault(0);
   }
 
   public boolean isAtSpeed() {
     return shooterRPM.get() != 0 && getError() <= Constants.kShooter.ERROR_TOLERANCE;
-    // return true;
   }
 
   private double getError() {
@@ -127,7 +111,6 @@ public class Shooter extends SubsystemBase {
 
   public void setVelocity(double speed) {
     shooterRPM.setDefault(speed);
-    // shooterRPM = speed;
   }
 
   public void setVelocityBasedOnDistance(double distance) {

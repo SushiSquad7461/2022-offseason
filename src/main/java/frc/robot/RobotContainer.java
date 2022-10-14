@@ -60,6 +60,7 @@ public class RobotContainer {
     autoChooser.addOption("Back", autos.back);
     autoChooser.addOption("Complex", autos.complex);
     SmartDashboard.putData("Auto Selector", autoChooser);
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -80,10 +81,9 @@ public class RobotContainer {
         XboxController.Axis.kRightX.value,
         XboxController.Axis.kLeftX.value,
         true,
-        false));
-
-    // new JoystickButton(driver, XboxController.Button.kLeftBumper.value)
-    //     .whenPressed(new InstantCommand(swerveDrive::zeroGyro));
+        false
+      )
+    );
 
     new JoystickButton(driver, XboxController.Button.kLeftBumper.value)
         .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake), new InstantCommand(mIndexer::setIntake, mIndexer)))
@@ -96,10 +96,6 @@ public class RobotContainer {
     new JoystickButton(op, XboxController.Button.kA.value)
       .whenPressed(new InstantCommand(swerveDrive::zeroGyro));
 
-    // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-    // .whenPressed(new InstantCommand(mIndexer::setShooting, mIndexer));
-
-    // hahaha ur having a stroke, if the turn to target doesnt work use ur big brain and comment this and uncoment auto shoot 🤡🤡🤡🤡🤡🤡🤡🤡
     new JoystickButton(driver, XboxController.Button.kB.value)
         .whenPressed(new TeleopShoot(driver,
             XboxController.Axis.kLeftY.value,
@@ -111,25 +107,6 @@ public class RobotContainer {
     
     new JoystickButton(driver, XboxController.Button.kRightBumper.value)
         .whenPressed(new Shoot(0.0, 2300.0));
-        // .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
-
-    // new JoystickButton(driver, XboxController.Button.kB.value)
-    //     .whenPressed(new AutoShoot());
-        // .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
-    // new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-    // .whenPressed(new InstantCommand(() -> mIndexer.setShooting(true), mIndexer));
-
-    // new JoystickButton(driver, XboxController.Button.kB.value)
-    //     .whenPressed(new InstantCommand(() -> mIndexer.setOverrideIdle(!mIndexer.getOverrideIdle()), mIndexer));
-
-    // new JoystickButton(driver, XboxController.Button.kB.value)
-    // .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake,
-    // mIntake), new InstantCommand(mIndexer::setIntake, mIndexer)))
-    // .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
-
-    // new JoystickButton(driver, XboxController.Button.kB.value)
-    // .whenPressed(new InstantCommand(mIndexer::setIntake, mIndexer))
-    // .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
 
     new JoystickButton(driver, XboxController.Button.kY.value)
       .whenPressed(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.BACKING), mIndexer), new InstantCommand(mIntake::ejectIntake, mIntake)))
@@ -137,13 +114,6 @@ public class RobotContainer {
 
     new JoystickButton(driver, XboxController.Button.kA.value)
         .whenHeld(new ParallelCommandGroup(new InstantCommand(() -> hood.setPos(0), hood), new InstantCommand(shooter::stopShooter, shooter)));
-
-    // nw JoystickButton(driver, XboxController.Button.kX.value)
-    // .whenHeld(new InstantCommand(() -> hood.setPos(100000), hood));
-
-    // new JoystickButton(driver, XboxController.Button.kX.value)
-    // .whenHeld(new InstantCommand(() -> mIndexer.setState(IndexerState.MOVING_UP),
-    // mIndexer));
   }
 
   public void teleopDrive() {
