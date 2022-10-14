@@ -9,6 +9,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import SushiFrcLib.Math.Conversion;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -20,6 +21,7 @@ public class PhotonVision extends SubsystemBase {
     private PhotonPipelineResult result;
     private PhotonTrackedTarget bestTarget;
     private boolean hasTargets;
+    private boolean lastHeadingPositive = true;
 
     private static PhotonVision sInstance;
 
@@ -35,6 +37,10 @@ public class PhotonVision extends SubsystemBase {
         result = camera.getLatestResult();
         bestTarget = result.getBestTarget();
         hasTargets = result.hasTargets();
+        if (hasTargets) {
+            lastHeadingPositive = bestTarget.getYaw() > 0;
+        }
+        SmartDashboard.putNumber("Heading", getBestHeading());
     }
 
     private PhotonVision() {
@@ -50,7 +56,23 @@ public class PhotonVision extends SubsystemBase {
     }
 
     private double getBestHeading() {
-        return hasTargets ? bestTarget.getYaw() : 50;
+        return hasTargets ? bestTarget.getYaw() : (lastHeadingPositive ? 30 : -30);
+    }
+
+    private double getAvreageHeading() {
+        if (hasTargets) {
+            List<PhotonTrackedTarget> targets = result.getTargets();
+            double sum = 0;
+
+            for (var target : targets) {
+                sum += target.getYaw();
+            }
+
+            System.out.println(sum / targets.size());
+
+            return -(sum / targets.size());
+        }
+        return (lastHeadingPositive ? 30 : -30);
     }
 
     private double getLeftMostHeading() {
@@ -71,7 +93,7 @@ public class PhotonVision extends SubsystemBase {
 
     public double getHeading() {
         // return getLeftMostHeading(); //TODO: switch to this if not working
-        return -getBestHeading();
+        return getAvreageHeading();
     }
 
     public double getDistance() {

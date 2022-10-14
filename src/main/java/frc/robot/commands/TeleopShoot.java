@@ -36,7 +36,7 @@ public class TeleopShoot extends CommandBase {
   private final boolean m_fieldRelative;
   private final boolean m_openLoop;
 
-  private final PIDController pid = new PIDController(0.04, 0, 0);
+  private final PIDController pid = new PIDController(0.1, 0, 0);
 
   private final Shooter m_shooter;
   private final PhotonVision m_photonvision;
@@ -45,6 +45,8 @@ public class TeleopShoot extends CommandBase {
   private final Indexer m_indexer;
   private boolean shoot = false;
   private double finishDelay = 0.0;
+  private double distance = 0;
+  private double heading = 0;
 
   public TeleopShoot(GenericHID controller, int translationAxis, int strafeAxis, int rotationsAxis,
       boolean fieldRelative, boolean openLoop) {
@@ -67,7 +69,7 @@ public class TeleopShoot extends CommandBase {
 
     pid.setSetpoint(0);
     pid.enableContinuousInput(-180, 180);
-    pid.setTolerance(kShooter.PID_TOLERANCE_DEGREES, kShooter.PID_SPEED_TOLERANCE_DEGREES_PER_SECOND);
+    pid.setTolerance(kShooter.PID_TOLERANCE_DEGREES);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
@@ -76,11 +78,27 @@ public class TeleopShoot extends CommandBase {
   public void initialize() {
     shoot = false;
     finishDelay = 0.0;
+    distance = m_photonvision.getDistance();
+    heading = m_photonvision.getHeading();
+    pid.calculate(30.0);
+    SmartDashboard.putNumber("thingy error", pid.getPositionError());
+
   }
 
   @Override
   public void execute() {
-    double output = pid.calculate(m_photonvision.getHeading());
+    SmartDashboard.putBoolean("TT at Setpoint", pid.atSetpoint());
+    SmartDashboard.putNumber("thingy error", pid.getPositionError());
+
+    if (!pid.atSetpoint()) {
+      distance = m_photonvision.getDistance();
+      heading = m_photonvision.getHeading();
+    } else {
+      heading = 0;
+    }
+
+    double output = pid.calculate(heading);
+    System.out.println(pid.atSetpoint());
 
     double forwardBack = -m_controller.getRawAxis(m_translationAxis);
     double leftRight = m_controller.getRawAxis(m_strafeAxis);
@@ -95,15 +113,12 @@ public class TeleopShoot extends CommandBase {
 
     m_swerve.drive(translation, output, m_fieldRelative, m_openLoop);
 
-    double distance = m_photonvision.getDistance();
     m_shooter.setVelocityBasedOnDistance(distance);
     m_hood.setPosBasedOnDistance(distance);
     if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot && pid.atSetpoint()) {
       m_indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
-
-    SmartDashboard.putNumber("Turn to Target Error", m_photonvision.getHeading());
   }
 
   // Returns true when the command should end.

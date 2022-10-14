@@ -14,6 +14,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 
+import org.opencv.features2d.FlannBasedMatcher;
+
 import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
 import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -42,16 +44,22 @@ public final class Constants {
         public static final double kD = 0.1;
         public static final double kF = 0;
         public static final double maxPos = 150000;
-        public static final double kHoodError = 100;
+        public static final double kHoodError = 500;
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> posMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         public static final double kOffset = 0;
 
         static {
             // First val is disntance from goal (TODO: INSERT UNITS), Second val is hood pos
             // in encoder tiks
+            // posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(10000.0));
+            // posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(30000.0));
+            // posMap.put(new InterpolatingDouble(6.0), new InterpolatingDouble(40000.0));
+            // posMap.put(new InterpolatingDouble(8.0), new InterpolatingDouble(50000.0));
+            // posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(70000.0));
+            // posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(90000.0));
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(20000.0));
             posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(40000.0));
-            posMap.put(new InterpolatingDouble(7.0), new InterpolatingDouble(60000.0));
+            posMap.put(new InterpolatingDouble(7.0), new InterpolatingDouble(50000.0));
             posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(80000.0));
             posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(90000.0));
         }
@@ -59,26 +67,27 @@ public final class Constants {
 
     public static class kShooter {
         public static final double SETPOINT_RPM = 0;
-        public static final double ERROR_TOLERANCE = 30;
+        public static final double ERROR_TOLERANCE = 60;
         public static final int CURRENT_LIMIT = 40;
         public static final double kP = 0.07;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kF = 0.0524;
+        public static final double kF = 0.0527;
         public static final double kOffset = 0;
 
         public static final double TX_OFFSET = 0;
-        public static final double PID_TOLERANCE_DEGREES = 5;
+        public static final double PID_TOLERANCE_DEGREES = 2;
         public static final double PID_SPEED_TOLERANCE_DEGREES_PER_SECOND = 720; // TODO: pick actual values lol
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> posMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
 
         static {
             // First val is disntance from goal in feet, Second val is shooterRPM
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2300.0));
-            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0));
-            posMap.put(new InterpolatingDouble(7.0), new InterpolatingDouble(2550.0));
-            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(2700.0));
-            posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0));
+            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0)); //2200
+            posMap.put(new InterpolatingDouble(7.0), new InterpolatingDouble(2550.0)); // 2400
+            posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(2700.0)); // 2500
+            posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0)); // 2700
+            // posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0)); // 3100
         }
     }
 
