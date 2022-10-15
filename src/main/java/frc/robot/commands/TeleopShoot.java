@@ -103,8 +103,8 @@ public class TeleopShoot extends CommandBase {
     double forwardBack = -m_controller.getRawAxis(m_translationAxis);
     double leftRight = m_controller.getRawAxis(m_strafeAxis);
 
-    forwardBack = Normalization.linearDeadzone(forwardBack, Constants.stickDeadband);
-    leftRight = Normalization.linearDeadzone(leftRight, Constants.stickDeadband);
+    forwardBack = Normalization.cube(forwardBack);
+    leftRight = Normalization.cube(leftRight);
 
     double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
     double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
@@ -124,7 +124,7 @@ public class TeleopShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Normalization.linearDeadzone(m_controller.getRawAxis(m_rotationsAxis), Constants.stickDeadband) != 0) {
+    if (Normalization.cube(m_controller.getRawAxis(m_rotationsAxis)) != 0) {
       return true;
     }
 

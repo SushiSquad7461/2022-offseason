@@ -52,13 +52,14 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer() { 
+  public RobotContainer() {
     autos = new AutoCommands(swerveDrive);
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("Nothing", autos.nothing);
     autoChooser.addOption("One Ball", autos.oneBall);
     autoChooser.addOption("Back", autos.back);
     autoChooser.addOption("Complex", autos.complex);
+    autoChooser.addOption("Hub to Hp", autos.hubToHp);
     SmartDashboard.putData("Auto Selector", autoChooser);
 
     // Configure the button bindings
@@ -77,26 +78,26 @@ public class RobotContainer {
     swerveDrive.setDefaultCommand(new SwerveDriveCommand(
         swerveDrive,
         driver,
-        XboxController.Axis.kRightY.value,
-        XboxController.Axis.kRightX.value,
+        XboxController.Axis.kLeftY.value,
         XboxController.Axis.kLeftX.value,
+        XboxController.Axis.kRightX.value,
         true,
-        false
-      )
-    );
+        false));
 
     new JoystickButton(driver, XboxController.Button.kLeftBumper.value)
-        .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake), new InstantCommand(mIndexer::setIntake, mIndexer)))
-        .whenReleased(new SequentialCommandGroup(new InstantCommand(mIntake::stopIntake, mIntake), new WaitCommand(0.5),new InstantCommand(mIndexer::setIdle, mIndexer)));
+        .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake),
+            new InstantCommand(mIndexer::setIntake, mIndexer)))
+        .whenReleased(new SequentialCommandGroup(new InstantCommand(mIntake::stopIntake, mIntake), new WaitCommand(0.5),
+            new InstantCommand(mIndexer::setIdle, mIndexer)));
 
     new JoystickButton(driver, XboxController.Button.kX.value)
         .whenPressed(new InstantCommand(mIntake::ejectIntake, mIntake))
         .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
 
     new JoystickButton(op, XboxController.Button.kA.value)
-      .whenPressed(new InstantCommand(swerveDrive::zeroGyro));
+        .whenPressed(new InstantCommand(swerveDrive::zeroGyro));
 
-    new JoystickButton(driver, XboxController.Button.kB.value)
+    new JoystickButton(driver, XboxController.Button.kRightBumper.value)
         .whenPressed(new TeleopShoot(driver,
             XboxController.Axis.kLeftY.value,
             XboxController.Axis.kLeftX.value,
@@ -104,16 +105,20 @@ public class RobotContainer {
             true,
             false));
     //
-    
-    new JoystickButton(driver, XboxController.Button.kRightBumper.value)
+
+    new JoystickButton(driver, XboxController.Button.kB.value)
         .whenPressed(new Shoot(0.0, 2300.0));
 
     new JoystickButton(driver, XboxController.Button.kY.value)
-      .whenPressed(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.BACKING), mIndexer), new InstantCommand(mIntake::ejectIntake, mIntake)))
-      .whenReleased(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.IDLE), mIndexer), new InstantCommand(mIntake::stopIntake, mIntake)));
+        .whenPressed(
+            new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.BACKING), mIndexer),
+                new InstantCommand(mIntake::ejectIntake, mIntake)))
+        .whenReleased(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.IDLE), mIndexer),
+            new InstantCommand(mIntake::stopIntake, mIntake)));
 
     new JoystickButton(driver, XboxController.Button.kA.value)
-        .whenHeld(new ParallelCommandGroup(new InstantCommand(() -> hood.setPos(0), hood), new InstantCommand(shooter::stopShooter, shooter)));
+        .whenHeld(new ParallelCommandGroup(new InstantCommand(() -> hood.setPos(0), hood),
+            new InstantCommand(shooter::stopShooter, shooter)));
   }
 
   public void teleopDrive() {

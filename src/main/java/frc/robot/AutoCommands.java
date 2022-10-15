@@ -30,10 +30,11 @@ public class AutoCommands {
     public final SequentialCommandGroup back;
 
     public final SequentialCommandGroup complex;
+    public final SequentialCommandGroup hubToHp;
 
     //names of pathplanner paths for autos
     private final String[] oneBallPaths = {"Test2"};
-    private final String[] testPaths = {"Test", "Test2", "Test3"};
+    private final String[] testPaths = {"Test", "Test2"};
 
     public AutoCommands(Swerve swerve) {
         this.swerve = swerve;
@@ -52,16 +53,19 @@ public class AutoCommands {
             new RunCommand(() -> swerve.drive(new Translation2d(-0.4, 0), 0, true, true), swerve)
         );
 
-        back = new SequentialCommandGroup(getCommand(testPaths[1]));
+        back = new SequentialCommandGroup(getCommand(testPaths[1], true));
 
-        complex = new SequentialCommandGroup(getCommand(testPaths[2]));
+        complex = new SequentialCommandGroup(getCommand(testPaths[1], true), getCommand(testPaths[0], false));
+
+        hubToHp = new SequentialCommandGroup(getCommand("HubToHp", true));
     }
 
-    private Command getCommand(String pathName) {
+    private Command getCommand(String pathName, boolean isFirstPath) {
         PathPlannerTrajectory path = PathPlanner.loadPath(pathName, Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAcceleration);
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
-                swerve.resetOdometry(path.sample(0).poseMeters);
+                if (isFirstPath)
+                    swerve.resetOdometry(path.sample(0).poseMeters);
             }, swerve),
             new PPSwerveControllerCommand(
                 path, 
