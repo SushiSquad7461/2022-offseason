@@ -79,8 +79,9 @@ public class Swerve extends SubsystemBase {
         return swerveOdometry.getPoseMeters();
     }
 
-    public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(pose, pose.getRotation());
+    public void resetOdometry(Pose2d pose, Rotation2d angle) {
+        gyro.setYaw(angle.getDegrees());
+        swerveOdometry.resetPosition(pose, angle);
     }
 
     public SwerveModuleState[] getStates() {
@@ -105,6 +106,7 @@ public class Swerve extends SubsystemBase {
     public void periodic() {
         swerveOdometry.update(getYaw(), getStates());
         field.setRobotPose(swerveOdometry.getPoseMeters());
+        SmartDashboard.putNumber("gyro", getYaw().getDegrees());
 
         // for (SwerveModule mod : mSwerveMods) {
         //     // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
