@@ -65,7 +65,7 @@ public class AutoCommands {
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
                 if (isFirstPath)
-                    swerve.resetOdometry(path.getInitialPose(), path.getInitialState().holonomicRotation);
+                    swerve.resetOdometry(getInitialPose(path));
             }, swerve),
             new PPSwerveControllerCommand(
                 path, 
@@ -78,6 +78,10 @@ public class AutoCommands {
                 swerve
             )
         );
+    }
+
+    private Pose2d getInitialPose(PathPlannerTrajectory path) {
+        return new Pose2d(path.getInitialPose().getTranslation(), path.getInitialState().holonomicRotation);
     }
 }
 
