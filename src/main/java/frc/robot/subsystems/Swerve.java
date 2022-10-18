@@ -20,7 +20,7 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
-    private final Field2d field = new Field2d();
+    private final Field2d field;
 
     private static Swerve instance;
 
@@ -35,6 +35,8 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(kPorts.PIGEON_ID);
         gyro.configFactoryDefault();
         zeroGyro();
+
+        field = new Field2d();
  
         swerveOdometry = new SwerveDriveOdometry(kSwerve.SWERVE_KINEMATICS, getYaw());
 

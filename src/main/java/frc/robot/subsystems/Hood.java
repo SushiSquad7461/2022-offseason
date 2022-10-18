@@ -20,8 +20,6 @@ public class Hood extends SubsystemBase {
     private final TunableNumber hoodD;
     private final TunableNumber hoodF;
     private final TunableNumber targetPos;
-    private double hoodPos;
-
     private static Hood instance;
 
     public static Hood getInstance() {
@@ -32,7 +30,6 @@ public class Hood extends SubsystemBase {
     }
 
     private Hood() {
-        hoodPos = 0;
         hoodP = new TunableNumber("Hood P", Constants.kHood.kP, Constants.TUNING_MODE);
         hoodI = new TunableNumber("Hood I", Constants.kHood.kI, Constants.TUNING_MODE);
         hoodD = new TunableNumber("Hood D", Constants.kHood.kD, Constants.TUNING_MODE);
@@ -54,14 +51,12 @@ public class Hood extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Hood Position", motor.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Hood Error", motor.getClosedLoopError());
+
         if (targetPos.get() < kHood.MAX_POS) {
             motor.set(ControlMode.Position, targetPos.get());
         }
-
-        hoodPos = motor.getSelectedSensorPosition();
-
-        SmartDashboard.putNumber("Hood Position", hoodPos);
-        SmartDashboard.putNumber("Hood Error", motor.getClosedLoopError());
 
         if (hoodP.hasChanged()) {
             motor.config_kP(0, hoodP.get());

@@ -14,10 +14,8 @@ import frc.robot.Constants.kPorts;
 import frc.robot.Constants.kIntake;;
 
 public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
-
-  WPI_TalonFX intakeMotor;
-  WPI_TalonFX HopperMotor;
+  private final WPI_TalonFX intakeMotor;
+  private final WPI_TalonFX HopperMotor;
 
   private static Intake instance;
 
@@ -29,7 +27,6 @@ public class Intake extends SubsystemBase {
   }
 
   public Intake() {
-
     intakeMotor = MotorHelper.createFalconMotor(kPorts.INTAKE_MOTOR, kIntake.CURRENT_LIMIT,
         kIntake.INTAKE_INVERSION, NeutralMode.Coast);
     HopperMotor = MotorHelper.createFalconMotor(kPorts.HOPPER_MOTOR, kIntake.CURRENT_LIMIT,

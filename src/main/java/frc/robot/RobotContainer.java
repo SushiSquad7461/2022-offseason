@@ -38,7 +38,6 @@ import frc.robot.commands.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
   private final Swerve swerve;
   private final SendableChooser<SequentialCommandGroup> autoChooser;
   private final AutoCommands autos;
@@ -48,8 +47,8 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
 
-  private final XboxController driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
-  private final XboxController op = new XboxController(1);
+  private final XboxController driver;
+  private final XboxController op;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -62,6 +61,9 @@ public class RobotContainer {
     intake = Intake.getInstance();
     autos = new AutoCommands(swerve);
     autoChooser = new SendableChooser<>();
+
+    driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
+    op = new XboxController(SushiConstants.OI.OPERATOR_PORT);
 
     Set<String> keys = autos.autos.keySet();
     autoChooser.setDefaultOption((String) keys.toArray()[0], autos.autos.get(keys.toArray()[0]));
