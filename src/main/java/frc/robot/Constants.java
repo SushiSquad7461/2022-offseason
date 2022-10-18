@@ -13,6 +13,7 @@ import SushiFrcLib.CheesyLibUtil.InterpolatingDouble;
 import SushiFrcLib.CheesyLibUtil.InterpolatingTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
@@ -243,6 +244,23 @@ public final class Constants {
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class kOI {
+        public static final int DRIVE_TRANSLATION_Y = XboxController.Axis.kLeftY.value;
+        public static final int DRIVE_TRANSLATION_X = XboxController.Axis.kLeftX.value;
+        public static final int DRIVE_ROTATE = XboxController.Axis.kRightX.value;
+
+        public static final int RUN_INTAKE = XboxController.Button.kLeftBumper.value;
+        public static final int EJECT_INTAKE = XboxController.Button.kX.value;
+
+        public static final int BACK_INDEXER = XboxController.Button.kY.value;
+
+        public static final int ZERO_GYRO = XboxController.Button.kA.value;
+        public static final int ZERO_SHOOTER_HOOD = XboxController.Button.kA.value;
+
+        public static final int AUTO_SHOOT = XboxController.Button.kRightBumper.value;
+        public static final int FENDER_SHOOT = XboxController.Button.kB.value;
     }
 
 }

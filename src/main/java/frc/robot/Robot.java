@@ -4,15 +4,7 @@
 
 package frc.robot;
 
-import org.opencv.photo.Photo;
-
-import com.ctre.phoenix.sensors.Pigeon2;
-
-import SushiFrcLib.Sensors.Gyro.Gyro;
-import SushiFrcLib.Sensors.Gyro.NavX;
-import SushiFrcLib.Sensors.Gyro.Pigeon;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -106,7 +98,6 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_robotContainer.teleopDrive();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

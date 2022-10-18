@@ -51,8 +51,7 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    // boolean isFinished = shoot && !m_indexer.getShooting();
-      boolean isFinished = shoot;
+    boolean isFinished = shoot;
 
     if (isFinished) {
       if (finishDelay == 0) {

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
@@ -14,6 +13,7 @@ public class ShootFender extends CommandBase {
     private final Hood m_hood;
     private final Indexer m_indexer;
     private final Swerve m_swerve;
+
     private boolean shoot;
     private double finishDelay;
     private double hoodPos;
@@ -52,7 +52,6 @@ public class ShootFender extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // boolean isFinished = shoot && !m_indexer.getShooting();
         boolean isFinished = shoot;
 
         if (isFinished) {

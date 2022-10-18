@@ -4,16 +4,16 @@
 
 package frc.robot;
 
+import java.util.Set;
+
 import SushiFrcLib.Constants.SushiConstants;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.AutoShoot;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
@@ -24,6 +24,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
+import frc.robot.Constants.kOI;
 import frc.robot.commands.*;
 
 /**
@@ -37,14 +38,14 @@ import frc.robot.commands.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Swerve swerveDrive = Swerve.getInstance();
+  private final Swerve swerve;
   private final SendableChooser<SequentialCommandGroup> autoChooser;
   private final AutoCommands autos;
 
-  private final Hood hood = Hood.getInstance();
-  private final Shooter shooter = Shooter.getInstance();
-  private final Indexer mIndexer = Indexer.getInstance();
-  private final Intake mIntake = Intake.getInstance();
+  private final Hood hood;
+  private final Shooter shooter;
+  private final Indexer indexer;
+  private final Intake intake;
 
   private final XboxController driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
   private final XboxController op = new XboxController(1);
@@ -53,16 +54,24 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    autos = new AutoCommands(swerveDrive);
+    swerve = Swerve.getInstance();
+    hood = Hood.getInstance();
+    shooter = Shooter.getInstance();
+    indexer = Indexer.getInstance();
+    intake = Intake.getInstance();
+    autos = new AutoCommands(swerve);
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Nothing", autos.nothing);
-    autoChooser.addOption("One Ball", autos.oneBall);
-    autoChooser.addOption("Back", autos.back);
-    autoChooser.addOption("Complex", autos.complex);
-    autoChooser.addOption("Hub to Hp", autos.hubToHp);
+
+    Set<String> keys = autos.autos.keySet();
+    autoChooser.setDefaultOption((String) keys.toArray()[0], autos.autos.get(keys.toArray()[0]));
+    keys.remove((String) keys.toArray()[0]);
+
+    for (String i : autos.autos.keySet()) {
+        autoChooser.addOption(i, autos.autos.get(i));
+    }
+
     SmartDashboard.putData("Auto Selector", autoChooser);
 
-    // Configure the button bindings
     configureButtonBindings();
   }
 
@@ -75,53 +84,74 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    swerveDrive.setDefaultCommand(new SwerveDriveCommand(
-        swerveDrive,
-        driver,
-        XboxController.Axis.kLeftY.value,
-        XboxController.Axis.kLeftX.value,
-        XboxController.Axis.kRightX.value,
-        true,
-        false));
-
-    new JoystickButton(driver, XboxController.Button.kLeftBumper.value)
-        .whenPressed(new ParallelCommandGroup(new InstantCommand(mIntake::runIntake, mIntake),
-            new InstantCommand(mIndexer::setIntake, mIndexer)))
-        .whenReleased(new SequentialCommandGroup(new InstantCommand(mIntake::stopIntake, mIntake), new WaitCommand(0.5),
-            new InstantCommand(mIndexer::setIdle, mIndexer)));
-
-    new JoystickButton(driver, XboxController.Button.kX.value)
-        .whenPressed(new InstantCommand(mIntake::ejectIntake, mIntake))
-        .whenReleased(new InstantCommand(mIntake::stopIntake, mIntake));
-
-    new JoystickButton(op, XboxController.Button.kA.value)
-        .whenPressed(new InstantCommand(swerveDrive::zeroGyro));
-
-    new JoystickButton(driver, XboxController.Button.kRightBumper.value)
-        .whenPressed(new TeleopShoot(driver,
-            XboxController.Axis.kLeftY.value,
-            XboxController.Axis.kLeftX.value,
-            XboxController.Axis.kRightX.value,
+    swerve.setDefaultCommand(new SwerveDriveCommand(
+            swerve,
+            driver,
+            kOI.DRIVE_TRANSLATION_Y,
+            kOI.DRIVE_TRANSLATION_X,
+            kOI.DRIVE_ROTATE,
             true,
-            false));
-    //
+            false
+        )
+    );
 
-    new JoystickButton(driver, XboxController.Button.kB.value)
+    new JoystickButton(driver, kOI.RUN_INTAKE)
+        .whenPressed(
+            new ParallelCommandGroup(
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            )
+        )
+        .whenReleased(
+            new SequentialCommandGroup(
+                new InstantCommand(intake::stopIntake, intake), 
+                new WaitCommand(0.5),
+                new InstantCommand(indexer::setIdle, indexer)
+            )
+        );
+
+    new JoystickButton(driver, kOI.EJECT_INTAKE)
+        .whenPressed(new InstantCommand(intake::ejectIntake, intake))
+        .whenReleased(new InstantCommand(intake::stopIntake, intake));
+
+    new JoystickButton(op, kOI.ZERO_GYRO)
+        .whenPressed(new InstantCommand(swerve::zeroGyro));
+
+    new JoystickButton(driver, kOI.AUTO_SHOOT)
+        .whenPressed(new TeleopShoot(
+                driver,
+                kOI.DRIVE_TRANSLATION_Y,
+                kOI.DRIVE_TRANSLATION_X,
+                kOI.DRIVE_ROTATE,
+                true,
+                false
+            )
+        );
+
+    new JoystickButton(driver, kOI.FENDER_SHOOT)
         .whenPressed(new ShootFender(0.0, 2300.0));
 
-    new JoystickButton(driver, XboxController.Button.kY.value)
+    new JoystickButton(driver, kOI.BACK_INDEXER)
         .whenPressed(
-            new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.BACKING), mIndexer),
-                new InstantCommand(mIntake::ejectIntake, mIntake)))
-        .whenReleased(new ParallelCommandGroup(new InstantCommand(() -> mIndexer.setState(IndexerState.IDLE), mIndexer),
-            new InstantCommand(mIntake::stopIntake, mIntake)));
+            new ParallelCommandGroup(
+                new InstantCommand(() -> indexer.setState(IndexerState.BACKING), indexer),
+                new InstantCommand(intake::ejectIntake, intake)
+            )
+        )
+        .whenReleased(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> indexer.setState(IndexerState.IDLE), indexer),
+                new InstantCommand(intake::stopIntake, intake)
+            )
+        );
 
-    new JoystickButton(driver, XboxController.Button.kA.value)
-        .whenHeld(new ParallelCommandGroup(new InstantCommand(() -> hood.setPos(0), hood),
-            new InstantCommand(shooter::stopShooter, shooter)));
-  }
-
-  public void teleopDrive() {
+    new JoystickButton(driver, kOI.ZERO_SHOOTER_HOOD)
+        .whenHeld(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> hood.setPos(0), hood),
+                new InstantCommand(shooter::stopShooter, shooter)
+            )
+        );
   }
 
   /**
@@ -131,7 +161,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     SmartDashboard.putData("Auto Selector", autoChooser);
-    // An ExampleCommand will run in autonomous
     return autoChooser.getSelected();
   }
 }

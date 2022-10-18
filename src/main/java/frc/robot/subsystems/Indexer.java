@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
@@ -40,9 +39,9 @@ public class Indexer extends SubsystemBase {
   private boolean isRedAlliance;
   private BallColor ballColor;
 
-  private final Timer m_timer = new Timer();
-  private double m_startTime = 0;
-  private double m_startEjectTime = 0;
+  private final Timer m_timer ;
+  private double m_startTime;
+  private double m_startEjectTime;
 
   public enum IndexerState {
     WAITING_FOR_COLOR,
@@ -73,6 +72,10 @@ public class Indexer extends SubsystemBase {
   private Indexer() {
     table = NetworkTableInstance.getDefault().getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
+
+    m_timer = new Timer();
+    m_startEjectTime = 0;
+    m_startTime = 0;
 
     kicker = MotorHelper.createSparkMax(Constants.Ports.KICKER_MOTOR, MotorType.kBrushless);
     feeder = MotorHelper.createSparkMax(Ports.FEEDER_MOTOR, MotorType.kBrushless);

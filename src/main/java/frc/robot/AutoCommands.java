@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -13,25 +16,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.AutoShoot;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootFender;
-import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 
 public class AutoCommands {
     //subsystems
     private final Swerve swerve;
-
-    //command groups for autos
-    public final SequentialCommandGroup oneBall;
-
-    public final SequentialCommandGroup nothing;
-
-    public final SequentialCommandGroup back;
-
-    public final SequentialCommandGroup complex;
-    public final SequentialCommandGroup hubToHp;
+    public final Map<String, SequentialCommandGroup> autos;
 
     //names of pathplanner paths for autos
     private final String[] oneBallPaths = {"Test2"};
@@ -40,9 +31,11 @@ public class AutoCommands {
     public AutoCommands(Swerve swerve) {
         this.swerve = swerve;
 
-        nothing = new SequentialCommandGroup();
+        autos = new HashMap<String, SequentialCommandGroup>();
 
-        oneBall = new SequentialCommandGroup(
+        autos.put("nothing", new SequentialCommandGroup());
+
+        autos.put("oneBall", new SequentialCommandGroup(
             new InstantCommand(() -> swerve.resetOdometry(
                 new Pose2d(
                     new Translation2d(0,0),
@@ -52,17 +45,18 @@ public class AutoCommands {
             new ShootFender(30000, 2300.0),
             new WaitCommand(9),
             new RunCommand(() -> swerve.drive(new Translation2d(-0.4, 0), 0, true, true), swerve)
-        );
+        ));
 
-        back = new SequentialCommandGroup(getCommand(testPaths[1], true));
+        autos.put("back", new SequentialCommandGroup(getCommand(testPaths[1], true)));
 
-        complex = new SequentialCommandGroup(getCommand(testPaths[1], true), getCommand(testPaths[0], false));
+        autos.put("complex", new SequentialCommandGroup(getCommand(testPaths[1], true), getCommand(testPaths[0], false)));
 
-        hubToHp = new SequentialCommandGroup(getCommand("HubToHp", true));
+        autos.put("hubToHp", new SequentialCommandGroup(getCommand("HubToHp", true)));
     }
 
     private Command getCommand(String pathName, boolean isFirstPath) {
         PathPlannerTrajectory path = PathPlanner.loadPath(pathName, Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAcceleration);
+
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
                 if (isFirstPath)
