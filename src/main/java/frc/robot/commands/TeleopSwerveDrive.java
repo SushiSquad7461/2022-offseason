@@ -42,10 +42,10 @@ public class TeleopSwerveDrive extends CommandBase {
         double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
         double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
         Translation2d translation = new Translation2d(forwardBack, leftRight)
-                .times(kSwerve.maxSpeed * magnitudeRatio);
+                .times(kSwerve.MAX_SPEED * magnitudeRatio);
 
         rot = Normalization.cube(Normalization.cube(rot));
-        rot *= kSwerve.maxAngularVelocity;
+        rot *= kSwerve.MAX_ANGULAR_VELOCITY;
 
         swerve.drive(translation, rot, fieldRelative, openLoop);
     }

@@ -7,20 +7,17 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import SushiFrcLib.Math.Conversion;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
 
 public class PhotonVision extends SubsystemBase {
     private final PhotonCamera camera;
-    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
-    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
 
     private PhotonPipelineResult result;
     private PhotonTrackedTarget bestTarget;
     private boolean hasTargets;
-    private boolean lastHeadingPositive = true;
+    private boolean lastHeadingPositive;
 
     private static PhotonVision instance;
 
@@ -31,19 +28,22 @@ public class PhotonVision extends SubsystemBase {
         return instance;
     }
 
+    private PhotonVision() {
+        camera = new PhotonCamera("gloworm");
+        lastHeadingPositive = true;
+    }
+
     @Override
     public void periodic() {
         result = camera.getLatestResult();
         bestTarget = result.getBestTarget();
         hasTargets = result.hasTargets();
+
         if (hasTargets) {
             lastHeadingPositive = bestTarget.getYaw() > 0;
         }
-        SmartDashboard.putNumber("Heading", getBestHeading());
-    }
 
-    private PhotonVision() {
-        camera = new PhotonCamera("gloworm");
+        SmartDashboard.putNumber("Heading", getBestHeading());
     }
 
     private double getBestArea() {
@@ -99,7 +99,7 @@ public class PhotonVision extends SubsystemBase {
             return 0;
         }
 
-        double angle = kVision.kLimeLightMountAngle + getBestPitch();
-        return (1 / Math.tan(Conversion.degreesToRadians(angle))) * kVision.kLimeLightToHubHeight;
+        double angle = kVision.LIME_LIGHT_MOUNT_ANGLE + getBestPitch();
+        return (1 / Math.tan(Conversion.degreesToRadians(angle))) * kVision.LIME_LIGHT_TO_HUB_HEIGHT;
     }
 }

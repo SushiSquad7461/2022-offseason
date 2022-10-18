@@ -25,6 +25,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 import frc.robot.Constants.kOI;
+import frc.robot.Constants.kSwerve;
 import frc.robot.commands.*;
 
 /**
@@ -123,8 +124,8 @@ public class RobotContainer {
                 kOI.DRIVE_TRANSLATION_Y,
                 kOI.DRIVE_TRANSLATION_X,
                 kOI.DRIVE_ROTATE,
-                true,
-                false
+                kSwerve.FEILD_RELATIVE,
+                kSwerve.OPEN_LOOP
             )
         );
 

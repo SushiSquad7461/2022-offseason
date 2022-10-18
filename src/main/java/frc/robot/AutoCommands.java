@@ -56,7 +56,7 @@ public class AutoCommands {
     }
 
     private Command getCommand(String pathName, boolean isFirstPath) {
-        PathPlannerTrajectory path = PathPlanner.loadPath(pathName, kSwerve.maxAngularVelocity, kSwerve.maxAcceleration);
+        PathPlannerTrajectory path = PathPlanner.loadPath(pathName, kSwerve.MAX_ANGULAR_VELOCITY, kSwerve.MAX_ACCELERATION);
 
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
@@ -66,10 +66,10 @@ public class AutoCommands {
             new PPSwerveControllerCommand(
                 path, 
                 swerve::getPose, 
-                kSwerve.swerveKinematics, 
-                kSwerve.xController, 
-                kSwerve.yController, 
-                kSwerve.angleController, 
+                kSwerve.SWERVE_KINEMATICS, 
+                kSwerve.X_CONTROLLER, 
+                kSwerve.Y_CONTROLLER, 
+                kSwerve.ANGLE_CONTROLLER, 
                 (s -> swerve.setModuleStates(s)), 
                 swerve
             )

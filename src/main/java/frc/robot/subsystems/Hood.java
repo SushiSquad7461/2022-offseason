@@ -49,12 +49,12 @@ public class Hood extends SubsystemBase {
     }
 
     public void setPosBasedOnDistance(double distance) {
-        targetPos.setDefault(Constants.kHood.posMap.getInterpolated(new InterpolatingDouble(distance)).value + Constants.kHood.kOffset);
+        targetPos.setDefault(Constants.kHood.POS_MAP.getInterpolated(new InterpolatingDouble(distance)).value + Constants.kHood.OFFSET);
     }
 
     @Override
     public void periodic() {
-        if (targetPos.get() < kHood.maxPos) {
+        if (targetPos.get() < kHood.MAX_POS) {
             motor.set(ControlMode.Position, targetPos.get());
         }
 
@@ -73,6 +73,6 @@ public class Hood extends SubsystemBase {
     }
 
     public boolean isAtPos() {
-        return Math.abs(targetPos.get() - motor.getSelectedSensorPosition()) < Constants.kHood.kHoodError;
+        return Math.abs(targetPos.get() - motor.getSelectedSensorPosition()) < Constants.kHood.HOOD_ERROR;
     }
 }

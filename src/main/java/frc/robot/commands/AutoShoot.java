@@ -15,6 +15,7 @@ public class AutoShoot extends CommandBase {
   private final Indexer indexer;
   private final PhotonVision camera;
   private final Swerve swerve;
+
   private boolean shoot;
   private double finishDelay;
 
@@ -29,6 +30,7 @@ public class AutoShoot extends CommandBase {
     addRequirements(indexer);
     addRequirements(shooter);
     addRequirements(hood);
+    addRequirements(camera);
   }
 
   @Override

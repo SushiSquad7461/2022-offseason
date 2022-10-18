@@ -126,7 +126,7 @@ public class Indexer extends SubsystemBase {
         }
         break;
       case EJECTING:
-        if (!lowerBeamBreak && timer.get() - startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
+        if (!lowerBeamBreak && timer.get() - startEjectTime > Constants.kIndexer.EJECT_DELAY) {
           setState(IndexerState.INTAKING);
         }
         break;

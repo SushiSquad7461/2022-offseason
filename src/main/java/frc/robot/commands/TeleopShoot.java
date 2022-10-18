@@ -108,7 +108,7 @@ public class TeleopShoot extends CommandBase {
     double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
     double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
     Translation2d translation = new Translation2d(forwardBack, leftRight)
-        .times(kSwerve.maxSpeed * magnitudeRatio);
+        .times(kSwerve.MAX_SPEED * magnitudeRatio);
 
     swerve.drive(translation, output, fieldRelative, openLoop);
 
