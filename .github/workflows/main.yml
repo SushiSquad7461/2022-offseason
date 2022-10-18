@@ -1,0 +1,21 @@
+name: Build and Check Style
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2022-18.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: gradlew assemble
+  lint:
+    name: Run checkstyle linter
+    runs-on: ubuntu-latest
+    container: gradle:jdk11
+    steps:
+      - uses: actions/checkout@v3
+      - run: gradlew build

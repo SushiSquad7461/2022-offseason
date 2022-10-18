@@ -1,0 +1,18 @@
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+  <module name="TreeWalker">
+    <module name="AvoidStarImport"/>
+    <module name="EmptyBlock"/>
+    <module name="ConstantName">
+      <!-- handle PID constants like kP/kI/kD/kFF -->
+      <property name="format"
+        value="^k[A-Z]{1,2}$|^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+    </module>
+    <module name="Indentation">
+      <property name="basicOffset" value="2" />
+      <property name="lineWrappingIndentation" value="2" />
+    </module>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+  </module>
+</module>
