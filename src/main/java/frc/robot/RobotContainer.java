@@ -107,7 +107,7 @@ public class RobotContainer {
     //
 
     new JoystickButton(driver, XboxController.Button.kB.value)
-        .whenPressed(new Shoot(0.0, 2300.0));
+        .whenPressed(new ShootFender(0.0, 2300.0));
 
     new JoystickButton(driver, XboxController.Button.kY.value)
         .whenPressed(

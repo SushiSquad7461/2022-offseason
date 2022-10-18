@@ -9,23 +9,21 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 
-public class Shoot extends CommandBase {
+public class ShootFender extends CommandBase {
     private final Shooter m_shooter;
     private final Hood m_hood;
     private final Indexer m_indexer;
-    private final PhotonVision camera;
     private final Swerve m_swerve;
     private boolean shoot;
     private double finishDelay;
     private double hoodPos;
     private double shooterVelocity;
 
-    public Shoot(double hoodPos, double shooterVelocity) {
+    public ShootFender(double hoodPos, double shooterVelocity) {
         m_shooter = Shooter.getInstance();
         m_swerve = Swerve.getInstance();
         m_indexer = Indexer.getInstance();
         m_hood = Hood.getInstance();
-        camera = PhotonVision.getInstance();
         this.hoodPos = hoodPos;
         this.shooterVelocity = shooterVelocity;
 
@@ -43,7 +41,6 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
-        double distance = camera.getDistance();
         m_shooter.setVelocity(shooterVelocity);
         m_hood.setPos(hoodPos);
 

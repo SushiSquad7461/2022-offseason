@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootFender;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 
@@ -48,7 +49,7 @@ public class AutoCommands {
                     new Rotation2d(Conversion.degreesToRadians(180))   
                 )
             )),
-            new Shoot(30000, 2300.0),
+            new ShootFender(30000, 2300.0),
             new WaitCommand(9),
             new RunCommand(() -> swerve.drive(new Translation2d(-0.4, 0), 0, true, true), swerve)
         );
