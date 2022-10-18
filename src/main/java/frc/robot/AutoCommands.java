@@ -42,12 +42,12 @@ public class AutoCommands {
         nothing = new SequentialCommandGroup();
 
         oneBall = new SequentialCommandGroup(
-            // new InstantCommand(() -> swerve.resetOdometry(
-            //     new Pose2d(
-            //         new Translation2d(0,0),
-            //         new Rotation2d(Conversion.degreesToRadians(180))   
-            //     )
-            // )),
+            new InstantCommand(() -> swerve.resetOdometry(
+                new Pose2d(
+                    new Translation2d(0,0),
+                    new Rotation2d(Conversion.degreesToRadians(180))   
+                )
+            )),
             new Shoot(30000, 2300.0),
             new WaitCommand(9),
             new RunCommand(() -> swerve.drive(new Translation2d(-0.4, 0), 0, true, true), swerve)
