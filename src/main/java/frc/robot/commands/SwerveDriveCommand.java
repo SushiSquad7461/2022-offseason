@@ -9,32 +9,32 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 public class SwerveDriveCommand extends CommandBase {
-    private final Swerve m_swerve;
-    private final GenericHID m_controller;
-    private final int m_translationAxis;
-    private final int m_strafeAxis;
-    private final int m_rotationsAxis;
-    private final boolean m_fieldRelative;
-    private final boolean m_openLoop;
+    private final Swerve swerve;
+    private final GenericHID controller;
+    private final int translationAxis;
+    private final int strafeAxis;
+    private final int rotationsAxis;
+    private final boolean fieldRelative;
+    private final boolean openLoop;
 
     public SwerveDriveCommand(Swerve swerve, GenericHID controller, int translationAxis, int strafeAxis,
             int rotationsAxis, boolean fieldRelative, boolean openLoop) {
-        m_swerve = swerve;
-        m_controller = controller;
-        m_translationAxis = translationAxis;
-        m_strafeAxis = strafeAxis;
-        m_rotationsAxis = rotationsAxis;
-        m_fieldRelative = fieldRelative;
-        m_openLoop = openLoop;
+        this.swerve = swerve;
+        this.controller = controller;
+        this.translationAxis = translationAxis;
+        this.strafeAxis = strafeAxis;
+        this.rotationsAxis = rotationsAxis;
+        this.fieldRelative = fieldRelative;
+        this.openLoop = openLoop;
 
-        addRequirements(m_swerve);
+        addRequirements(swerve);
     }
 
     @Override
     public void execute() {
-        double forwardBack = -m_controller.getRawAxis(m_translationAxis);
-        double leftRight = m_controller.getRawAxis(m_strafeAxis);
-        double rot = m_controller.getRawAxis(m_rotationsAxis);
+        double forwardBack = -controller.getRawAxis(translationAxis);
+        double leftRight = controller.getRawAxis(strafeAxis);
+        double rot = controller.getRawAxis(rotationsAxis);
 
         forwardBack = Normalization.cube(forwardBack);
         leftRight = Normalization.cube(leftRight);
@@ -47,6 +47,6 @@ public class SwerveDriveCommand extends CommandBase {
         rot = Normalization.cube(Normalization.cube(rot));
         rot *= Constants.Swerve.maxAngularVelocity;
 
-        m_swerve.drive(translation, rot, m_fieldRelative, m_openLoop);
+        swerve.drive(translation, rot, fieldRelative, openLoop);
     }
 }

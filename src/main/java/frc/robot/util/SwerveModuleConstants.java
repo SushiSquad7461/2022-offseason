@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.util;
 
 public class SwerveModuleConstants {
     public final int driveMotorID;

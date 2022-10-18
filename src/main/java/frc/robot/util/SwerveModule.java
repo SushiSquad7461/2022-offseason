@@ -1,12 +1,9 @@
-package frc.robot.subsystems;
+package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.CTREModuleState;
 import frc.robot.Constants;
-import frc.robot.Conversions;
 import frc.robot.Robot;
-import frc.robot.SwerveModuleConstants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;

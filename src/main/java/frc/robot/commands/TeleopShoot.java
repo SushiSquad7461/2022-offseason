@@ -22,20 +22,20 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 
 public class TeleopShoot extends CommandBase {
-  private final GenericHID m_controller;
-  private final int m_translationAxis;
-  private final int m_strafeAxis;
-  private final int m_rotationsAxis;
-  private final boolean m_fieldRelative;
-  private final boolean m_openLoop;
+  private final GenericHID controller;
+  private final int translationAxis;
+  private final int strafeAxis;
+  private final int rotationsAxis;
+  private final boolean fieldRelative;
+  private final boolean openLoop;
 
   private final PIDController pid;
 
-  private final Shooter m_shooter;
-  private final PhotonVision m_photonvision;
-  private final Swerve m_swerve;
-  private final Hood m_hood;
-  private final Indexer m_indexer;
+  private final Shooter shooter;
+  private final PhotonVision photonvision;
+  private final Swerve swerve;
+  private final Hood hood;
+  private final Indexer indexer;
   private boolean shoot = false;
   private double finishDelay;
   private double distance;
@@ -50,23 +50,23 @@ public class TeleopShoot extends CommandBase {
     distance = 0;
     heading = 0;
 
-    m_controller = controller;
-    m_translationAxis = translationAxis;
-    m_strafeAxis = strafeAxis;
-    m_rotationsAxis = rotationsAxis;
-    m_fieldRelative = fieldRelative;
-    m_openLoop = openLoop;
+    this.controller = controller;
+    this.translationAxis = translationAxis;
+    this.strafeAxis = strafeAxis;
+    this.rotationsAxis = rotationsAxis;
+    this.fieldRelative = fieldRelative;
+    this.openLoop = openLoop;
 
-    m_shooter = Shooter.getInstance();
-    m_photonvision = PhotonVision.getInstance();
-    m_swerve = Swerve.getInstance();
-    m_hood = Hood.getInstance();
-    m_indexer = Indexer.getInstance();
+    shooter = Shooter.getInstance();
+    photonvision = PhotonVision.getInstance();
+    swerve = Swerve.getInstance();
+    hood = Hood.getInstance();
+    indexer = Indexer.getInstance();
 
-    addRequirements(m_photonvision);
-    addRequirements(m_swerve);
-    addRequirements(m_shooter);
-    addRequirements(m_hood);
+    addRequirements(photonvision);
+    addRequirements(swerve);
+    addRequirements(shooter);
+    addRequirements(hood);
 
     pid.setSetpoint(0);
     pid.enableContinuousInput(-180, 180);
@@ -77,8 +77,8 @@ public class TeleopShoot extends CommandBase {
   public void initialize() {
     shoot = false;
     finishDelay = 0.0;
-    distance = m_photonvision.getDistance();
-    heading = m_photonvision.getHeading();
+    distance = photonvision.getDistance();
+    heading = photonvision.getHeading();
     pid.calculate(30.0);
     SmartDashboard.putNumber("Turn To Target PID Error", pid.getPositionError());
 
@@ -90,8 +90,8 @@ public class TeleopShoot extends CommandBase {
     SmartDashboard.putNumber("Turn To Target PID Error", pid.getPositionError());
 
     if (!pid.atSetpoint()) {
-      distance = m_photonvision.getDistance();
-      heading = m_photonvision.getHeading();
+      distance = photonvision.getDistance();
+      heading = photonvision.getHeading();
     } else {
       heading = 0;
     }
@@ -99,8 +99,8 @@ public class TeleopShoot extends CommandBase {
     double output = pid.calculate(heading);
     System.out.println(pid.atSetpoint());
 
-    double forwardBack = -m_controller.getRawAxis(m_translationAxis);
-    double leftRight = m_controller.getRawAxis(m_strafeAxis);
+    double forwardBack = -controller.getRawAxis(translationAxis);
+    double leftRight = controller.getRawAxis(strafeAxis);
 
     forwardBack = Normalization.cube(forwardBack);
     leftRight = Normalization.cube(leftRight);
@@ -110,12 +110,12 @@ public class TeleopShoot extends CommandBase {
     Translation2d translation = new Translation2d(forwardBack, leftRight)
         .times(Constants.Swerve.maxSpeed * magnitudeRatio);
 
-    m_swerve.drive(translation, output, m_fieldRelative, m_openLoop);
+    swerve.drive(translation, output, fieldRelative, openLoop);
 
-    m_shooter.setVelocityBasedOnDistance(distance);
-    m_hood.setPosBasedOnDistance(distance);
-    if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot && pid.atSetpoint()) {
-      m_indexer.setState(IndexerState.SHOOTING);
+    shooter.setVelocityBasedOnDistance(distance);
+    hood.setPosBasedOnDistance(distance);
+    if (shooter.isAtSpeed() && hood.isAtPos() && !shoot && pid.atSetpoint()) {
+      indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
   }
@@ -123,7 +123,7 @@ public class TeleopShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Normalization.cube(m_controller.getRawAxis(m_rotationsAxis)) != 0) {
+    if (Normalization.cube(controller.getRawAxis(rotationsAxis)) != 0) {
       return true;
     }
 
@@ -141,8 +141,8 @@ public class TeleopShoot extends CommandBase {
 
   @Override
   public void end(boolean inturrupted) {
-    m_shooter.stopShooter();
-    m_hood.setPos(-1000);
-    m_indexer.setState(IndexerState.IDLE);
+    shooter.stopShooter();
+    hood.setPos(-1000);
+    indexer.setState(IndexerState.IDLE);
   }
 }

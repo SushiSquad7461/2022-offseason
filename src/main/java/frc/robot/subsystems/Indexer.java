@@ -39,9 +39,9 @@ public class Indexer extends SubsystemBase {
   private boolean isRedAlliance;
   private BallColor ballColor;
 
-  private final Timer m_timer ;
-  private double m_startTime;
-  private double m_startEjectTime;
+  private final Timer timer ;
+  private double startTime;
+  private double startEjectTime;
 
   public enum IndexerState {
     WAITING_FOR_COLOR,
@@ -73,9 +73,9 @@ public class Indexer extends SubsystemBase {
     table = NetworkTableInstance.getDefault().getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
 
-    m_timer = new Timer();
-    m_startEjectTime = 0;
-    m_startTime = 0;
+    timer = new Timer();
+    startEjectTime = 0;
+    startTime = 0;
 
     kicker = MotorHelper.createSparkMax(Constants.Ports.KICKER_MOTOR, MotorType.kBrushless);
     feeder = MotorHelper.createSparkMax(Ports.FEEDER_MOTOR, MotorType.kBrushless);
@@ -92,7 +92,7 @@ public class Indexer extends SubsystemBase {
     lowerBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
     upperBeamBreak = new DigitalInput(Ports.UPPER_BEAM_BREAK);
 
-    m_timer.start();
+    timer.start();
   }
 
   @Override
@@ -126,7 +126,7 @@ public class Indexer extends SubsystemBase {
         }
         break;
       case EJECTING:
-        if (!lowerBeamBreak && m_timer.get() - m_startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
+        if (!lowerBeamBreak && timer.get() - startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
           setState(IndexerState.INTAKING);
         }
         break;
@@ -169,19 +169,19 @@ public class Indexer extends SubsystemBase {
 
     if (colorRatio < 0.75) {
       if (ballColor != BallColor.Blue) {
-        System.out.println("blue: " + (m_timer.get() - m_startTime));
+        System.out.println("blue: " + (timer.get() - startTime));
         System.out.println(colorRatio);
       }
       ballColor = BallColor.Blue;
     } else if (colorRatio > 2.0) {
       if (ballColor != BallColor.Red) {
-        System.out.println("red: " + (m_timer.get() - m_startTime));
+        System.out.println("red: " + (timer.get() - startTime));
         System.out.println(colorRatio);
       }
       ballColor = BallColor.Red;
     } else {
       if (ballColor != BallColor.Unknown) {
-        System.out.println("unknown: " + (m_timer.get() - m_startTime));
+        System.out.println("unknown: " + (timer.get() - startTime));
         System.out.println(colorRatio);
       }
       ballColor = BallColor.Unknown;
@@ -223,7 +223,7 @@ public class Indexer extends SubsystemBase {
       case EJECTING:
         ejecter.set(-kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEADER_SPEED);
-        m_startEjectTime = m_timer.get();
+        startEjectTime = timer.get();
         break;
       case MOVING_UP:
         ejecter.set(kIndexer.EJECTER_SPEED);
