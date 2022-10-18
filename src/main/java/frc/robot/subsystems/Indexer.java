@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Ports;
+import frc.robot.Constants.kPorts;
 import frc.robot.Constants.kIndexer;
 
 public class Indexer extends SubsystemBase {
@@ -59,7 +59,7 @@ public class Indexer extends SubsystemBase {
     Blue
   }
 
-  private static Indexer indexer = null;
+  private static Indexer indexer;
 
   public static Indexer getInstance() {
     if (indexer == null) {
@@ -77,9 +77,9 @@ public class Indexer extends SubsystemBase {
     startEjectTime = 0;
     startTime = 0;
 
-    kicker = MotorHelper.createSparkMax(Constants.Ports.KICKER_MOTOR, MotorType.kBrushless);
-    feeder = MotorHelper.createSparkMax(Ports.FEEDER_MOTOR, MotorType.kBrushless);
-    ejecter = MotorHelper.createSparkMax(Ports.EJECTER_MOTOR, MotorType.kBrushless);
+    kicker = MotorHelper.createSparkMax(kPorts.KICKER_MOTOR, MotorType.kBrushless);
+    feeder = MotorHelper.createSparkMax(kPorts.FEEDER_MOTOR, MotorType.kBrushless);
+    ejecter = MotorHelper.createSparkMax(kPorts.EJECTER_MOTOR, MotorType.kBrushless);
 
     currState = IndexerState.IDLE;
 
@@ -89,8 +89,8 @@ public class Indexer extends SubsystemBase {
         ColorSensorMeasurementRate.kColorRate25ms,
         GainFactor.kGain3x);
 
-    lowerBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
-    upperBeamBreak = new DigitalInput(Ports.UPPER_BEAM_BREAK);
+    lowerBeamBreak = new DigitalInput(kPorts.BOTTOM_BEAM_BREAK);
+    upperBeamBreak = new DigitalInput(kPorts.UPPER_BEAM_BREAK);
 
     timer.start();
   }

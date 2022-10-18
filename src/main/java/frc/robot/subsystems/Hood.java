@@ -9,7 +9,7 @@ import SushiFrcLib.SmartDashboard.TunableNumber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Ports;
+import frc.robot.Constants.kPorts;
 import frc.robot.Constants.kHood;
 
 public class Hood extends SubsystemBase {
@@ -39,7 +39,7 @@ public class Hood extends SubsystemBase {
         hoodF = new TunableNumber("Hood F", Constants.kHood.kF, Constants.TUNING_MODE);
         targetPos = new TunableNumber("Target Pos", 0, Constants.TUNING_MODE);
 
-        motor = MotorHelper.createFalconMotor(Ports.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION,
+        motor = MotorHelper.createFalconMotor(kPorts.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION,
                 kHood.NEUTRAL_MODE, hoodP.get(), hoodI.get(), hoodD.get(), hoodF.get());
         motor.setSelectedSensorPosition(0);
     }

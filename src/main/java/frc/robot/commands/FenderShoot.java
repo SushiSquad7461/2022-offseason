@@ -8,7 +8,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 
-public class ShootFender extends CommandBase {
+public class FenderShoot extends CommandBase {
     private final Shooter hooter;
     private final Hood hood;
     private final Indexer indexer;
@@ -19,7 +19,7 @@ public class ShootFender extends CommandBase {
     private double hoodPos;
     private double shooterVelocity;
 
-    public ShootFender(double hoodPos, double shooterVelocity) {
+    public FenderShoot(double hoodPos, double shooterVelocity) {
         hooter = Shooter.getInstance();
         swerve = Swerve.getInstance();
         indexer = Indexer.getInstance();

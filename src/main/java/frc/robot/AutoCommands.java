@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.ShootFender;
+import frc.robot.Constants.kSwerve;
+import frc.robot.commands.FenderShoot;
 import frc.robot.subsystems.Swerve;
 
 public class AutoCommands {
@@ -42,7 +43,7 @@ public class AutoCommands {
                     new Rotation2d(Conversion.degreesToRadians(180))   
                 )
             )),
-            new ShootFender(30000, 2300.0),
+            new FenderShoot(30000, 2300.0),
             new WaitCommand(9),
             new RunCommand(() -> swerve.drive(new Translation2d(-0.4, 0), 0, true, true), swerve)
         ));
@@ -55,7 +56,7 @@ public class AutoCommands {
     }
 
     private Command getCommand(String pathName, boolean isFirstPath) {
-        PathPlannerTrajectory path = PathPlanner.loadPath(pathName, Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAcceleration);
+        PathPlannerTrajectory path = PathPlanner.loadPath(pathName, kSwerve.maxAngularVelocity, kSwerve.maxAcceleration);
 
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
@@ -65,10 +66,10 @@ public class AutoCommands {
             new PPSwerveControllerCommand(
                 path, 
                 swerve::getPose, 
-                Constants.Swerve.swerveKinematics, 
-                Constants.Swerve.xController, 
-                Constants.Swerve.yController, 
-                Constants.Swerve.angleController, 
+                kSwerve.swerveKinematics, 
+                kSwerve.xController, 
+                kSwerve.yController, 
+                kSwerve.angleController, 
                 (s -> swerve.setModuleStates(s)), 
                 swerve
             )

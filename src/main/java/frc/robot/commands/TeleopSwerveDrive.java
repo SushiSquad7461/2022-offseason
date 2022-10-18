@@ -5,10 +5,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Swerve;
 
-public class SwerveDriveCommand extends CommandBase {
+public class TeleopSwerveDrive extends CommandBase {
     private final Swerve swerve;
     private final GenericHID controller;
     private final int translationAxis;
@@ -17,7 +17,7 @@ public class SwerveDriveCommand extends CommandBase {
     private final boolean fieldRelative;
     private final boolean openLoop;
 
-    public SwerveDriveCommand(Swerve swerve, GenericHID controller, int translationAxis, int strafeAxis,
+    public TeleopSwerveDrive(Swerve swerve, GenericHID controller, int translationAxis, int strafeAxis,
             int rotationsAxis, boolean fieldRelative, boolean openLoop) {
         this.swerve = swerve;
         this.controller = controller;
@@ -42,10 +42,10 @@ public class SwerveDriveCommand extends CommandBase {
         double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
         double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
         Translation2d translation = new Translation2d(forwardBack, leftRight)
-                .times(Constants.Swerve.maxSpeed * magnitudeRatio);
+                .times(kSwerve.maxSpeed * magnitudeRatio);
 
         rot = Normalization.cube(Normalization.cube(rot));
-        rot *= Constants.Swerve.maxAngularVelocity;
+        rot *= kSwerve.maxAngularVelocity;
 
         swerve.drive(translation, rot, fieldRelative, openLoop);
     }

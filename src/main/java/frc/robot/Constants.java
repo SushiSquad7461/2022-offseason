@@ -97,7 +97,7 @@ public final class Constants {
         public static final double FEADER_SPEED = 0.8;
     }
 
-    public static class Ports {
+    public static class kPorts {
         public static final int BOTTOM_BEAM_BREAK = 0;
         public static final int UPPER_BEAM_BREAK = 1;
 
@@ -113,7 +113,7 @@ public final class Constants {
 
     }
 
-    public static final class Swerve {
+    public static final class kSwerve {
         public static final int pigeonID = 13;
         public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
@@ -166,7 +166,7 @@ public final class Constants {
         public static final PIDController xController = new PIDController(0.05, 0, 0);
         public static final PIDController yController = new PIDController(0.05, 0, 0);
         public static final ProfiledPIDController angleController = new ProfiledPIDController(0.05, 0, 0,
-                new Constraints(Constants.Swerve.maxAngularVelocity, 2.0));
+                new Constraints(maxAngularVelocity, 2.0));
 
         /* Neutral Modes */
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
@@ -222,7 +222,7 @@ public final class Constants {
 
     }
 
-    public static final class VisionConstants {
+    public static final class kVision {
         public static final double kLimeLightHeight = 2.75; // Limelight height in feet
         public static final double kHubHeight = 8.666667; // hub height in feet
         public static final double kLimeLightToHubHeight = kHubHeight - kLimeLightHeight; // height difference between
@@ -232,7 +232,7 @@ public final class Constants {
         public static final double kLimeLightHorizontalFOV = 59.6; // Limelight horizontal field of view in degrees
     }
 
-    public static final class AutoConstants {
+    public static final class kAuto {
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
@@ -253,7 +253,7 @@ public final class Constants {
         public static final int DRIVE_ROTATE = XboxController.Axis.kRightX.value;
 
         public static final int RUN_INTAKE = XboxController.Button.kLeftBumper.value;
-        public static final int EJECT_INTAKE = XboxController.Button.kX.value;
+        public static final int REVERSE_INTAKE = XboxController.Button.kX.value;
 
         public static final int BACK_INDEXER = XboxController.Button.kY.value;
 

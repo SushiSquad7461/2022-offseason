@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.Constants.kShooter;
+import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.PhotonVision;
@@ -108,7 +108,7 @@ public class TeleopShoot extends CommandBase {
     double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
     double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
     Translation2d translation = new Translation2d(forwardBack, leftRight)
-        .times(Constants.Swerve.maxSpeed * magnitudeRatio);
+        .times(kSwerve.maxSpeed * magnitudeRatio);
 
     swerve.drive(translation, output, fieldRelative, openLoop);
 

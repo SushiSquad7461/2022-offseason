@@ -10,7 +10,7 @@ import SushiFrcLib.Math.Conversion;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.kVision;
 
 public class PhotonVision extends SubsystemBase {
     private final PhotonCamera camera;
@@ -22,13 +22,13 @@ public class PhotonVision extends SubsystemBase {
     private boolean hasTargets;
     private boolean lastHeadingPositive = true;
 
-    private static PhotonVision sInstance;
+    private static PhotonVision instance;
 
     public static PhotonVision getInstance() {
-        if (sInstance == null) {
-            sInstance = new PhotonVision();
+        if (instance == null) {
+            instance = new PhotonVision();
         }
-        return sInstance;
+        return instance;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class PhotonVision extends SubsystemBase {
             return 0;
         }
 
-        double angle = Constants.VisionConstants.kLimeLightMountAngle + getBestPitch();
-        return (1 / Math.tan(Conversion.degreesToRadians(angle))) * Constants.VisionConstants.kLimeLightToHubHeight;
+        double angle = kVision.kLimeLightMountAngle + getBestPitch();
+        return (1 / Math.tan(Conversion.degreesToRadians(angle))) * kVision.kLimeLightToHubHeight;
     }
 }

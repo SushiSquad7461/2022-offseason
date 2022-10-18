@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.commands.TeleopSwerveDrive;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -84,7 +84,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    swerve.setDefaultCommand(new SwerveDriveCommand(
+    swerve.setDefaultCommand(new TeleopSwerveDrive(
             swerve,
             driver,
             kOI.DRIVE_TRANSLATION_Y,
@@ -110,7 +110,7 @@ public class RobotContainer {
             )
         );
 
-    new JoystickButton(driver, kOI.EJECT_INTAKE)
+    new JoystickButton(driver, kOI.REVERSE_INTAKE)
         .whenPressed(new InstantCommand(intake::ejectIntake, intake))
         .whenReleased(new InstantCommand(intake::stopIntake, intake));
 
@@ -129,7 +129,7 @@ public class RobotContainer {
         );
 
     new JoystickButton(driver, kOI.FENDER_SHOOT)
-        .whenPressed(new ShootFender(0.0, 2300.0));
+        .whenPressed(new FenderShoot(0.0, 2300.0));
 
     new JoystickButton(driver, kOI.BACK_INDEXER)
         .whenPressed(
