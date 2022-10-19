@@ -153,14 +153,14 @@ public final class Constants {
         public static final double DRIVE_F = 0.05;
 
         /* Swerve Profiling Values */
-        public static final double MAX_ACCELERATION = 0.2;
-        public static final double MAX_SPEED = 2.5; // 4.5 meters per second
-        public static final double MAX_ANGULAR_VELOCITY = 8.5; // 11.5
+        public static final double MAX_ACCELERATION = 2;
+        public static final double MAX_SPEED = 4.5; // 4.5 meters per second
+        public static final double MAX_ANGULAR_VELOCITY = 20; // 11.5
 
-        public static final PIDController X_CONTROLLER = new PIDController(0.05, 0, 0);
-        public static final PIDController Y_CONTROLLER = new PIDController(0.05, 0, 0);
-        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(0.05, 0, 0,
-                new Constraints(MAX_ANGULAR_VELOCITY, 2.0));
+        public static final PIDController X_CONTROLLER = new PIDController(0.1, 0, 0);
+        public static final PIDController Y_CONTROLLER = new PIDController(0.1, 0, 0);
+        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(8, 0, 0,
+                new Constraints(MAX_ANGULAR_VELOCITY, 17));
 
         /* Neutral Modes */
         public static final NeutralMode ANGLE_NEUTRAL_MODE = NeutralMode.Coast;

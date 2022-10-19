@@ -52,7 +52,9 @@ public class AutoCommands {
 
         autos.put("complex", new SequentialCommandGroup(getCommand(testPaths[1], true), getCommand(testPaths[0], false)));
 
-        autos.put("hubToHp", new SequentialCommandGroup(getCommand("HubToHp", true)));
+        autos.put("Hub to HP", new SequentialCommandGroup(getCommand("Test3", true)));
+
+        autos.put("Rotation test", new SequentialCommandGroup(getCommand("Test4", true)));
     }
 
     private Command getCommand(String pathName, boolean isFirstPath) {
