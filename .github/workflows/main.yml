@@ -17,13 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     container: gradle:jdk11
     steps:
-      - name: "Run linter"
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
-        run: ./gradlew check
-      - name: "Create linter artifact"
-        uses: actions/upload-artifact@v3
+      - run: ./gradlew check
+      - uses: actions/upload-artifact@v3
         with:
           name: linter-report
           path: build/reports/checkstyle/main.html
