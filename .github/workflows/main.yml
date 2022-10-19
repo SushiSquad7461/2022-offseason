@@ -21,6 +21,7 @@ jobs:
         with:
           submodules: recursive
       - run: ./gradlew check
+        if: always()
       - uses: actions/upload-artifact@v3
         with:
           name: linter-report
