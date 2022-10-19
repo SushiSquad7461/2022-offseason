@@ -9,6 +9,8 @@ jobs:
     container: wpilib/roborio-cross-ubuntu:2022-18.04
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - run: ./gradlew assemble
   lint:
     name: Run checkstyle linter
@@ -16,4 +18,6 @@ jobs:
     container: gradle:jdk11
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - run: ./gradlew check
