@@ -35,6 +35,15 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 30;
     }
 
+    public final static class kClimb {
+        public static final double CLIMB_SPEED = 0.5;
+
+        public static final TalonFXInvertType LEFT_INVERSION = TalonFXInvertType.Clockwise;
+        public static final TalonFXInvertType RIGHT_INVERSION = TalonFXInvertType.Clockwise;
+
+        public static final int CURRENT_LIMIT = 30;
+    }
+
     public static class kHood {
         public static final int CURRENT_LIMIT = 35;
         public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
@@ -83,11 +92,12 @@ public final class Constants {
         static {
             // First val is disntance from goal in feet, Second val is shooterRPM
             posMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2300.0));
-            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0)); //2200
+            posMap.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0)); // 2200
             posMap.put(new InterpolatingDouble(7.0), new InterpolatingDouble(2550.0)); // 2400
             posMap.put(new InterpolatingDouble(10.0), new InterpolatingDouble(2700.0)); // 2500
             posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0)); // 2700
-            // posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0)); // 3100
+            // posMap.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0));
+            // // 3100
         }
     }
 
