@@ -21,7 +21,7 @@ public class Hood extends SubsystemBase {
     private final TunableNumber hoodF;
     private final TunableNumber targetPos;
     private static Hood instance;
-    private boolean reset = true;
+    private boolean reset;
 
     public static Hood getInstance() {
         if (instance == null) {
@@ -40,6 +40,7 @@ public class Hood extends SubsystemBase {
         motor = MotorHelper.createFalconMotor(kPorts.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION,
                 kHood.NEUTRAL_MODE, hoodP.get(), hoodI.get(), hoodD.get(), hoodF.get());
         motor.setSelectedSensorPosition(0);
+        reset = true;
     }
 
     public void setPos(double newPos) {

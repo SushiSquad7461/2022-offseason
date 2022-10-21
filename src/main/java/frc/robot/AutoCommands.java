@@ -69,10 +69,10 @@ public class AutoCommands {
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
-                    new WaitCommand(0.5),
-                    new InstantCommand(indexer::setIdle, indexer)
+                    new WaitCommand(0.5)
                 )
-            )
+            ),
+            new InstantCommand(indexer::setIdle, indexer)
         ));
 
         autos.put("3 Ball", new SequentialCommandGroup(
@@ -85,10 +85,10 @@ public class AutoCommands {
                 new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
-                    new WaitCommand(0.5),
-                    new InstantCommand(indexer::setIdle, indexer)
+                    new WaitCommand(0.5)
                 )
             ),
+            new InstantCommand(indexer::setIdle, indexer),
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[1], false),
                 new InstantCommand(intake::runIntake, intake),
@@ -98,10 +98,10 @@ public class AutoCommands {
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
-                    new WaitCommand(0.5),
-                    new InstantCommand(indexer::setIdle, indexer)
+                    new WaitCommand(0.5)
                 )
-            )
+            ),
+            new InstantCommand(indexer::setIdle, indexer)
         ));
 
         autos.put("5 Ball", new SequentialCommandGroup(
@@ -114,10 +114,10 @@ public class AutoCommands {
                 new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
-                    new WaitCommand(0.5),
-                    new InstantCommand(indexer::setIdle, indexer)
+                    new WaitCommand(0.5)
                 )
             ),
+            new InstantCommand(indexer::setIdle, indexer),
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[1], false),
                 new InstantCommand(intake::runIntake, intake),
@@ -127,10 +127,10 @@ public class AutoCommands {
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
-                    new WaitCommand(0.5),
-                    new InstantCommand(indexer::setIdle, indexer)
+                    new WaitCommand(0.5)
                 )
             ),
+            new InstantCommand(indexer::setIdle, indexer),
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[2], false),
                 new InstantCommand(intake::runIntake, intake),
@@ -141,23 +141,23 @@ public class AutoCommands {
                 getCommand(fiveBallPaths[3], false),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake), 
-                    new WaitCommand(0.5),
-                    new InstantCommand(indexer::setIdle, indexer)
+                    new WaitCommand(0.5)
                 )
             ),
+            new InstantCommand(indexer::setIdle, indexer),
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
-                    new WaitCommand(0.5),
-                    new InstantCommand(indexer::setIdle, indexer)
+                    new WaitCommand(0.5)
                 )
-            )
+            ),
+            new InstantCommand(indexer::setIdle, indexer)
         ));
         autos.put("6 Ball",
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    getCommand(fiveBallPaths[0], true),
+                    getCommand(sixBallPaths[0], true),
                     new InstantCommand(intake::runIntake, intake),
                     new InstantCommand(indexer::setIntake, indexer)
                 ),
@@ -165,29 +165,29 @@ public class AutoCommands {
                     new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
                     new SequentialCommandGroup(
                         new InstantCommand(intake::stopIntake, intake),
-                        new WaitCommand(0.5),
-                        new InstantCommand(indexer::setIdle, indexer)
+                        new WaitCommand(0.5)
                     )
                 ),
+                new InstantCommand(indexer::setIdle, indexer),
                 new ParallelCommandGroup(
-                    getCommand(fiveBallPaths[1], true),
+                    getCommand(sixBallPaths[1], true),
                     new InstantCommand(intake::runIntake, intake),
                     new InstantCommand(indexer::setIntake, indexer)
                 ),
                 new WaitCommand(2),
                 new ParallelCommandGroup(
-                    getCommand(fiveBallPaths[2], true)
+                    getCommand(sixBallPaths[2], true)
                 ),
                 new ParallelCommandGroup(
                     new Shoot(60000, 2700),
                     new SequentialCommandGroup(
                         new InstantCommand(intake::stopIntake, intake),
-                        new WaitCommand(0.5),
-                        new InstantCommand(indexer::setIdle, indexer)
+                        new WaitCommand(0.5)
                     )
                 ),
+                new InstantCommand(indexer::setIdle, indexer),
                 new ParallelCommandGroup(
-                    getCommand(fiveBallPaths[3], true),
+                    getCommand(sixBallPaths[3], true),
                     new InstantCommand(intake::runIntake, intake),
                     new InstantCommand(indexer::setIntake, indexer)
                 ),
@@ -195,10 +195,10 @@ public class AutoCommands {
                     new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
                     new SequentialCommandGroup(
                         new InstantCommand(intake::stopIntake, intake),
-                        new WaitCommand(0.5),
-                        new InstantCommand(indexer::setIdle, indexer)
+                        new WaitCommand(0.5)
                     )
-                )
+                ),
+                new InstantCommand(indexer::setIdle, indexer)
             )
         );
     }

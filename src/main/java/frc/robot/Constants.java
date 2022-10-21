@@ -58,7 +58,7 @@ public final class Constants {
 
     public static class kShooter {
         public static final double SETPOINT_RPM = 0;
-        public static final double ERROR_TOLERANCE = 60;
+        public static final double ERROR_TOLERANCE = 80; // 60
         public static final int CURRENT_LIMIT = 40;
         public static final double kP = 0.07;
         public static final double kI = 0.0;
@@ -110,9 +110,9 @@ public final class Constants {
 
     public static final class kSwerve {
         public static final boolean OPEN_LOOP = false;
-        public static final boolean FEILD_RELATIVE = true;
+        public static final boolean FEILD_RELATIVE = false;
 
-        public static final boolean GYRO_INVERSION = true; // Always ensure Gyro is CCW+ CW-
+        public static final boolean GYRO_INVERSION = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
         public static final double TRACK_WIDTH = Units.inchesToMeters(21.73);
@@ -127,10 +127,10 @@ public final class Constants {
         public static final double ANGLE_GEAR_RATIO = (150.0 / 7.0); // 12.8:1
 
         public static final SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
-                new Translation2d(WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0),
-                new Translation2d(WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
                 new Translation2d(-WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0),
-                new Translation2d(-WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0));
+                new Translation2d(-WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
+                new Translation2d(WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0),
+                new Translation2d(WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0));
 
         /* Swerve Current Limiting */
         public static final int ANGLE_CONTINUSE_CURRENT_LIMIT = 25;
@@ -156,13 +156,13 @@ public final class Constants {
         public static final double DRIVE_F = 0.05;
 
         /* Swerve Profiling Values */
-        public static final double MAX_ACCELERATION = 2;
+        public static final double MAX_ACCELERATION = 0.5; // 2
         public static final double MAX_SPEED = 4.5; // 4.5 meters per second
         public static final double MAX_ANGULAR_VELOCITY = 20; // 11.5
 
         public static final PIDController X_CONTROLLER = new PIDController(0.1, 0, 0);
         public static final PIDController Y_CONTROLLER = new PIDController(0.1, 0, 0);
-        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(5, 0, 0,
+        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(1, 0, 0,
                 new Constraints(MAX_ANGULAR_VELOCITY, 17));
 
         /* Neutral Modes */

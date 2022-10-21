@@ -52,17 +52,19 @@ public class Shoot extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        boolean isFinished = shoot;
+        return true;
 
-        if (isFinished) {
-            if (finishDelay == 0) {
-                finishDelay = Timer.getFPGATimestamp();
-                return false;
-            } else {
-                return Timer.getFPGATimestamp() - finishDelay > 1;
-            }
-        }
-        return isFinished;
+        // boolean isFinished = shoot;
+
+        // if (isFinished) {
+        //     if (finishDelay == 0) {
+        //         finishDelay = Timer.getFPGATimestamp();
+        //         return false;
+        //     } else {
+        //         return Timer.getFPGATimestamp() - finishDelay > 1;
+        //     }
+        // }
+        // return isFinished;
     }
 
     @Override

@@ -21,9 +21,9 @@ public class TeleopSwerveDrive extends CommandBase {
             int rotationsAxis, boolean fieldRelative, boolean openLoop) {
         this.swerve = swerve;
         this.controller = controller;
-        this.translationAxis = -translationAxis;
-        this.strafeAxis = -strafeAxis;
-        this.rotationsAxis = -rotationsAxis;
+        this.translationAxis = translationAxis;
+        this.strafeAxis = strafeAxis;
+        this.rotationsAxis = rotationsAxis;
         this.fieldRelative = fieldRelative;
         this.openLoop = openLoop;
 
@@ -33,7 +33,7 @@ public class TeleopSwerveDrive extends CommandBase {
     @Override
     public void execute() {
         double forwardBack = -controller.getRawAxis(translationAxis);
-        double leftRight = controller.getRawAxis(strafeAxis);
+        double leftRight = -controller.getRawAxis(strafeAxis);
         double rot = controller.getRawAxis(rotationsAxis);
 
         forwardBack = Normalization.cube(forwardBack);
