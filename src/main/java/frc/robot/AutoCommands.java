@@ -31,10 +31,10 @@ public class AutoCommands {
     private final Swerve swerve;
     private final Intake intake;
     private final Indexer indexer;
-    private final Shooter shooter;
     public final Map<String, SequentialCommandGroup> autos;
 
     //names of pathplanner paths for autos
+    private final String[] sixBallPaths = {"TarmacToSide", "SideToHP", "HPToShot2", "ShotToFarBall"};
     private final String[] fiveBallPaths = {"TarmacToSide", "SideToBall", "BallToHP", "HPToShot"};
     private final String[] twoBallPaths = {"TarmacToBall"};
 
@@ -45,7 +45,7 @@ public class AutoCommands {
 
         autos = new HashMap<String, SequentialCommandGroup>();
 
-        autos.put("nothing", new SequentialCommandGroup(hood));
+        autos.put("nothing", new SequentialCommandGroup());
 
         autos.put("1 Ball", new SequentialCommandGroup(
             new InstantCommand(() -> swerve.resetOdometry(
@@ -154,6 +154,53 @@ public class AutoCommands {
                 )
             )
         ));
+        autos.put("6 Ball",
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    getCommand(fiveBallPaths[0], true),
+                    new InstantCommand(intake::runIntake, intake),
+                    new InstantCommand(indexer::setIntake, indexer)
+                ),
+                new ParallelCommandGroup(
+                    new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
+                    new SequentialCommandGroup(
+                        new InstantCommand(intake::stopIntake, intake),
+                        new WaitCommand(0.5),
+                        new InstantCommand(indexer::setIdle, indexer)
+                    )
+                ),
+                new ParallelCommandGroup(
+                    getCommand(fiveBallPaths[1], true),
+                    new InstantCommand(intake::runIntake, intake),
+                    new InstantCommand(indexer::setIntake, indexer)
+                ),
+                new WaitCommand(2),
+                new ParallelCommandGroup(
+                    getCommand(fiveBallPaths[2], true)
+                ),
+                new ParallelCommandGroup(
+                    new Shoot(60000, 2700),
+                    new SequentialCommandGroup(
+                        new InstantCommand(intake::stopIntake, intake),
+                        new WaitCommand(0.5),
+                        new InstantCommand(indexer::setIdle, indexer)
+                    )
+                ),
+                new ParallelCommandGroup(
+                    getCommand(fiveBallPaths[3], true),
+                    new InstantCommand(intake::runIntake, intake),
+                    new InstantCommand(indexer::setIntake, indexer)
+                ),
+                new ParallelCommandGroup(
+                    new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
+                    new SequentialCommandGroup(
+                        new InstantCommand(intake::stopIntake, intake),
+                        new WaitCommand(0.5),
+                        new InstantCommand(indexer::setIdle, indexer)
+                    )
+                )
+            )
+        );
     }
 
     private Command getCommand(String pathName, boolean isFirstPath) {

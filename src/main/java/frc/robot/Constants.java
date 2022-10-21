@@ -162,7 +162,7 @@ public final class Constants {
 
         public static final PIDController X_CONTROLLER = new PIDController(0.1, 0, 0);
         public static final PIDController Y_CONTROLLER = new PIDController(0.1, 0, 0);
-        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(8, 0, 0,
+        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(5, 0, 0,
                 new Constraints(MAX_ANGULAR_VELOCITY, 17));
 
         /* Neutral Modes */
