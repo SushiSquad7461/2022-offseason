@@ -7,6 +7,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import SushiFrcLib.Math.Conversion;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kVision;
@@ -18,6 +19,10 @@ public class PhotonVision extends SubsystemBase {
     private PhotonTrackedTarget bestTarget;
     private boolean hasTargets;
     private boolean lastHeadingPositive;
+    private LinearFilter headingFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    private LinearFilter distanceFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    private double distance = 0;
+    private double heading = 0;
 
     private static PhotonVision instance;
 
@@ -42,8 +47,10 @@ public class PhotonVision extends SubsystemBase {
         if (hasTargets) {
             lastHeadingPositive = bestTarget.getYaw() > 0;
         }
-
-        SmartDashboard.putNumber("Heading", getBestHeading());
+        heading = headingFilter.calculate(calculateHeading());
+        distance = distanceFilter.calculate(calculateDistance());
+        SmartDashboard.putNumber("Heading", heading);
+        SmartDashboard.putNumber("Distance", distance);
     }
 
     private double getBestArea() {
@@ -90,16 +97,24 @@ public class PhotonVision extends SubsystemBase {
         return 0;
     }
 
-    public double getHeading() {
+    public double calculateHeading() {
         return getAvreageHeading();
     }
 
-    public double getDistance() {
+    public double calculateDistance() {
         if (!camera.getLatestResult().hasTargets()) {
             return 0;
         }
 
         double angle = kVision.LIME_LIGHT_MOUNT_ANGLE + getBestPitch();
         return (1 / Math.tan(Conversion.degreesToRadians(angle))) * kVision.LIME_LIGHT_TO_HUB_HEIGHT;
+    }
+    
+    public double getDistance() {
+        return distance;
+    }
+
+    public double getHeading() {
+        return heading;
     }
 }
