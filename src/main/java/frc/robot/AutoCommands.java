@@ -13,48 +13,106 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.kShots;
 import frc.robot.Constants.kSwerve;
-import frc.robot.commands.FenderShoot;
+import frc.robot.commands.Shoot;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class AutoCommands {
+
     //subsystems
     private final Swerve swerve;
+    private final Intake intake;
+    private final Indexer indexer;
+    private final Shooter shooter;
     public final Map<String, SequentialCommandGroup> autos;
 
     //names of pathplanner paths for autos
-    private final String[] oneBallPaths = {"Test2"};
-    private final String[] testPaths = {"Test", "Test2"};
+    private final String[] fiveBallPaths = {"TarmacToSide", "SideToBall", "BallToHP", "HPToShot"};
+    private final String[] twoBallPaths = {"TarmacToBall"};
 
-    public AutoCommands(Swerve swerve) {
+    public AutoCommands(Swerve swerve, Intake intake, Indexer indexer, Shooter shooter) {
         this.swerve = swerve;
+        this.intake = intake;
+        this.indexer = indexer;
+        this.shooter = shooter;
 
         autos = new HashMap<String, SequentialCommandGroup>();
 
         autos.put("nothing", new SequentialCommandGroup());
 
-        autos.put("oneBall", new SequentialCommandGroup(
+        autos.put("1 Ball", new SequentialCommandGroup(
             new InstantCommand(() -> swerve.resetOdometry(
                 new Pose2d(
                     new Translation2d(0,0),
                     new Rotation2d(Conversion.degreesToRadians(180))   
                 )
             )),
-            new FenderShoot(30000, 2300.0),
+            new Shoot(kShots.FENDER.hoodAngle, kShots.FENDER.shooterVelocity),
             new WaitCommand(9),
             new RunCommand(() -> swerve.drive(new Translation2d(-0.4, 0), 0, true, true), swerve)
         ));
 
-        autos.put("back", new SequentialCommandGroup(getCommand(testPaths[1], true)));
+        autos.put("2 Ball", new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                getCommand(twoBallPaths[0], true), 
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            ),
+            new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity)
+        ));
 
-        autos.put("complex", new SequentialCommandGroup(getCommand(testPaths[1], true), getCommand(testPaths[0], false)));
+        autos.put("3 Ball", new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                getCommand(fiveBallPaths[0], true),
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            ),
+            new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
+            new ParallelCommandGroup(
+                getCommand(fiveBallPaths[1], false),
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            ),
+            new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity)
+        ));
 
-        autos.put("Hub to HP", new SequentialCommandGroup(getCommand("Test3", true)));
-
-        autos.put("Rotation test", new SequentialCommandGroup(getCommand("Test4", true)));
+        autos.put("5 Ball", new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                getCommand(fiveBallPaths[0], true),
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            ),
+            new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
+            new ParallelCommandGroup(
+                getCommand(fiveBallPaths[1], false),
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            ),
+            new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
+            new ParallelCommandGroup(
+                getCommand(fiveBallPaths[2], false),
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            ),
+            new WaitCommand(2),
+            new ParallelCommandGroup(
+                getCommand(fiveBallPaths[3], false),
+                new SequentialCommandGroup(
+                    new InstantCommand(intake::stopIntake, intake), 
+                    new WaitCommand(0.5),
+                    new InstantCommand(indexer::setIdle, indexer)
+                )
+            ),
+            new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity)
+        ));
     }
 
     private Command getCommand(String pathName, boolean isFirstPath) {

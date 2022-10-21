@@ -25,6 +25,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 import frc.robot.Constants.kOI;
+import frc.robot.Constants.kShots;
 import frc.robot.Constants.kSwerve;
 import frc.robot.commands.*;
 
@@ -59,7 +60,7 @@ public class RobotContainer {
     shooter = Shooter.getInstance();
     indexer = Indexer.getInstance();
     intake = Intake.getInstance();
-    autos = new AutoCommands(swerve);
+    autos = new AutoCommands(swerve, intake, indexer, shooter);
     autoChooser = new SendableChooser<>();
 
     driver = new XboxController(SushiConstants.OI.DRIVER_PORT);
@@ -132,7 +133,7 @@ public class RobotContainer {
         );
 
     new JoystickButton(driver, kOI.FENDER_SHOOT)
-        .whenPressed(new FenderShoot(0.0, 2300.0));
+        .whenPressed(new Shoot(kShots.FENDER.hoodAngle, kShots.FENDER.shooterVelocity));
 
     new JoystickButton(driver, kOI.BACK_INDEXER)
         .whenPressed(

@@ -21,9 +21,9 @@ public class TeleopSwerveDrive extends CommandBase {
             int rotationsAxis, boolean fieldRelative, boolean openLoop) {
         this.swerve = swerve;
         this.controller = controller;
-        this.translationAxis = translationAxis;
-        this.strafeAxis = strafeAxis;
-        this.rotationsAxis = rotationsAxis;
+        this.translationAxis = -translationAxis;
+        this.strafeAxis = -strafeAxis;
+        this.rotationsAxis = -rotationsAxis;
         this.fieldRelative = fieldRelative;
         this.openLoop = openLoop;
 

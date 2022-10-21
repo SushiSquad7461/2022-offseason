@@ -168,7 +168,7 @@ public final class Constants {
 
         /* Motor Inverts */
         public static final boolean DRIVE_INVERSION = false;
-        public static final boolean ANGLE_INVERSION = false;
+        public static final boolean ANGLE_INVERSION = true; //make false if we have a stroke
 
         /* Angle Encoder Invert */
         public static final boolean CANCODER_INVERSION = true;
@@ -241,4 +241,17 @@ public final class Constants {
         public static final int FENDER_SHOOT = XboxController.Button.kB.value;
     }
 
+    enum kShots {
+        FENDER(0, 2300),
+        AUTO_TARMAC(50000, 2600),
+        AUTO_SIDE(50000, 2600);
+
+        public double hoodAngle;
+        public double shooterVelocity;
+
+        private kShots(double hoodAngle, double shooterVelocity) {
+            this.hoodAngle = hoodAngle;
+            this.shooterVelocity = shooterVelocity;
+        }
+    }
 }
