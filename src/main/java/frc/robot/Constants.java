@@ -42,6 +42,9 @@ public final class Constants {
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> POS_MAP = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         public static final double OFFSET = 0;
 
+        public static final double TENSION_CURRENT = 0.1;
+        public static final double TENSION_SPEED = -0.05;
+
         static {
             // First val is disntance from goal (feet), Second val is hood pos
             // in encoder tiks

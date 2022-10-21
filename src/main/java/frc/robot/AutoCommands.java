@@ -38,15 +38,14 @@ public class AutoCommands {
     private final String[] fiveBallPaths = {"TarmacToSide", "SideToBall", "BallToHP", "HPToShot"};
     private final String[] twoBallPaths = {"TarmacToBall"};
 
-    public AutoCommands(Swerve swerve, Intake intake, Indexer indexer, Shooter shooter) {
+    public AutoCommands(Swerve swerve, Intake intake, Indexer indexer) {
         this.swerve = swerve;
         this.intake = intake;
         this.indexer = indexer;
-        this.shooter = shooter;
 
         autos = new HashMap<String, SequentialCommandGroup>();
 
-        autos.put("nothing", new SequentialCommandGroup());
+        autos.put("nothing", new SequentialCommandGroup(hood));
 
         autos.put("1 Ball", new SequentialCommandGroup(
             new InstantCommand(() -> swerve.resetOdometry(

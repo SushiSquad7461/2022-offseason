@@ -60,7 +60,7 @@ public class RobotContainer {
     shooter = Shooter.getInstance();
     indexer = Indexer.getInstance();
     intake = Intake.getInstance();
-    autos = new AutoCommands(swerve, intake, indexer, shooter);
+    autos = new AutoCommands(swerve, intake, indexer);
     autoChooser = new SendableChooser<>();
 
     driver = new XboxController(SushiConstants.OI.DRIVER_PORT);

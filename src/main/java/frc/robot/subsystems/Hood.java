@@ -21,6 +21,7 @@ public class Hood extends SubsystemBase {
     private final TunableNumber hoodF;
     private final TunableNumber targetPos;
     private static Hood instance;
+    private boolean reset = true;
 
     public static Hood getInstance() {
         if (instance == null) {
@@ -53,6 +54,17 @@ public class Hood extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Hood Position", motor.getSelectedSensorPosition());
         SmartDashboard.putNumber("Hood Error", motor.getClosedLoopError());
+        SmartDashboard.putNumber("Hood Current", motor.getSupplyCurrent());
+
+        if(reset){
+            motor.set(ControlMode.PercentOutput, kHood.TENSION_SPEED);
+            if(motor.getSupplyCurrent() >= kHood.TENSION_CURRENT) {
+                motor.set(ControlMode.PercentOutput, 0);
+                motor.setSelectedSensorPosition(0);
+                reset = false;
+            }
+            return;
+        }
 
         if (targetPos.get() < kHood.MAX_POS) {
             motor.set(ControlMode.Position, targetPos.get());
@@ -65,9 +77,14 @@ public class Hood extends SubsystemBase {
         if (hoodD.hasChanged()) {
             motor.config_kD(0, hoodD.get());
         }
+
     }
 
     public boolean isAtPos() {
         return Math.abs(targetPos.get() - motor.getSelectedSensorPosition()) < Constants.kHood.HOOD_ERROR;
+    }
+
+    public void reset(){
+        reset = true;
     }
 }
