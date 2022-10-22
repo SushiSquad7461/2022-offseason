@@ -117,4 +117,16 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
     }
+
+    public void updateEncoders() {
+        for (SwerveModule mod : mSwerveMods) {
+            mod.resetToAbsolute();
+        }        
+    }
+
+    public void turnOffAllMotors() {
+        for (SwerveModule mod: mSwerveMods) {
+            mod.turnOffMotor();
+        }
+    }
 }

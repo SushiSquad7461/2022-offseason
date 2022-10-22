@@ -19,8 +19,8 @@ public class PhotonVision extends SubsystemBase {
     private PhotonTrackedTarget bestTarget;
     private boolean hasTargets;
     private boolean lastHeadingPositive;
-    private LinearFilter headingFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
-    private LinearFilter distanceFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    private LinearFilter headingFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
+    private LinearFilter distanceFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
     private double distance = 0;
     private double heading = 0;
 

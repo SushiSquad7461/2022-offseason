@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.time.Instant;
 import java.util.Set;
 
 import SushiFrcLib.Constants.SushiConstants;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.TeleopSwerveDrive;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -121,33 +121,36 @@ public class RobotContainer {
     new JoystickButton(op, kOI.ZERO_GYRO)
         .whenPressed(new InstantCommand(swerve::zeroGyro));
 
+    // new JoystickButton(driver, kOI.AUTO_SHOOT)
+    //     .whenPressed(new TeleopShoot(
+    //             driver,
+    //             kOI.DRIVE_TRANSLATION_Y,
+    //             kOI.DRIVE_TRANSLATION_X,
+    //             kOI.DRIVE_ROTATE,
+    //             kSwerve.FEILD_RELATIVE,
+    //             kSwerve.OPEN_LOOP
+    //         )
+    //     );
+
     new JoystickButton(driver, kOI.AUTO_SHOOT)
-        .whenPressed(new TeleopShoot(
-                driver,
-                kOI.DRIVE_TRANSLATION_Y,
-                kOI.DRIVE_TRANSLATION_X,
-                kOI.DRIVE_ROTATE,
-                kSwerve.FEILD_RELATIVE,
-                kSwerve.OPEN_LOOP
-            )
-        );
+            .whenPressed(new AutoShoot());
 
     new JoystickButton(driver, kOI.FENDER_SHOOT)
         .whenPressed(new Shoot(kShots.FENDER.hoodAngle, kShots.FENDER.shooterVelocity));
 
-    new JoystickButton(driver, kOI.BACK_INDEXER)
-        .whenPressed(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> indexer.setState(IndexerState.BACKING), indexer),
-                new InstantCommand(intake::ejectIntake, intake)
-            )
-        )
-        .whenReleased(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> indexer.setState(IndexerState.IDLE), indexer),
-                new InstantCommand(intake::stopIntake, intake)
-            )
-        );
+    // new JoystickButton(driver, kOI.BACK_INDEXER)
+    //     .whenPressed(
+    //         new ParallelCommandGroup(
+    //             new InstantCommand(() -> indexer.setState(IndexerState.BACKING), indexer),
+    //             new InstantCommand(intake::ejectIntake, intake)
+    //         )
+    //     )
+    //     .whenReleased(
+    //         new ParallelCommandGroup(
+    //             new InstantCommand(() -> indexer.setState(IndexerState.IDLE), indexer),
+    //             new InstantCommand(intake::stopIntake, intake)
+    //         )
+    //     );
 
     new JoystickButton(driver, kOI.ZERO_SHOOTER_HOOD)
         .whenHeld(
@@ -156,6 +159,9 @@ public class RobotContainer {
                 new InstantCommand(shooter::stopShooter, shooter)
             )
         );
+
+    new JoystickButton(driver, kOI.BACK_INDEXER)
+            .whenHeld(new InstantCommand(swerve::updateEncoders, swerve));
   }
 
   /**

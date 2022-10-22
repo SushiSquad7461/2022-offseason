@@ -97,7 +97,7 @@ public class TeleopShoot extends CommandBase {
     }
 
     double output = pid.calculate(heading);
-    System.out.println(pid.atSetpoint());
+    // System.out.println(pid.atSetpoint());
 
     double forwardBack = -controller.getRawAxis(translationAxis);
     double leftRight = controller.getRawAxis(strafeAxis);
@@ -142,7 +142,7 @@ public class TeleopShoot extends CommandBase {
   @Override
   public void end(boolean inturrupted) {
     shooter.stopShooter();
-    hood.setPos(-1000);
+    hood.setPos(10000);
     indexer.setState(IndexerState.IDLE);
   }
 }

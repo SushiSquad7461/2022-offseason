@@ -4,6 +4,7 @@ import SushiFrcLib.Math.Normalization;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Swerve;
@@ -34,7 +35,7 @@ public class TeleopSwerveDrive extends CommandBase {
     public void execute() {
         double forwardBack = -controller.getRawAxis(translationAxis);
         double leftRight = -controller.getRawAxis(strafeAxis);
-        double rot = controller.getRawAxis(rotationsAxis);
+        double rot = -controller.getRawAxis(rotationsAxis);
 
         forwardBack = Normalization.cube(forwardBack);
         leftRight = Normalization.cube(leftRight);
@@ -47,6 +48,6 @@ public class TeleopSwerveDrive extends CommandBase {
         rot = Normalization.cube(Normalization.cube(rot));
         rot *= kSwerve.MAX_ANGULAR_VELOCITY;
 
-        swerve.drive(translation, rot, fieldRelative, openLoop);
+            swerve.drive(translation, rot, fieldRelative, openLoop);
     }
 }

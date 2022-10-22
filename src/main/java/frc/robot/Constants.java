@@ -38,12 +38,12 @@ public final class Constants {
         public static final double kD = 0.1;
         public static final double kF = 0;
         public static final double MAX_POS = 150000;
-        public static final double HOOD_ERROR = 500;
+        public static final double HOOD_ERROR = 200;
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> POS_MAP = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         public static final double OFFSET = 0;
 
-        public static final double TENSION_CURRENT = 0.1;
-        public static final double TENSION_SPEED = -0.05;
+        public static final double TENSION_CURRENT = 0.2;
+        public static final double TENSION_SPEED = -0.1;
 
         static {
             // First val is disntance from goal (feet), Second val is hood pos
@@ -58,11 +58,11 @@ public final class Constants {
 
     public static class kShooter {
         public static final double SETPOINT_RPM = 0;
-        public static final double ERROR_TOLERANCE = 80; // 60
+        public static final double ERROR_TOLERANCE = 50; // 60
         public static final int CURRENT_LIMIT = 40;
-        public static final double kP = 0.07;
+        public static final double kP = 0.270000; // 0.07
         public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kD = 3.0; //0
         public static final double kF = 0.0527;
         public static final double OFFSET = 0;
 
@@ -127,10 +127,10 @@ public final class Constants {
         public static final double ANGLE_GEAR_RATIO = (150.0 / 7.0); // 12.8:1
 
         public static final SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
-                new Translation2d(-WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0),
-                new Translation2d(-WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
+                new Translation2d(WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
                 new Translation2d(WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0),
-                new Translation2d(WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0));
+                new Translation2d(-WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
+                new Translation2d(-WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0));
 
         /* Swerve Current Limiting */
         public static final int ANGLE_CONTINUSE_CURRENT_LIMIT = 25;
@@ -156,13 +156,13 @@ public final class Constants {
         public static final double DRIVE_F = 0.05;
 
         /* Swerve Profiling Values */
-        public static final double MAX_ACCELERATION = 0.5; // 2
-        public static final double MAX_SPEED = 4.5; // 4.5 meters per second
+        public static final double MAX_ACCELERATION = 2; // 2
+        public static final double MAX_SPEED = 11.5; // 4.5 meters per second
         public static final double MAX_ANGULAR_VELOCITY = 20; // 11.5
 
-        public static final PIDController X_CONTROLLER = new PIDController(0.1, 0, 0);
-        public static final PIDController Y_CONTROLLER = new PIDController(0.1, 0, 0);
-        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(1, 0, 0,
+        public static final PIDController X_CONTROLLER = new PIDController(2.4, 0, 0);
+        public static final PIDController Y_CONTROLLER = new PIDController(2.4, 0, 0);
+        public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(4, 0, 0,
                 new Constraints(MAX_ANGULAR_VELOCITY, 17));
 
         /* Neutral Modes */
@@ -246,8 +246,8 @@ public final class Constants {
 
     enum kShots {
         FENDER(0, 2300),
-        AUTO_TARMAC(50000, 2600),
-        AUTO_SIDE(50000, 2600);
+        AUTO_TARMAC(70000, 2650),
+        AUTO_SIDE(70000, 2550);
 
         public double hoodAngle;
         public double shooterVelocity;
