@@ -29,9 +29,9 @@ public class Climb extends SubsystemBase {
 
   public Climb() {
 
-    leftMotor = MotorHelper.createFalconMotor(Constants.Ports.INTAKE_MOTOR, Constants.kClimb.CURRENT_LIMIT,
+    leftMotor = MotorHelper.createFalconMotor(Constants.Ports.LEFT_CLIMB_MOTOR, Constants.kClimb.CURRENT_LIMIT,
         Constants.kClimb.LEFT_INVERSION, NeutralMode.Brake);
-    rightMotor = MotorHelper.createFalconMotor(Constants.Ports.HOPPER_MOTOR, Constants.kClimb.CURRENT_LIMIT,
+    rightMotor = MotorHelper.createFalconMotor(Constants.Ports.RIGHT_CLIMB_MOTOR, Constants.kClimb.CURRENT_LIMIT,
         Constants.kClimb.RIGHT_INVERSION, NeutralMode.Brake);
 
   }
@@ -41,7 +41,7 @@ public class Climb extends SubsystemBase {
     rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED);
   }
 
-  public void stopIntake() {
+  public void stop() {
     leftMotor.set(ControlMode.PercentOutput, 0);
     rightMotor.set(ControlMode.PercentOutput, 0);
   }

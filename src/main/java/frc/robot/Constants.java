@@ -41,7 +41,7 @@ public final class Constants {
         public static final TalonFXInvertType LEFT_INVERSION = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType RIGHT_INVERSION = TalonFXInvertType.Clockwise;
 
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 10;
     }
 
     public static class kHood {
@@ -125,6 +125,9 @@ public final class Constants {
 
         public static final int INTAKE_MOTOR = 49;
         public static final int HOPPER_MOTOR = 48;
+
+        public static final int LEFT_CLIMB_MOTOR = 50;
+        public static final int RIGHT_CLIMB_MOTOR = 51;
 
     }
 
