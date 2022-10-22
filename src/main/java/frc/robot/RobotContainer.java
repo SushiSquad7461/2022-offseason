@@ -121,36 +121,36 @@ public class RobotContainer {
     new JoystickButton(op, kOI.ZERO_GYRO)
         .whenPressed(new InstantCommand(swerve::zeroGyro));
 
-    // new JoystickButton(driver, kOI.AUTO_SHOOT)
-    //     .whenPressed(new TeleopShoot(
-    //             driver,
-    //             kOI.DRIVE_TRANSLATION_Y,
-    //             kOI.DRIVE_TRANSLATION_X,
-    //             kOI.DRIVE_ROTATE,
-    //             kSwerve.FEILD_RELATIVE,
-    //             kSwerve.OPEN_LOOP
-    //         )
-    //     );
-
     new JoystickButton(driver, kOI.AUTO_SHOOT)
-            .whenPressed(new AutoShoot());
+        .whenPressed(new TeleopShoot(
+                driver,
+                kOI.DRIVE_TRANSLATION_Y,
+                kOI.DRIVE_TRANSLATION_X,
+                kOI.DRIVE_ROTATE,
+                kSwerve.FEILD_RELATIVE,
+                kSwerve.OPEN_LOOP
+            )
+        );
+
+    // new JoystickButton(driver, kOI.AUTO_SHOOT)
+    //         .whenPressed(new AutoShoot());
 
     new JoystickButton(driver, kOI.FENDER_SHOOT)
         .whenPressed(new Shoot(kShots.FENDER.hoodAngle, kShots.FENDER.shooterVelocity));
 
-    // new JoystickButton(driver, kOI.BACK_INDEXER)
-    //     .whenPressed(
-    //         new ParallelCommandGroup(
-    //             new InstantCommand(() -> indexer.setState(IndexerState.BACKING), indexer),
-    //             new InstantCommand(intake::ejectIntake, intake)
-    //         )
-    //     )
-    //     .whenReleased(
-    //         new ParallelCommandGroup(
-    //             new InstantCommand(() -> indexer.setState(IndexerState.IDLE), indexer),
-    //             new InstantCommand(intake::stopIntake, intake)
-    //         )
-    //     );
+    new JoystickButton(driver, kOI.BACK_INDEXER)
+        .whenPressed(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> indexer.setState(IndexerState.BACKING), indexer),
+                new InstantCommand(intake::ejectIntake, intake)
+            )
+        )
+        .whenReleased(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> indexer.setState(IndexerState.IDLE), indexer),
+                new InstantCommand(intake::stopIntake, intake)
+            )
+        );
 
     new JoystickButton(driver, kOI.ZERO_SHOOTER_HOOD)
         .whenHeld(
@@ -160,8 +160,8 @@ public class RobotContainer {
             )
         );
 
-    new JoystickButton(driver, kOI.BACK_INDEXER)
-            .whenHeld(new InstantCommand(swerve::updateEncoders, swerve));
+    new JoystickButton(op, kOI.UPDATE_ENCODER)
+            .whenPressed(new InstantCommand(swerve::updateEncoders, swerve));
   }
 
   /**

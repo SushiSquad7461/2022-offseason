@@ -123,10 +123,4 @@ public class Swerve extends SubsystemBase {
             mod.resetToAbsolute();
         }        
     }
-
-    public void turnOffAllMotors() {
-        for (SwerveModule mod: mSwerveMods) {
-            mod.turnOffMotor();
-        }
-    }
 }

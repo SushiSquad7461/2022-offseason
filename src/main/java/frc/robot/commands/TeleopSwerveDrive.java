@@ -48,6 +48,6 @@ public class TeleopSwerveDrive extends CommandBase {
         rot = Normalization.cube(Normalization.cube(rot));
         rot *= kSwerve.MAX_ANGULAR_VELOCITY;
 
-            swerve.drive(translation, rot, fieldRelative, openLoop);
+        swerve.drive(translation, rot, fieldRelative, openLoop);
     }
 }

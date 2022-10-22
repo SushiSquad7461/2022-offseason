@@ -77,30 +77,31 @@ public class TeleopShoot extends CommandBase {
   public void initialize() {
     shoot = false;
     finishDelay = 0.0;
+    pid.setSetpoint(0);
+    getVisionError();
+
+    SmartDashboard.putNumber("Turn To Target PID Error", pid.getPositionError());
+  }
+
+  public double getVisionError() {
     distance = photonvision.getDistance();
     heading = photonvision.getHeading();
-    pid.calculate(30.0);
-    SmartDashboard.putNumber("Turn To Target PID Error", pid.getPositionError());
-
+    return pid.calculate(heading);
   }
 
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("In Teleop Shoot", true);
     SmartDashboard.putBoolean("TT at Setpoint", pid.atSetpoint());
     SmartDashboard.putNumber("Turn To Target PID Error", pid.getPositionError());
 
+    double output = 0;
     if (!pid.atSetpoint()) {
-      distance = photonvision.getDistance();
-      heading = photonvision.getHeading();
-    } else {
-      heading = 0;
+      output = getVisionError();
     }
 
-    double output = pid.calculate(heading);
-    // System.out.println(pid.atSetpoint());
-
     double forwardBack = -controller.getRawAxis(translationAxis);
-    double leftRight = controller.getRawAxis(strafeAxis);
+    double leftRight = -controller.getRawAxis(strafeAxis);
 
     forwardBack = Normalization.cube(forwardBack);
     leftRight = Normalization.cube(leftRight);
@@ -114,7 +115,10 @@ public class TeleopShoot extends CommandBase {
 
     shooter.setVelocityBasedOnDistance(distance);
     hood.setPosBasedOnDistance(distance);
+
+
     if (shooter.isAtSpeed() && hood.isAtPos() && !shoot && pid.atSetpoint()) {
+      SmartDashboard.putBoolean("In Teleop Shoot", false);
       indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
@@ -123,12 +127,11 @@ public class TeleopShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Normalization.cube(controller.getRawAxis(rotationsAxis)) != 0) {
+    if (Math.abs((controller.getRawAxis(rotationsAxis))) > 0.3) {
       return true;
     }
-
-    boolean isFinished = shoot;
-    if (isFinished) {
+    
+    if (shoot) {
       if (finishDelay == 0) {
         finishDelay = Timer.getFPGATimestamp();
         return false;
@@ -136,7 +139,8 @@ public class TeleopShoot extends CommandBase {
         return Timer.getFPGATimestamp() - finishDelay > 1;
       }
     }
-    return isFinished;
+    
+    return false;
   }
 
   @Override

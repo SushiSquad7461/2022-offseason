@@ -62,7 +62,7 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 40;
         public static final double kP = 0.270000; // 0.07
         public static final double kI = 0.0;
-        public static final double kD = 3.0; //0
+        public static final double kD = 3.0; // 0
         public static final double kF = 0.0527;
         public static final double OFFSET = 0;
 
@@ -74,7 +74,7 @@ public final class Constants {
         static {
             // First val is disntance from goal in feet, Second val is shooterRPM
             POS_MAP.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2300.0));
-            POS_MAP.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0)); 
+            POS_MAP.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0));
             POS_MAP.put(new InterpolatingDouble(7.0), new InterpolatingDouble(2550.0));
             POS_MAP.put(new InterpolatingDouble(10.0), new InterpolatingDouble(2700.0));
             POS_MAP.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0));
@@ -182,7 +182,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID = 1;
             public static final int ANGLE_MOTOR_ID = 3;
             public static final int CAN_CODER_ID = 2;
-            public static final double ANGLE_OFFSET = 90.175781;
+            public static final double ANGLE_OFFSET = 89.648438;
             public static final SwerveModuleConstants CONSTANTS = new SwerveModuleConstants(DRIVE_MOTOR_ID,
                     ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -192,7 +192,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID = 10;
             public static final int ANGLE_MOTOR_ID = 12;
             public static final int CAN_CODER_ID = 11;
-            public static final double ANGLE_OFFSET = 194.853516;
+            public static final double ANGLE_OFFSET = 195.380859;
             public static final SwerveModuleConstants CONSTANTS = new SwerveModuleConstants(DRIVE_MOTOR_ID,
                     ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -202,7 +202,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID = 4;
             public static final int ANGLE_MOTOR_ID = 6;
             public static final int CAN_CODER_ID = 5;
-            public static final double ANGLE_OFFSET = 66.533203;
+            public static final double ANGLE_OFFSET = 67.675781;
             public static final SwerveModuleConstants CONSTANTS = new SwerveModuleConstants(DRIVE_MOTOR_ID,
                     ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -212,7 +212,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID = 7;
             public static final int ANGLE_MOTOR_ID = 9;
             public static final int CAN_CODER_ID = 8;
-            public static final double ANGLE_OFFSET = 70.400391;
+            public static final double ANGLE_OFFSET = 69.785156;
             public static final SwerveModuleConstants CONSTANTS = new SwerveModuleConstants(DRIVE_MOTOR_ID,
                     ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -222,8 +222,9 @@ public final class Constants {
     public static final class kVision {
         public static final double LIME_LIGHT_HEIGHT = 2.75; // Limelight height in feet
         public static final double HUB_HEIGHT = 8.666667; // hub height in feet
-        public static final double LIME_LIGHT_TO_HUB_HEIGHT = HUB_HEIGHT - LIME_LIGHT_HEIGHT; // height difference between
-                                                                                          // the hub and limelight
+        public static final double LIME_LIGHT_TO_HUB_HEIGHT = HUB_HEIGHT - LIME_LIGHT_HEIGHT; // height difference
+                                                                                              // between
+        // the hub and limelight
         public static final double LIME_LIGHT_MOUNT_ANGLE = 39.5; // Limelight angle in degrees from the horizon
     }
 
@@ -242,6 +243,8 @@ public final class Constants {
 
         public static final int AUTO_SHOOT = XboxController.Button.kRightBumper.value;
         public static final int FENDER_SHOOT = XboxController.Button.kB.value;
+
+        public static final int UPDATE_ENCODER = XboxController.Button.kY.value;
     }
 
     enum kShots {

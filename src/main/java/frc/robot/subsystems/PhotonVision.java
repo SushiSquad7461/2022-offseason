@@ -19,7 +19,6 @@ public class PhotonVision extends SubsystemBase {
     private PhotonTrackedTarget bestTarget;
     private boolean hasTargets;
     private boolean lastHeadingPositive;
-    private LinearFilter headingFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
     private LinearFilter distanceFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
     private double distance = 0;
     private double heading = 0;
@@ -47,7 +46,7 @@ public class PhotonVision extends SubsystemBase {
         if (hasTargets) {
             lastHeadingPositive = bestTarget.getYaw() > 0;
         }
-        heading = headingFilter.calculate(calculateHeading());
+
         distance = distanceFilter.calculate(calculateDistance());
         SmartDashboard.putNumber("Heading", heading);
         SmartDashboard.putNumber("Distance", distance);
@@ -97,7 +96,7 @@ public class PhotonVision extends SubsystemBase {
         return 0;
     }
 
-    public double calculateHeading() {
+    public double getHeading() {
         return getAvreageHeading();
     }
 
@@ -112,9 +111,5 @@ public class PhotonVision extends SubsystemBase {
     
     public double getDistance() {
         return distance;
-    }
-
-    public double getHeading() {
-        return heading;
     }
 }
