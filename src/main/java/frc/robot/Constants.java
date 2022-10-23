@@ -26,7 +26,7 @@ public final class Constants {
         public static final TalonFXInvertType INTAKE_INVERSION = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType HOPPER_INVERSION = TalonFXInvertType.Clockwise;
 
-        public static final int CURRENT_LIMIT = 20; //30
+        public static final int CURRENT_LIMIT = 30; //30
     }
 
     public static class kHood {

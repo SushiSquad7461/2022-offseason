@@ -86,7 +86,7 @@ public class TeleopShoot extends CommandBase {
   public double getVisionError() {
     distance = photonvision.getDistance();
     heading = photonvision.getHeading();
-    return pid.calculate(heading);
+    return pid.calculate(heading * -1);
   }
 
   @Override
