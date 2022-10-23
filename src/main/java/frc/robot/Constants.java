@@ -26,11 +26,11 @@ public final class Constants {
         public static final TalonFXInvertType INTAKE_INVERSION = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType HOPPER_INVERSION = TalonFXInvertType.Clockwise;
 
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 20; //30
     }
 
     public static class kHood {
-        public static final int CURRENT_LIMIT = 35;
+        public static final int CURRENT_LIMIT = 25; //35
         public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
         public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
         public static final double kP = 0.7;
@@ -133,13 +133,13 @@ public final class Constants {
                 new Translation2d(-WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0));
 
         /* Swerve Current Limiting */
-        public static final int ANGLE_CONTINUSE_CURRENT_LIMIT = 25;
-        public static final int ANGLE_PEAK_CURRENT_LIMIT = 40;
+        public static final int ANGLE_CONTINUSE_CURRENT_LIMIT = 20; //25
+        public static final int ANGLE_PEAK_CURRENT_LIMIT = 30; //40
         public static final double ANGLE_PEAK_CURRENT_DURATION = 0.1;
         public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
 
-        public static final int DRIVE_CONTINUSE_CURRENT_LIMIT = 35;
-        public static final int DRIVE_PEAK_CURRENT_LIMIT = 60;
+        public static final int DRIVE_CONTINUSE_CURRENT_LIMIT = 30; //35
+        public static final int DRIVE_PEAK_CURRENT_LIMIT = 50; //60
         public static final double DRIVE_PEAK_CURRENT_DURATION = 0.1;
         public static final boolean DRIVE_ENABLE_CURRENT_LIMIT = true;
 
