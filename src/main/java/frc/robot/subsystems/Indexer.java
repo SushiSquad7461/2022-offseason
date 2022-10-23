@@ -50,7 +50,8 @@ public class Indexer extends SubsystemBase {
     EJECTING,
     MOVING_UP,
     BACKING,
-    SHOOTING
+    SHOOTING,
+    AUTO_INTAKE
   }
 
   private enum BallColor {
@@ -125,6 +126,13 @@ public class Indexer extends SubsystemBase {
           }
         }
         break;
+      case AUTO_INTAKE:
+        if (lowerBeamBreak) {
+          setState(upperBeamBreak
+              ? IndexerState.IDLE
+              : IndexerState.MOVING_UP);
+        }
+        break;
       case EJECTING:
         if (!lowerBeamBreak && timer.get() - startEjectTime > Constants.kIndexer.EJECT_DELAY) {
           setState(IndexerState.INTAKING);
@@ -194,6 +202,10 @@ public class Indexer extends SubsystemBase {
     setState(IndexerState.INTAKING);
   }
 
+  public void setAutoIntake() {
+    setState(IndexerState.AUTO_INTAKE); 
+  }
+
   public void setIdle() {
     setState(IndexerState.IDLE);
   }
@@ -238,6 +250,10 @@ public class Indexer extends SubsystemBase {
         // ballCount = 0;
         ejecter.set(kIndexer.EJECTER_SPEED * -1);
         feeder.set(kIndexer.FEADER_SPEED * -1);
+      case AUTO_INTAKE:
+        ejecter.set(0);
+        feeder.set(0.5);
+        break;
       default:
         break;
     }

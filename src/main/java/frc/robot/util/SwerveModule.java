@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
+import java.util.PriorityQueue;
 
 import SushiFrcLib.SmartDashboard.TunableNumber;
 
@@ -23,12 +24,14 @@ public class SwerveModule {
     private TalonFX mDriveMotor;
     private CANCoder angleEncoder;
     private double lastAngle;
+    private PriorityQueue<Double> cancoderAngles;
 
     private final TunableNumber mDriveP;
     private final TunableNumber mDriveD;
     private final TunableNumber mDriveF;
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants) {
+        cancoderAngles = new PriorityQueue<Double>(5);
         this.moduleNumber = moduleNumber;
         angleOffset = moduleConstants.angleOffset;
 
@@ -85,6 +88,7 @@ public class SwerveModule {
 
     public void resetToAbsolute() {
         double absolutePosition = Conversions.degreesToFalcon(getAngle(), kSwerve.ANGLE_GEAR_RATIO);
+        // for( Double d : )
         mAngleMotor.setSelectedSensorPosition(absolutePosition);
     }
 

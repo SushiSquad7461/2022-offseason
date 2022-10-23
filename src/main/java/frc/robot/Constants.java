@@ -160,8 +160,8 @@ public final class Constants {
         public static final double MAX_SPEED = 11.5; // 4.5 meters per second
         public static final double MAX_ANGULAR_VELOCITY = 20; // 11.5
 
-        public static final PIDController X_CONTROLLER = new PIDController(2.4, 0, 0);
-        public static final PIDController Y_CONTROLLER = new PIDController(2.4, 0, 0);
+        public static final PIDController X_CONTROLLER = new PIDController(2, 0, 0);
+        public static final PIDController Y_CONTROLLER = new PIDController(2, 0, 0);
         public static final ProfiledPIDController ANGLE_CONTROLLER = new ProfiledPIDController(4, 0, 0,
                 new Constraints(MAX_ANGULAR_VELOCITY, 17));
 
@@ -249,7 +249,7 @@ public final class Constants {
 
     enum kShots {
         FENDER(0, 2300),
-        AUTO_TARMAC(70000, 2650),
+        AUTO_TARMAC(70000, 2600),
         AUTO_SIDE(70000, 2550);
 
         public double hoodAngle;

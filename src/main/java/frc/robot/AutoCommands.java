@@ -63,7 +63,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 getCommand(twoBallPaths[0], true), 
                 new InstantCommand(intake::runIntake, intake),
-                new InstantCommand(indexer::setIntake, indexer)
+                new InstantCommand(indexer::setAutoIntake, indexer)
             ),
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
@@ -79,7 +79,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[0], true),
                 new InstantCommand(intake::runIntake, intake),
-                new InstantCommand(indexer::setIntake, indexer)
+                new InstantCommand(indexer::setAutoIntake, indexer)
             ),
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
@@ -92,7 +92,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[1], false),
                 new InstantCommand(intake::runIntake, intake),
-                new InstantCommand(indexer::setIntake, indexer)
+                new InstantCommand(indexer::setAutoIntake, indexer)
             ),
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
@@ -108,7 +108,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[0], true),
                 new InstantCommand(intake::runIntake, intake),
-                new InstantCommand(indexer::setIntake, indexer)
+                new InstantCommand(indexer::setAutoIntake, indexer)
             ),
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
@@ -121,7 +121,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[1], false),
                 new InstantCommand(intake::runIntake, intake),
-                new InstantCommand(indexer::setIntake, indexer)
+                new InstantCommand(indexer::setAutoIntake, indexer)
             ),
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
@@ -134,9 +134,9 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[2], false),
                 new InstantCommand(intake::runIntake, intake),
-                new InstantCommand(indexer::setIntake, indexer)
+                new InstantCommand(indexer::setAutoIntake, indexer)
             ),
-            new WaitCommand(2),
+            new WaitCommand(1),
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[3], false),
                 new SequentialCommandGroup(
@@ -159,7 +159,7 @@ public class AutoCommands {
                 new ParallelCommandGroup(
                     getCommand(sixBallPaths[0], true),
                     new InstantCommand(intake::runIntake, intake),
-                    new InstantCommand(indexer::setIntake, indexer)
+                    new InstantCommand(indexer::setAutoIntake, indexer)
                 ),
                 new ParallelCommandGroup(
                     new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
@@ -172,7 +172,7 @@ public class AutoCommands {
                 new ParallelCommandGroup(
                     getCommand(sixBallPaths[1], true),
                     new InstantCommand(intake::runIntake, intake),
-                    new InstantCommand(indexer::setIntake, indexer)
+                    new InstantCommand(indexer::setAutoIntake, indexer)
                 ),
                 new WaitCommand(2),
                 new ParallelCommandGroup(
@@ -189,7 +189,7 @@ public class AutoCommands {
                 new ParallelCommandGroup(
                     getCommand(sixBallPaths[3], true),
                     new InstantCommand(intake::runIntake, intake),
-                    new InstantCommand(indexer::setIntake, indexer)
+                    new InstantCommand(indexer::setAutoIntake, indexer)
                 ),
                 new ParallelCommandGroup(
                     new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
@@ -220,7 +220,10 @@ public class AutoCommands {
                 kSwerve.ANGLE_CONTROLLER, 
                 (s -> swerve.setModuleStates(s)), 
                 swerve
-            )
+            ),
+            new InstantCommand(() -> {
+                swerve.drive(new Translation2d(0,0), 0, true, false);
+            })
         );
     }
 
