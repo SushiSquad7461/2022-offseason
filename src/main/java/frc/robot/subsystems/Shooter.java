@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.net.Socket;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;

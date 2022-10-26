@@ -6,17 +6,16 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import SushiFrcLib.Motor.MotorHelper;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
-  /** Creates a new Climb. */
-
-  TalonFX leftMotor;
-  TalonFX rightMotor;
+  WPI_TalonFX leftMotor;
+  WPI_TalonFX rightMotor;
 
   private static Climb mInstance;
 
@@ -37,7 +36,7 @@ public class Climb extends SubsystemBase {
   }
 
   public void openLoopRaiseClimb() {
-    leftMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED);
+    // leftMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED);
     rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED);
   }
 
@@ -47,12 +46,13 @@ public class Climb extends SubsystemBase {
   }
 
   public void openLoopLowerClimb() {
-    leftMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * -1);
+    // leftMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * -1);
     rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * -1);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("climb current left", leftMotor.getSupplyCurrent());
+    SmartDashboard.putNumber("climb current right", rightMotor.getSupplyCurrent());
   }
 }

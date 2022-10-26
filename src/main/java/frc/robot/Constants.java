@@ -38,8 +38,8 @@ public final class Constants {
     public final static class kClimb {
         public static final double CLIMB_SPEED = 0.5;
 
-        public static final TalonFXInvertType LEFT_INVERSION = TalonFXInvertType.Clockwise;
-        public static final TalonFXInvertType RIGHT_INVERSION = TalonFXInvertType.Clockwise;
+        public static final TalonFXInvertType LEFT_INVERSION = TalonFXInvertType.CounterClockwise;
+        public static final TalonFXInvertType RIGHT_INVERSION = TalonFXInvertType.CounterClockwise;
 
         public static final int CURRENT_LIMIT = 10;
     }
