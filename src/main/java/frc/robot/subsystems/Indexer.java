@@ -199,7 +199,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setIntake() {
-    setState(IndexerState.AUTO_INTAKE); // TURN OF COLOR SENSOR
+    setState(IndexerState.INTAKING); // TURN OF COLOR SENSOR
   }
 
   public void setAutoIntake() {
@@ -247,9 +247,10 @@ public class Indexer extends SubsystemBase {
         ejecter.set(kIndexer.EJECTER_SPEED * 0.5);
         break;
       case BACKING:
-        // ballCount = 0;
-        ejecter.set(kIndexer.EJECTER_SPEED * -1);
+        ejecter.set(kIndexer.EJECTER_SPEED * -0.5);
         feeder.set(kIndexer.FEADER_SPEED * -1);
+        kicker.set(1);
+        break;
       case AUTO_INTAKE:
         ejecter.set(0);
         feeder.set(0.5);
