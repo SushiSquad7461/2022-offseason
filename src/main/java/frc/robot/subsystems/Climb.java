@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
-  WPI_TalonFX leftMotor;
+  // WPI_TalonFX leftMotor;
   WPI_TalonFX rightMotor;
 
   private static Climb mInstance;
@@ -28,8 +28,8 @@ public class Climb extends SubsystemBase {
 
   public Climb() {
 
-    leftMotor = MotorHelper.createFalconMotor(Constants.Ports.LEFT_CLIMB_MOTOR, Constants.kClimb.CURRENT_LIMIT,
-        Constants.kClimb.LEFT_INVERSION, NeutralMode.Brake);
+    //leftMotor = MotorHelper.createFalconMotor(Constants.Ports.LEFT_CLIMB_MOTOR, Constants.kClimb.CURRENT_LIMIT,
+    //    Constants.kClimb.LEFT_INVERSION, NeutralMode.Brake);
     rightMotor = MotorHelper.createFalconMotor(Constants.Ports.RIGHT_CLIMB_MOTOR, Constants.kClimb.CURRENT_LIMIT,
         Constants.kClimb.RIGHT_INVERSION, NeutralMode.Brake);
 
@@ -41,7 +41,7 @@ public class Climb extends SubsystemBase {
   }
 
   public void stop() {
-    leftMotor.set(ControlMode.PercentOutput, 0);
+    //leftMotor.set(ControlMode.PercentOutput, 0);
     rightMotor.set(ControlMode.PercentOutput, 0);
   }
 
@@ -52,7 +52,7 @@ public class Climb extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("climb current left", leftMotor.getSupplyCurrent());
+    // SmartDashboard.putNumber("climb current left", leftMotor.getSupplyCurrent());
     SmartDashboard.putNumber("climb current right", rightMotor.getSupplyCurrent());
   }
 }
