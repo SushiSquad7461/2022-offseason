@@ -20,6 +20,8 @@ public class Climb extends SubsystemBase {
 
     private boolean goingDown;
 
+    private boolean resetClimb;
+
     public static Climb getInstance() {
         if (mInstance == null) {
             mInstance = new Climb();
@@ -33,6 +35,7 @@ public class Climb extends SubsystemBase {
 
         rightMotor.setSelectedSensorPosition(0);
         goingDown = false;
+        resetClimb = false;
     }
 
     public void openLoopRaiseClimb() {
@@ -65,5 +68,9 @@ public class Climb extends SubsystemBase {
 
     public double getPosition() {
         return rightMotor.getSelectedSensorPosition() * -1;
+    }
+
+    public void resetClimb() {
+
     }
 }

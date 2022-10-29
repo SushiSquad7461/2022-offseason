@@ -28,6 +28,7 @@ public class Indexer extends SubsystemBase {
   private final CANSparkMax kicker;
   private final CANSparkMax feeder;
   private final CANSparkMax ejecter;
+  private boolean colorEnabled;
 
   private final DigitalInput lowerBeamBreak;
   private final DigitalInput upperBeamBreak;
@@ -94,6 +95,7 @@ public class Indexer extends SubsystemBase {
     upperBeamBreak = new DigitalInput(kPorts.UPPER_BEAM_BREAK);
 
     timer.start();
+    colorEnabled = true;
   }
 
   @Override
@@ -171,6 +173,10 @@ public class Indexer extends SubsystemBase {
     BallColor.Blue && !isRedAlliance;
   }
 
+  public void enableColor (boolean enable){
+    colorEnabled = enable;
+  }
+
   public void pollColor() {
     Color color = colorSensor.getColor();
     double colorRatio = color.red / color.blue;
@@ -199,7 +205,11 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setIntake() {
-    setState(IndexerState.AUTO_INTAKE); // TURN OF COLOR SENSOR
+    if(colorEnabled) {
+      setState(IndexerState.INTAKING);
+    } else {
+      setState(IndexerState.AUTO_INTAKE);
+    }
   }
 
   public void setAutoIntake() {

@@ -187,11 +187,19 @@ public class RobotContainer {
         .whenReleased(
             new SequentialCommandGroup(
                 new InstantCommand(intake::stopIntake, intake), 
-                new WaitCommand(0.5),
+                new WaitCommand(1),
                 new InstantCommand(indexer::setIdle, indexer)
             )
         );
-  }
+
+    new JoystickButton(op, XboxController.Button.kB.value).whenPressed(
+        new InstantCommand(()->indexer.enableColor(true), indexer)
+    );
+
+    new JoystickButton(op, XboxController.Button.kX.value).whenPressed(
+        new InstantCommand(()->indexer.enableColor(false), indexer)
+    );
+  }  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

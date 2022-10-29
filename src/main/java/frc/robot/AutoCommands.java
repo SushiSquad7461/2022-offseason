@@ -68,7 +68,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
                 new SequentialCommandGroup(
-                    new InstantCommand(intake::stopIntake, intake),
+                    //new InstantCommand(intake::stopIntake, intake),
                     new WaitCommand(0.5)
                 )
             ),
@@ -113,7 +113,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_SIDE.hoodAngle, kShots.AUTO_SIDE.shooterVelocity),
                 new SequentialCommandGroup(
-                    new InstantCommand(intake::stopIntake, intake),
+                    //new InstantCommand(intake::stopIntake, intake),
                     new WaitCommand(0.5)
                 )
             ),
@@ -126,7 +126,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
                 new SequentialCommandGroup(
-                    new InstantCommand(intake::stopIntake, intake),
+                    //new InstantCommand(intake::stopIntake, intake),
                     new WaitCommand(0.5)
                 )
             ),
@@ -140,7 +140,7 @@ public class AutoCommands {
             new ParallelCommandGroup(
                 getCommand(fiveBallPaths[3], false),
                 new SequentialCommandGroup(
-                    new InstantCommand(intake::stopIntake, intake), 
+                    //new InstantCommand(intake::stopIntake, intake), 
                     new WaitCommand(0.5)
                 )
             ),
