@@ -128,7 +128,7 @@ public class RobotContainer {
     new JoystickButton(op, kOI.ZERO_GYRO)
         .whenPressed(new InstantCommand(swerve::zeroGyro));
 
-    new JoystickButton(driver, kOI.AUTO_SHOOT)
+        new Button(() -> driver.getRightTriggerAxis() >= kOI.TRIGGER_THRESHOLD)
         .whenPressed(new TeleopShoot(
                 driver,
                 kOI.DRIVE_TRANSLATION_Y,

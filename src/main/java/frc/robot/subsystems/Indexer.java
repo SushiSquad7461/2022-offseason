@@ -199,7 +199,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setIntake() {
-    setState(IndexerState.INTAKING); // TURN OF COLOR SENSOR
+    setState(IndexerState.AUTO_INTAKE); // TURN OF COLOR SENSOR
   }
 
   public void setAutoIntake() {

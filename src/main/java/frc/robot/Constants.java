@@ -30,14 +30,16 @@ public final class Constants {
     }
 
     public final static class kClimb {
-        public static final double CLIMB_SPEED = 0.4;
+        public static final double CLIMB_SPEED = 0.6;
 
         public static final TalonFXInvertType LEFT_INVERSION = TalonFXInvertType.CounterClockwise;
         public static final TalonFXInvertType RIGHT_INVERSION = TalonFXInvertType.CounterClockwise;
 
         public static final int CURRENT_LIMIT = 20;
 
-        public static final double MAX_POS = 205880;
+        public static final double MAX_POS = 185880;
+
+        public static final double INVERSION = -1;
     }
 
     public static class kHood {
@@ -60,10 +62,10 @@ public final class Constants {
             // First val is disntance from goal (feet), Second val is hood pos
             // in encoder tiks
             POS_MAP.put(new InterpolatingDouble(0.0), new InterpolatingDouble(20000.0));
-            POS_MAP.put(new InterpolatingDouble(4.0), new InterpolatingDouble(40000.0));
-            POS_MAP.put(new InterpolatingDouble(7.0), new InterpolatingDouble(50000.0));
-            POS_MAP.put(new InterpolatingDouble(10.0), new InterpolatingDouble(80000.0));
-            POS_MAP.put(new InterpolatingDouble(13.0), new InterpolatingDouble(90000.0));
+            POS_MAP.put(new InterpolatingDouble(4.0), new InterpolatingDouble(60000.0));
+            POS_MAP.put(new InterpolatingDouble(7.0), new InterpolatingDouble(70000.0));
+            POS_MAP.put(new InterpolatingDouble(9.5), new InterpolatingDouble(80000.0));
+            POS_MAP.put(new InterpolatingDouble(13.0), new InterpolatingDouble(95000.0));
         }
     }
 
@@ -76,7 +78,6 @@ public final class Constants {
         public static final double kD = 3.0; // 0
         public static final double kF = 0.0527;
         public static final double OFFSET = 0;
-
         public static final double TX_OFFSET = 0;
         public static final double PID_TOLERANCE_DEGREES = 2;
         public static final double PID_SPEED_TOLERANCE_DEGREES_PER_SECOND = 720; // TODO: pick actual values lol
@@ -85,10 +86,10 @@ public final class Constants {
         static {
             // First val is disntance from goal in feet, Second val is shooterRPM
             POS_MAP.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2300.0));
-            POS_MAP.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2300.0));
-            POS_MAP.put(new InterpolatingDouble(7.0), new InterpolatingDouble(2550.0));
-            POS_MAP.put(new InterpolatingDouble(10.0), new InterpolatingDouble(2700.0));
-            POS_MAP.put(new InterpolatingDouble(13.0), new InterpolatingDouble(3100.0));
+            POS_MAP.put(new InterpolatingDouble(4.0), new InterpolatingDouble(2100.0));
+            POS_MAP.put(new InterpolatingDouble(7.0), new InterpolatingDouble(2300.0));
+            POS_MAP.put(new InterpolatingDouble(9.5), new InterpolatingDouble(2500.0));
+            POS_MAP.put(new InterpolatingDouble(13.0), new InterpolatingDouble(2800.0));
         }
     }
 
@@ -169,7 +170,7 @@ public final class Constants {
         public static final double DRIVE_F = 0.05;
 
         /* Swerve Profiling Values */
-        public static final double MAX_ACCELERATION = 2; // 2
+        public static final double MAX_ACCELERATION = 3; // 2
         public static final double MAX_SPEED = 11.5; // 4.5 meters per second
         public static final double MAX_ANGULAR_VELOCITY = 20; // 11.5
 

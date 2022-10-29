@@ -37,7 +37,7 @@ public class Climb extends SubsystemBase {
 
     public void openLoopRaiseClimb() {
         if (getPosition() <= Constants.kClimb.MAX_POS) {
-            rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED);
+            rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * Constants.kClimb.INVERSION);
             goingDown = false;
         }
     }
@@ -48,7 +48,7 @@ public class Climb extends SubsystemBase {
 
     public void openLoopLowerClimb() {
         if (getPosition() >= 0) {
-            rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * -1);
+            rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * -1 * Constants.kClimb.INVERSION);
             goingDown = true;
         }
     }
