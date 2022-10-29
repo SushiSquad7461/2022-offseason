@@ -151,11 +151,11 @@ public class RobotContainer {
                         new InstantCommand(shooter::stopShooter, shooter)));
 
         new POVButton(op, 0)
-                .whenPressed(() -> climb.openLoopLowerClimb())
+                .whenPressed(() -> climb.openLoopRaiseClimb())
                 .whenReleased(() -> climb.stop());
 
         new POVButton(op, 180)
-                .whenPressed(() -> climb.openLoopRaiseClimb())
+                .whenPressed(() -> climb.openLoopLowerClimb())
                 .whenReleased(() -> climb.stop());
 
         // nw JoystickButton(driver, XboxController.Button.kX.value)
