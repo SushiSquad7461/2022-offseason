@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.net.Socket;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -18,6 +16,8 @@ import SushiFrcLib.SmartDashboard.TunableNumber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.kPorts;
+import frc.robot.Constants.kShooter;
 
 public class Shooter extends SubsystemBase {
   private final WPI_TalonFX leftMotor;
@@ -28,29 +28,27 @@ public class Shooter extends SubsystemBase {
   private final TunableNumber shooterD;
   private final TunableNumber shooterF;
   private final TunableNumber shooterRPM;
-  // private double shooterRPM = 0;
 
-  private static Shooter mInstance;
+  private static Shooter instance;
 
   public static Shooter getInstance() {
-    if (mInstance == null) {
-      mInstance = new Shooter();
+    if (instance == null) {
+      instance = new Shooter();
     }
-    return mInstance;
+    return instance;
   }
 
   private Shooter() {
-    shooterP = new TunableNumber("Shooter P", Constants.kShooter.kP, Constants.TUNING_MODE);
-    shooterI = new TunableNumber("Shooter I", Constants.kShooter.kI, Constants.TUNING_MODE);
-    shooterD = new TunableNumber("Shooter D", Constants.kShooter.kD, Constants.TUNING_MODE);
-    shooterF = new TunableNumber("Shooter F", Constants.kShooter.kF, Constants.TUNING_MODE);
+    shooterP = new TunableNumber("Shooter P", kShooter.kP, Constants.TUNING_MODE);
+    shooterI = new TunableNumber("Shooter I", kShooter.kI, Constants.TUNING_MODE);
+    shooterD = new TunableNumber("Shooter D", kShooter.kD, Constants.TUNING_MODE);
+    shooterF = new TunableNumber("Shooter F", kShooter.kF, Constants.TUNING_MODE);
     shooterRPM = new TunableNumber("shooter rpm", 0, Constants.TUNING_MODE);
-    // shooterRPM = 0;
 
-    leftMotor = MotorHelper.createFalconMotor(Constants.Ports.SHOOTER_LEFT_MOTOR, Constants.kShooter.CURRENT_LIMIT,
+    leftMotor = MotorHelper.createFalconMotor(kPorts.SHOOTER_LEFT_MOTOR, kShooter.CURRENT_LIMIT,
         TalonFXInvertType.Clockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
         shooterF.get());
-    rightMotor = MotorHelper.createFalconMotor(Constants.Ports.SHOOTER_RIGHT_MOTOR, Constants.kShooter.CURRENT_LIMIT,
+    rightMotor = MotorHelper.createFalconMotor(kPorts.SHOOTER_RIGHT_MOTOR, kShooter.CURRENT_LIMIT,
         TalonFXInvertType.OpposeMaster, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
         shooterF.get());
 
@@ -63,13 +61,6 @@ public class Shooter extends SubsystemBase {
         Conversion.convertTransToRPM(leftMotor.getSelectedSensorVelocity()));
     SmartDashboard.putNumber("Shooter set rpm", shooterRPM.get());
     SmartDashboard.putNumber("Shooter error", getError());
-    SmartDashboard.putNumber("Loop error", leftMotor.getClosedLoopError());
-    SmartDashboard.putNumber("right current", rightMotor.getSupplyCurrent());
-    SmartDashboard.putNumber("left current", leftMotor.getSupplyCurrent());
-    // SmartDashboard.putNumber("Left motor current draw",
-    // leftMotor.getStatorCurrent());
-    // SmartDashboard.putNumber("Right motor current draw",
-    // rightMotor.getStatorCurrent());
 
     runShooter();
 
@@ -95,22 +86,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooter() {
-    double speed = Conversion.convertRPMtoTrans(shooterRPM.get());
-    // speed = 3000;
-    
-    leftMotor.set(ControlMode.Velocity, speed);
-    // rightMotor.set(ControlMode.Velocity, speed);
+    leftMotor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(shooterRPM.get()));
   }
 
   public void stopShooter() {
-    // leftMotor.set(ControlMode.PercentOutput, 0);
-    // rightMotor.set(ControlMode.PercentOutput, 0);
     shooterRPM.setDefault(0);
   }
 
   public boolean isAtSpeed() {
-    return shooterRPM.get() != 0 && getError() <= Constants.kShooter.ERROR_TOLERANCE;
-    // return true;
+    return shooterRPM.get() != 0 && getError() <= kShooter.ERROR_TOLERANCE;
   }
 
   private double getError() {
@@ -127,10 +111,9 @@ public class Shooter extends SubsystemBase {
 
   public void setVelocity(double speed) {
     shooterRPM.setDefault(speed);
-    // shooterRPM = speed;
   }
 
   public void setVelocityBasedOnDistance(double distance) {
-    shooterRPM.setDefault(Constants.kShooter.posMap.getInterpolated(new InterpolatingDouble(distance)).value + Constants.kShooter.kOffset);
+    shooterRPM.setDefault(kShooter.POS_MAP.getInterpolated(new InterpolatingDouble(distance)).value + kShooter.OFFSET);
   }
 }

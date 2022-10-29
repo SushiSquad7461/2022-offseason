@@ -12,10 +12,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.Constants;
 import frc.robot.Constants.kShooter;
-import frc.robot.Constants;
+import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.PhotonVision;
@@ -23,100 +21,105 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TeleopShoot extends CommandBase {
-  /** Creates a new Autoshoot. */
+  private final GenericHID controller;
+  private final int translationAxis;
+  private final int strafeAxis;
+  private final int rotationsAxis;
+  private final boolean fieldRelative;
+  private final boolean openLoop;
 
-  private final GenericHID m_controller;
-  private final int m_translationAxis;
-  private final int m_strafeAxis;
-  private final int m_rotationsAxis;
-  private final boolean m_fieldRelative;
-  private final boolean m_openLoop;
+  private final PIDController pid;
 
-  private final PIDController pid = new PIDController(0.1, 0, 0);
-
-  private final Shooter m_shooter;
-  private final PhotonVision m_photonvision;
-  private final Swerve m_swerve;
-  private final Hood m_hood;
-  private final Indexer m_indexer;
+  private final Shooter shooter;
+  private final PhotonVision photonvision;
+  private final Swerve swerve;
+  private final Hood hood;
+  private final Indexer indexer;
   private boolean shoot = false;
-  private double finishDelay = 0.0;
-  private double distance = 0;
-  private double heading = 0;
+  private double finishDelay;
+  private double distance;
+  private double heading;
 
   public TeleopShoot(GenericHID controller, int translationAxis, int strafeAxis, int rotationsAxis,
       boolean fieldRelative, boolean openLoop) {
-    m_controller = controller;
-    m_translationAxis = translationAxis;
-    m_strafeAxis = strafeAxis;
-    m_rotationsAxis = rotationsAxis;
-    m_fieldRelative = fieldRelative;
-    m_openLoop = openLoop;
 
-    m_shooter = Shooter.getInstance();
-    m_photonvision = PhotonVision.getInstance();
-    m_swerve = Swerve.getInstance();
-    m_hood = Hood.getInstance();
-    m_indexer = Indexer.getInstance();
-    // addRequirements(m_photonvision);
-    addRequirements(m_swerve);
-    addRequirements(m_shooter);
-    addRequirements(m_hood);
+    pid = new PIDController(0.1, 0, 0);
+
+    finishDelay = 0.0;
+    distance = 0;
+    heading = 0;
+
+    this.controller = controller;
+    this.translationAxis = translationAxis;
+    this.strafeAxis = strafeAxis;
+    this.rotationsAxis = rotationsAxis;
+    this.fieldRelative = fieldRelative;
+    this.openLoop = openLoop;
+
+    shooter = Shooter.getInstance();
+    photonvision = PhotonVision.getInstance();
+    swerve = Swerve.getInstance();
+    hood = Hood.getInstance();
+    indexer = Indexer.getInstance();
+
+    addRequirements(photonvision);
+    addRequirements(swerve);
+    addRequirements(shooter);
+    addRequirements(hood);
 
     pid.setSetpoint(0);
     pid.enableContinuousInput(-180, 180);
     pid.setTolerance(kShooter.PID_TOLERANCE_DEGREES);
-    // Use addRequirements() here to declare subsystem dependencies.
-    // Configure additional PID options by calling `getController` here.
   }
 
   @Override
   public void initialize() {
     shoot = false;
     finishDelay = 0.0;
-    distance = m_photonvision.getDistance();
-    heading = m_photonvision.getHeading();
-    pid.calculate(30.0);
-    SmartDashboard.putNumber("thingy error", pid.getPositionError());
+    pid.setSetpoint(0);
+    getVisionError();
 
+    SmartDashboard.putNumber("Turn To Target PID Error", pid.getPositionError());
+  }
+
+  public double getVisionError() {
+    distance = photonvision.getDistance();
+    heading = photonvision.getHeading();
+    return pid.calculate(heading * -1);
   }
 
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("In Teleop Shoot", true);
     SmartDashboard.putBoolean("TT at Setpoint", pid.atSetpoint());
-    SmartDashboard.putNumber("thingy error", pid.getPositionError());
+    SmartDashboard.putNumber("Turn To Target PID Error", pid.getPositionError());
 
+    double output = 0;
     if (!pid.atSetpoint()) {
-      distance = m_photonvision.getDistance();
-      heading = m_photonvision.getHeading();
-    } else {
-      heading = 0;
+      output = getVisionError();
     }
 
-    double output = pid.calculate(heading);
-    System.out.println(pid.atSetpoint());
+    double forwardBack = -controller.getRawAxis(translationAxis);
+    double leftRight = -controller.getRawAxis(strafeAxis);
 
-    double forwardBack = -m_controller.getRawAxis(m_translationAxis);
-    double leftRight = m_controller.getRawAxis(m_strafeAxis);
-
-    forwardBack = Normalization.linearDeadzone(forwardBack, Constants.stickDeadband);
-    leftRight = Normalization.linearDeadzone(leftRight, Constants.stickDeadband);
+    forwardBack = Normalization.cube(forwardBack);
+    leftRight = Normalization.cube(leftRight);
 
     double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
     double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
     Translation2d translation = new Translation2d(forwardBack, leftRight)
-        .times(Constants.Swerve.maxSpeed * magnitudeRatio);
+        .times(kSwerve.MAX_SPEED * magnitudeRatio);
 
-    m_swerve.drive(translation, output, m_fieldRelative, m_openLoop);
+    swerve.drive(translation, output, fieldRelative, openLoop);
 
-    m_shooter.setVelocityBasedOnDistance(distance);
-    m_hood.setPosBasedOnDistance(distance);
-    if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot && pid.atSetpoint()) {
-      m_indexer.setState(IndexerState.SHOOTING);
+    shooter.setVelocityBasedOnDistance(distance);
+    hood.setPosBasedOnDistance(distance);
+
+
+    if (shooter.isAtSpeed() && hood.isAtPos() && !shoot && pid.atSetpoint()) {
+      SmartDashboard.putBoolean("In Teleop Shoot", false);
+      indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
   }
@@ -124,13 +127,11 @@ public class TeleopShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Normalization.linearDeadzone(m_controller.getRawAxis(m_rotationsAxis), Constants.stickDeadband) != 0) {
+    if (Math.abs((controller.getRawAxis(rotationsAxis))) > 0.3) {
       return true;
     }
-
-    // boolean isFinished = shoot && !m_indexer.getShooting();
-    boolean isFinished = shoot;
-    if (isFinished) {
+    
+    if (shoot) {
       if (finishDelay == 0) {
         finishDelay = Timer.getFPGATimestamp();
         return false;
@@ -138,13 +139,14 @@ public class TeleopShoot extends CommandBase {
         return Timer.getFPGATimestamp() - finishDelay > 1;
       }
     }
-    return isFinished;
+    
+    return false;
   }
 
   @Override
   public void end(boolean inturrupted) {
-    m_shooter.stopShooter();
-    m_hood.setPos(-1000);
-    m_indexer.setState(IndexerState.IDLE);
+    shooter.stopShooter();
+    hood.setPos(10000);
+    indexer.setState(IndexerState.IDLE);
   }
 }

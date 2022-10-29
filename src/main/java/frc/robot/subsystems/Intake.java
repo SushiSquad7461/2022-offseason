@@ -6,39 +6,37 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import SushiFrcLib.Motor.MotorHelper;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.kPorts;
+import frc.robot.Constants.kIntake;;
 
 public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
+  private final WPI_TalonFX intakeMotor;
+  private final WPI_TalonFX HopperMotor;
 
-  TalonFX intakeMotor;
-  TalonFX HopperMotor;
-
-  private static Intake mInstance;
+  private static Intake instance;
 
   public static Intake getInstance() {
-    if (mInstance == null) {
-      mInstance = new Intake();
+    if (instance == null) {
+      instance = new Intake();
     }
-    return mInstance;
+    return instance;
   }
 
   public Intake() {
-
-    intakeMotor = MotorHelper.createFalconMotor(Constants.Ports.INTAKE_MOTOR, Constants.kIntake.CURRENT_LIMIT,
-        Constants.kIntake.INTAKE_INVERSION, NeutralMode.Coast);
-    HopperMotor = MotorHelper.createFalconMotor(Constants.Ports.HOPPER_MOTOR, Constants.kIntake.CURRENT_LIMIT,
-        Constants.kIntake.HOPPER_INVERSION, NeutralMode.Coast);
+    intakeMotor = MotorHelper.createFalconMotor(kPorts.INTAKE_MOTOR, kIntake.CURRENT_LIMIT,
+        kIntake.INTAKE_INVERSION, NeutralMode.Coast);
+    HopperMotor = MotorHelper.createFalconMotor(kPorts.HOPPER_MOTOR, kIntake.CURRENT_LIMIT,
+        kIntake.HOPPER_INVERSION, NeutralMode.Coast);
 
   }
 
   public void runIntake() {
-    intakeMotor.set(ControlMode.PercentOutput, Constants.kIntake.INTAKE_SPEED);
-    HopperMotor.set(ControlMode.PercentOutput, Constants.kIntake.HOPPER_SPEED);
+    intakeMotor.set(ControlMode.PercentOutput, kIntake.INTAKE_SPEED);
+    HopperMotor.set(ControlMode.PercentOutput, kIntake.HOPPER_SPEED);
   }
 
   public void stopIntake() {
@@ -47,12 +45,10 @@ public class Intake extends SubsystemBase {
   }
 
   public void ejectIntake() {
-    intakeMotor.set(ControlMode.PercentOutput, Constants.kIntake.INTAKE_SPEED * -1);
-    HopperMotor.set(ControlMode.PercentOutput, Constants.kIntake.HOPPER_SPEED * -1);
+    intakeMotor.set(ControlMode.PercentOutput, kIntake.INTAKE_SPEED * -1);
+    HopperMotor.set(ControlMode.PercentOutput, kIntake.HOPPER_SPEED * -1);
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  public void periodic() { }
 }

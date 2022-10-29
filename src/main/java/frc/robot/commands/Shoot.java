@@ -4,35 +4,33 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 
 public class Shoot extends CommandBase {
-    private final Shooter m_shooter;
-    private final Hood m_hood;
-    private final Indexer m_indexer;
-    private final PhotonVision camera;
-    private final Swerve m_swerve;
+    private final Shooter hooter;
+    private final Hood hood;
+    private final Indexer indexer;
+    private final Swerve swerve;
+
     private boolean shoot;
     private double finishDelay;
     private double hoodPos;
     private double shooterVelocity;
 
     public Shoot(double hoodPos, double shooterVelocity) {
-        m_shooter = Shooter.getInstance();
-        m_swerve = Swerve.getInstance();
-        m_indexer = Indexer.getInstance();
-        m_hood = Hood.getInstance();
-        camera = PhotonVision.getInstance();
+        hooter = Shooter.getInstance();
+        swerve = Swerve.getInstance();
+        indexer = Indexer.getInstance();
+        hood = Hood.getInstance();
         this.hoodPos = hoodPos;
         this.shooterVelocity = shooterVelocity;
 
-        addRequirements(m_swerve);
-        addRequirements(m_indexer);
-        addRequirements(m_shooter);
-        addRequirements(m_hood);
+        addRequirements(swerve);
+        addRequirements(indexer);
+        addRequirements(hooter);
+        addRequirements(hood);
     }
 
     @Override
@@ -43,19 +41,17 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
-        double distance = camera.getDistance();
-        m_shooter.setVelocity(shooterVelocity);
-        m_hood.setPos(hoodPos);
+        hooter.setVelocity(shooterVelocity);
+        hood.setPos(hoodPos);
 
-        if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot) {
-            m_indexer.setState(IndexerState.SHOOTING);
+        if (hooter.isAtSpeed() && hood.isAtPos() && !shoot) {
+            indexer.setState(IndexerState.SHOOTING);
             shoot = true;
         }
     }
 
     @Override
     public boolean isFinished() {
-        // boolean isFinished = shoot && !m_indexer.getShooting();
         boolean isFinished = shoot;
 
         if (isFinished) {
@@ -71,8 +67,8 @@ public class Shoot extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_shooter.stopShooter();
-        m_hood.setPos(-1000);
-        m_indexer.setState(IndexerState.IDLE);
+        hooter.stopShooter();
+        hood.setPos(-1000);
+        indexer.setState(IndexerState.IDLE);
     }
 }

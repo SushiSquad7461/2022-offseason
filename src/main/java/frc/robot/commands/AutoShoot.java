@@ -10,25 +10,27 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 
 public class AutoShoot extends CommandBase {
-  private final Shooter m_shooter;
-  private final Hood m_hood;
-  private final Indexer m_indexer;
+  private final Shooter shooter;
+  private final Hood hood;
+  private final Indexer indexer;
   private final PhotonVision camera;
-  private final Swerve m_swerve;
+  private final Swerve swerve;
+
   private boolean shoot;
   private double finishDelay;
 
   public AutoShoot() {
-    m_shooter = Shooter.getInstance();
-    m_swerve = Swerve.getInstance();
-    m_indexer = Indexer.getInstance();
-    m_hood = Hood.getInstance();
+    shooter = Shooter.getInstance();
+    swerve = Swerve.getInstance();
+    indexer = Indexer.getInstance();
+    hood = Hood.getInstance();
     camera = PhotonVision.getInstance();
 
-    addRequirements(m_swerve);
-    addRequirements(m_indexer);
-    addRequirements(m_shooter);
-    addRequirements(m_hood);
+    addRequirements(swerve);
+    addRequirements(indexer);
+    addRequirements(shooter);
+    addRequirements(hood);
+    addRequirements(camera);
   }
 
   @Override
@@ -40,19 +42,18 @@ public class AutoShoot extends CommandBase {
   @Override
   public void execute() {
     double distance = camera.getDistance();
-    m_shooter.setVelocityBasedOnDistance(distance);
-    m_hood.setPosBasedOnDistance(distance);
+    shooter.setVelocityBasedOnDistance(distance);
+    hood.setPosBasedOnDistance(distance);
 
-    if (m_shooter.isAtSpeed() && m_hood.isAtPos() && !shoot) {
-      m_indexer.setState(IndexerState.SHOOTING);
+    if (shooter.isAtSpeed() && hood.isAtPos() && !shoot) {
+      indexer.setState(IndexerState.SHOOTING);
       shoot = true;
     }
   }
 
   @Override
   public boolean isFinished() {
-    // boolean isFinished = shoot && !m_indexer.getShooting();
-      boolean isFinished = shoot;
+    boolean isFinished = shoot;
 
     if (isFinished) {
       if (finishDelay == 0) {
@@ -67,8 +68,8 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stopShooter();
-    m_hood.setPos(-1000);
-    m_indexer.setState(IndexerState.IDLE);
+    shooter.stopShooter();
+    hood.setPos(-1000);
+    indexer.setState(IndexerState.IDLE);
   }
 }
