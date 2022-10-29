@@ -29,6 +29,17 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 30; //30
     }
 
+    public final static class kClimb {
+        public static final double CLIMB_SPEED = 0.4;
+
+        public static final TalonFXInvertType LEFT_INVERSION = TalonFXInvertType.CounterClockwise;
+        public static final TalonFXInvertType RIGHT_INVERSION = TalonFXInvertType.CounterClockwise;
+
+        public static final int CURRENT_LIMIT = 20;
+
+        public static final double MAX_POS = 205880;
+    }
+
     public static class kHood {
         public static final int CURRENT_LIMIT = 25; //35
         public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
@@ -105,7 +116,9 @@ public final class Constants {
 
         public static final int INTAKE_MOTOR = 49;
         public static final int HOPPER_MOTOR = 48;
-
+        
+        public static final int LEFT_CLIMB_MOTOR = 50;
+        public static final int RIGHT_CLIMB_MOTOR = 51;
     }
 
     public static final class kSwerve {

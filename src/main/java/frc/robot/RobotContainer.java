@@ -20,8 +20,10 @@ import frc.robot.subsystems.Indexer.IndexerState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 import frc.robot.Constants.kOI;
@@ -47,6 +49,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Indexer indexer;
   private final Intake intake;
+  private final Climb climb;
 
   private final XboxController driver;
   private final XboxController op;
@@ -60,6 +63,7 @@ public class RobotContainer {
     shooter = Shooter.getInstance();
     indexer = Indexer.getInstance();
     intake = Intake.getInstance();
+    climb = Climb.getInstance();
     autos = new AutoCommands(swerve, intake, indexer);
     autoChooser = new SendableChooser<>();
 
@@ -162,6 +166,14 @@ public class RobotContainer {
 
     new JoystickButton(op, kOI.UPDATE_ENCODER)
             .whenPressed(new InstantCommand(swerve::updateEncoders, swerve));
+
+    new POVButton(op, 0)
+            .whenPressed(() -> climb.openLoopRaiseClimb())
+            .whenReleased(() -> climb.stop());
+
+    new POVButton(op, 180)
+            .whenPressed(() -> climb.openLoopLowerClimb())
+            .whenReleased(() -> climb.stop());
   }
 
   /**
