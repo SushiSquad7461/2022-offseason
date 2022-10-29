@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 import SushiFrcLib.Constants.SushiConstants;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,8 +20,10 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Indexer.IndexerState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Climb;
@@ -103,20 +106,20 @@ public class RobotContainer {
         )
     );
 
-    new JoystickButton(driver, kOI.RUN_INTAKE)
-        .whenPressed(
-            new ParallelCommandGroup(
-                new InstantCommand(intake::runIntake, intake),
-                new InstantCommand(indexer::setIntake, indexer)
-            )
-        )
-        .whenReleased(
-            new SequentialCommandGroup(
-                new InstantCommand(intake::stopIntake, intake), 
-                new WaitCommand(0.5),
-                new InstantCommand(indexer::setIdle, indexer)
-            )
-        );
+    // new JoystickButton(driver, kOI.RUN_INTAKE)
+    //     .whenPressed(
+    //         new ParallelCommandGroup(
+    //             new InstantCommand(intake::runIntake, intake),
+    //             new InstantCommand(indexer::setIntake, indexer)
+    //         )
+    //     )
+    //     .whenReleased(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(intake::stopIntake, intake), 
+    //             new WaitCommand(0.5),
+    //             new InstantCommand(indexer::setIdle, indexer)
+    //         )
+    //     );
 
     new JoystickButton(driver, kOI.REVERSE_INTAKE)
         .whenPressed(new InstantCommand(intake::ejectIntake, intake))
@@ -174,6 +177,20 @@ public class RobotContainer {
     new POVButton(op, 180)
             .whenPressed(() -> climb.openLoopLowerClimb())
             .whenReleased(() -> climb.stop());
+
+    new Button(() -> driver.getLeftTriggerAxis() >= kOI.TRIGGER_THRESHOLD).whenPressed(
+            new ParallelCommandGroup(
+                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(indexer::setIntake, indexer)
+            )
+        )
+        .whenReleased(
+            new SequentialCommandGroup(
+                new InstantCommand(intake::stopIntake, intake), 
+                new WaitCommand(0.5),
+                new InstantCommand(indexer::setIdle, indexer)
+            )
+        );
   }
 
   /**

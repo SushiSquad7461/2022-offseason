@@ -258,6 +258,8 @@ public final class Constants {
         public static final int FENDER_SHOOT = XboxController.Button.kB.value;
 
         public static final int UPDATE_ENCODER = XboxController.Button.kY.value;
+
+        public static final double TRIGGER_THRESHOLD = 0.5;
     }
 
     enum kShots {
