@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     // Constants.setup(); TODO: dependency injection
     vision = PhotonVision.getInstance();
-    LiveWindow.disableAllTelemetry();
+    //LiveWindow.disableAllTelemetry();
     swerve = Swerve.getInstance();
   }
 

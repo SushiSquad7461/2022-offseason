@@ -20,13 +20,13 @@ public final class Constants {
     public static final boolean TUNING_MODE = false;
 
     public final static class kIntake {
-        public static final double INTAKE_SPEED = 0.7;
+        public static final double INTAKE_SPEED = 0.6;
         public static final double HOPPER_SPEED = 0.3;
 
         public static final TalonFXInvertType INTAKE_INVERSION = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType HOPPER_INVERSION = TalonFXInvertType.Clockwise;
 
-        public static final int CURRENT_LIMIT = 30; // 30
+        public static final int CURRENT_LIMIT = 20; // 30
     }
 
     public final static class kClimb {
@@ -37,7 +37,7 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 20;
 
-        public static final double MAX_POS = 240000;
+        public static final double MAX_POS = 235000;
 
         public static final double INVERSION = -1;
     }
@@ -71,12 +71,12 @@ public final class Constants {
 
     public static class kShooter {
         public static final double SETPOINT_RPM = 0;
-        public static final double ERROR_TOLERANCE = 50; // 60
-        public static final int CURRENT_LIMIT = 40;
-        public static final double kP = 0.270000; // 0.07
+        public static final double ERROR_TOLERANCE = 40; // 50
+        public static final int CURRENT_LIMIT = 30;
+        public static final double kP = 3.0000; // 0.27
         public static final double kI = 0.0;
         public static final double kD = 3.0; // 0
-        public static final double kF = 0.0527;
+        public static final double kF = 0.058; //0.0527
         public static final double OFFSET = 0;
         public static final double TX_OFFSET = 0;
         public static final double PID_TOLERANCE_DEGREES = 2;
@@ -148,23 +148,23 @@ public final class Constants {
 
         /* Swerve Current Limiting */
         public static final int ANGLE_CONTINUSE_CURRENT_LIMIT = 20; // 25
-        public static final int ANGLE_PEAK_CURRENT_LIMIT = 30; // 40
-        public static final double ANGLE_PEAK_CURRENT_DURATION = 0.1;
+        public static final int ANGLE_PEAK_CURRENT_LIMIT = 20; // 40
+        public static final double ANGLE_PEAK_CURRENT_DURATION = 0;
         public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
 
-        public static final int DRIVE_CONTINUSE_CURRENT_LIMIT = 30; // 35
-        public static final int DRIVE_PEAK_CURRENT_LIMIT = 50; // 60
-        public static final double DRIVE_PEAK_CURRENT_DURATION = 0.1;
+        public static final int DRIVE_CONTINUSE_CURRENT_LIMIT = 25; // 35
+        public static final int DRIVE_PEAK_CURRENT_LIMIT = 25; // 60
+        public static final double DRIVE_PEAK_CURRENT_DURATION = 0;
         public static final boolean DRIVE_ENABLE_CURRENT_LIMIT = true;
 
         /* Angle Motor PID Values */
-        public static final double ANGLE_P = 0.8;
+        public static final double ANGLE_P = 0.15;
         public static final double ANGLE_I = 0.0;
         public static final double ANGLE_D = 12.0;
         public static final double ANGLE_F = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double DRIVE_P = 0.18;
+        public static final double DRIVE_P = 0.05;
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
         public static final double DRIVE_F = 0.05;
@@ -264,9 +264,9 @@ public final class Constants {
     }
 
     enum kShots {
-        FENDER(0, 2300),
+        FENDER(0, 2350),
         AUTO_TARMAC(70000, 2600),
-        AUTO_SIDE(70000, 2550);
+        AUTO_SIDE(70000, 2500);
 
         public double hoodAngle;
         public double shooterVelocity;

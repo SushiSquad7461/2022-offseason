@@ -180,15 +180,14 @@ public class RobotContainer {
 
     new Button(() -> driver.getLeftTriggerAxis() >= kOI.TRIGGER_THRESHOLD).whenPressed(
             new ParallelCommandGroup(
-                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(intake::toggleIntake, intake),
                 new InstantCommand(indexer::setIntake, indexer)
             )
         )
         .whenReleased(
             new SequentialCommandGroup(
-                new InstantCommand(intake::stopIntake, intake), 
                 new WaitCommand(1),
-                new InstantCommand(indexer::setIdle, indexer)
+                new InstantCommand(() -> {if(!intake.isToggled()){indexer.setIdle();}}, indexer, intake)
             )
         );
 

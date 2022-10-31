@@ -146,7 +146,7 @@ public class AutoCommands {
             ),
             new InstantCommand(indexer::setIdle, indexer),
             new ParallelCommandGroup(
-                new Shoot(kShots.AUTO_TARMAC.hoodAngle, kShots.AUTO_TARMAC.shooterVelocity),
+                new Shoot(kShots.AUTO_TARMAC.hoodAngle-5000, kShots.AUTO_TARMAC.shooterVelocity+30),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
                     new WaitCommand(0.5)

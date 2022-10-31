@@ -252,7 +252,7 @@ public class Indexer extends SubsystemBase {
         feeder.set(kIndexer.FEADER_SPEED);
         break;
       case SHOOTING:
-        kicker.set(-kIndexer.KICKER_SPEED * 0.5);
+        kicker.set(-kIndexer.KICKER_SPEED * 0.25);
         feeder.set(kIndexer.FEADER_SPEED);
         ejecter.set(kIndexer.EJECTER_SPEED * 0.5);
         break;
