@@ -7,6 +7,7 @@ import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.kSwerve;
 
 public final class CTREConfigs {
@@ -32,6 +33,7 @@ public final class CTREConfigs {
         swerveAngleFXConfig.slot0.kD = kSwerve.ANGLE_D;
         swerveAngleFXConfig.slot0.kF = kSwerve.ANGLE_F;
         swerveAngleFXConfig.supplyCurrLimit = angleSupplyLimit;
+        //SmartDashboard.putNumber("currentlimit", angleSupplyLimit.currentLimit);
         swerveAngleFXConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
 
 
@@ -40,7 +42,7 @@ public final class CTREConfigs {
             kSwerve.DRIVE_ENABLE_CURRENT_LIMIT, 
             kSwerve.DRIVE_CONTINUSE_CURRENT_LIMIT, 
             kSwerve.DRIVE_PEAK_CURRENT_LIMIT, 
-            kSwerve.DRIVE_PEAK_CURRENT_LIMIT);
+            kSwerve.DRIVE_PEAK_CURRENT_DURATION);
 
         swerveDriveFXConfig.slot0.kP = kSwerve.DRIVE_P;
         swerveDriveFXConfig.slot0.kI = kSwerve.DRIVE_I;

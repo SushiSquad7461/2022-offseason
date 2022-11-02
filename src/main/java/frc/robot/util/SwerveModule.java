@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import java.util.PriorityQueue;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import SushiFrcLib.SmartDashboard.TunableNumber;
 
@@ -42,6 +43,7 @@ public class SwerveModule {
         /* Angle Motor Config */
         mAngleMotor = new WPI_TalonFX(moduleConstants.angleMotorID, kPorts.CANIVORE_NAME);
         configAngleMotor();
+
 
         /* Drive Motor Config */
         mDriveMotor = new WPI_TalonFX(moduleConstants.driveMotorID, kPorts.CANIVORE_NAME);

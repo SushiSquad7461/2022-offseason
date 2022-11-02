@@ -20,6 +20,8 @@ public class Climb extends SubsystemBase {
 
     private boolean goingDown;
 
+    private boolean resetClimb;
+
     public static Climb getInstance() {
         if (mInstance == null) {
             mInstance = new Climb();
@@ -33,6 +35,7 @@ public class Climb extends SubsystemBase {
 
         rightMotor.setSelectedSensorPosition(0);
         goingDown = false;
+        resetClimb = true;
     }
 
     public void openLoopRaiseClimb() {
@@ -58,6 +61,17 @@ public class Climb extends SubsystemBase {
         SmartDashboard.putNumber("climb current right", rightMotor.getSupplyCurrent());
         SmartDashboard.putNumber("climb pos right", getPosition());
 
+        if (resetClimb) {
+            if (rightMotor.getSupplyCurrent() < 0.5) {
+                rightMotor.set(ControlMode.PercentOutput, 0.12);
+            } else {
+                rightMotor.set(ControlMode.PercentOutput, 0);
+                rightMotor.setSelectedSensorPosition(0);
+                resetClimb = false;
+            }
+            return;
+        }
+
         if ((getPosition() > Constants.kClimb.MAX_POS && !goingDown) || (getPosition() < 0 && goingDown)) {
             rightMotor.set(ControlMode.PercentOutput, 0);
         }
@@ -65,5 +79,9 @@ public class Climb extends SubsystemBase {
 
     public double getPosition() {
         return rightMotor.getSelectedSensorPosition() * -1;
+    }
+
+    public void resetClimb() {
+        resetClimb = true;
     }
 }

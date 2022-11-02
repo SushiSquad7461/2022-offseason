@@ -180,18 +180,25 @@ public class RobotContainer {
 
     new Button(() -> driver.getLeftTriggerAxis() >= kOI.TRIGGER_THRESHOLD).whenPressed(
             new ParallelCommandGroup(
-                new InstantCommand(intake::runIntake, intake),
+                new InstantCommand(intake::toggleIntake, intake),
                 new InstantCommand(indexer::setIntake, indexer)
             )
         )
         .whenReleased(
             new SequentialCommandGroup(
-                new InstantCommand(intake::stopIntake, intake), 
-                new WaitCommand(0.5),
-                new InstantCommand(indexer::setIdle, indexer)
+                new WaitCommand(1),
+                new InstantCommand(() -> {if(!intake.isToggled()){indexer.setIdle();}}, indexer, intake)
             )
         );
-  }
+
+    new JoystickButton(op, XboxController.Button.kB.value).whenPressed(
+        new InstantCommand(()->indexer.enableColor(true), indexer)
+    );
+
+    new JoystickButton(op, XboxController.Button.kX.value).whenPressed(
+        new InstantCommand(()->indexer.enableColor(false), indexer)
+    );
+  }  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
