@@ -48,8 +48,7 @@ public class Indexer extends SubsystemBase {
   private double m_startMovingUpTime = 0;
 
   public enum IndexerState {
-    WAITING_FOR_COLOR,
-    IDLE,
+    WAITING_FOR_BALL,
     INTAKING,
     EJECTING,
     MOVING_UP
@@ -79,7 +78,7 @@ public class Indexer extends SubsystemBase {
     feeder = MotorHelper.createSparkMax(Ports.FEEDER_MOTOR, MotorType.kBrushless);
     ejecter = MotorHelper.createSparkMax(Ports.EJECTER_MOTOR, MotorType.kBrushless);
 
-    currState = IndexerState.IDLE;
+    currState = IndexerState.WAITING_FOR_BALL;
 
     colorSensor = new ColorSensorV3(Port.kMXP);
     colorSensor.configureColorSensor(
@@ -124,31 +123,6 @@ public class Indexer extends SubsystemBase {
     }
 
     switch (currState) {
-      case INTAKING:
-        if (!canIntake()) {
-          setState(IndexerState.IDLE);
-          break;
-        } else if (!lowerBeamBreak) {
-          if (overrideIdle) {
-            setState(IndexerState.IDLE);
-          }
-          break;
-        } 
-
-        // This case purposefully spills into the waiting for color one
-      case WAITING_FOR_COLOR:
-        if (ballColor == BallColor.Unknown) {
-          setState(IndexerState.WAITING_FOR_COLOR);
-        } else {
-          if (correctColor) {
-            setState(upperBeamBreak
-                ? IndexerState.IDLE
-                : IndexerState.MOVING_UP);
-          } else {
-            setState(IndexerState.EJECTING);
-          }
-        }
-        break;
       case EJECTING:
         if (!lowerBeamBreak && m_timer.get() - m_startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
           setState(IndexerState.INTAKING);
@@ -160,13 +134,30 @@ public class Indexer extends SubsystemBase {
           setState(IndexerState.INTAKING);
         }
         break;
-      case IDLE:
+      case INTAKING:
+        if (!lowerBeamBreak) {
+          if (overrideIdle) {
+            setState(IndexerState.WAITING_FOR_BALL);
+          }
+          break;
+        } 
+
+      // This case purposefully spills into the waiting for color one
       default:
-        if (canIntake()) {
-          if (lowerBeamBreak) {
-            setState(IndexerState.WAITING_FOR_COLOR);
-          } else if (!overrideIdle) {
+      case WAITING_FOR_BALL:
+        if (ballColor == BallColor.Unknown) {
+          if (canIntake() && !overrideIdle) {
             setState(IndexerState.INTAKING);
+          } else {
+            setState(IndexerState.WAITING_FOR_BALL);
+          }
+        } else {
+          if (correctColor) {
+            setState(upperBeamBreak
+                ? IndexerState.WAITING_FOR_BALL
+                : IndexerState.MOVING_UP);
+          } else {
+            setState(IndexerState.EJECTING);
           }
         }
         break;
@@ -257,15 +248,12 @@ public class Indexer extends SubsystemBase {
       ballColor = BallColor.Unknown;
     }
 
+    SmartDashboard.putNumber("ball ratio", colorRatio);
     SmartDashboard.putString("Ball Color", ballColor.name());
   }
 
   public void setIntake() {
     setState(IndexerState.INTAKING);
-  }
-
-  public void setIdle() {
-    setState(IndexerState.IDLE);
   }
 
   public void setState(IndexerState newState) {
@@ -275,8 +263,7 @@ public class Indexer extends SubsystemBase {
     currState = newState;
 
     switch (currState) {
-      case WAITING_FOR_COLOR:
-      case IDLE:
+      case WAITING_FOR_BALL:
         ejecter.set(0);
         feeder.set(0);
         break;

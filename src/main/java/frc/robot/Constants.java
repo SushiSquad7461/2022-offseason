@@ -85,8 +85,8 @@ public final class Constants {
     }
 
     public static class kIndexer {
-        public static final double colorSensorRatioThresholdRed = 0.75;
-        public static final double colorSensorRatioThresholdBlue = 2.0;
+        public static final double colorSensorRatioThresholdRed = 2.25;
+        public static final double colorSensorRatioThresholdBlue = 1;
 
         public static final double ejectDelaySeconds = 0.1;
         public static final double movingUpDelaySeconds = 0.1;
