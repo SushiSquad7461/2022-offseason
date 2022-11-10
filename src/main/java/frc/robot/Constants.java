@@ -94,11 +94,15 @@ public final class Constants {
     }
 
     public static class kIndexer {
-        public static final double EJECT_DELAY = 0.15; // in seconds
+        public static final double colorSensorRatioThresholdRed = 2.25;
+        public static final double colorSensorRatioThresholdBlue = 1;
+
+        public static final double ejectDelaySeconds = 0.1;
+        public static final double movingUpDelaySeconds = 0.1;
 
         public static final double EJECTER_SPEED = 1;
         public static final double KICKER_SPEED = 1;
-        public static final double FEADER_SPEED = 0.8;
+        public static final double FEEDER_SPEED = 0.8;
     }
 
     public static class kPorts {

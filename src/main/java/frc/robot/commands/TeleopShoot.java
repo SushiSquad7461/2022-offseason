@@ -119,7 +119,7 @@ public class TeleopShoot extends CommandBase {
 
     if (shooter.isAtSpeed() && hood.isAtPos() && !shoot && pid.atSetpoint()) {
       SmartDashboard.putBoolean("In Teleop Shoot", false);
-      indexer.setState(IndexerState.SHOOTING);
+      indexer.setShooting();
       shoot = true;
     }
   }
@@ -147,6 +147,6 @@ public class TeleopShoot extends CommandBase {
   public void end(boolean inturrupted) {
     shooter.stopShooter();
     hood.setPos(10000);
-    indexer.setState(IndexerState.IDLE);
+    indexer.setShooting(false);
   }
 }

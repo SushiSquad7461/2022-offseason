@@ -39,6 +39,10 @@ public class Intake extends SubsystemBase {
   }
 
   public void runIntake() {
+    if (!Indexer.getInstance().canIntake()) {
+      return;
+    }
+
     intakeMotor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(4000));
     HopperMotor.set(ControlMode.PercentOutput, kIntake.HOPPER_SPEED);
   }
@@ -69,5 +73,9 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Speed", intakeMotor.getSelectedSensorVelocity());
+
+    if (!Indexer.getInstance().canIntake()) {
+      stopIntake();
+    }
   }
 }

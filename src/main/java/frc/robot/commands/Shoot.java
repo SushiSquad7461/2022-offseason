@@ -6,7 +6,6 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Indexer.IndexerState;
 
 public class Shoot extends CommandBase {
     private final Shooter hooter;
@@ -45,7 +44,7 @@ public class Shoot extends CommandBase {
         hood.setPos(hoodPos);
 
         if (hooter.isAtSpeed() && hood.isAtPos() && !shoot) {
-            indexer.setState(IndexerState.SHOOTING);
+            indexer.setShooting();
             shoot = true;
         }
     }
@@ -69,6 +68,6 @@ public class Shoot extends CommandBase {
     public void end(boolean interrupted) {
         hooter.stopShooter();
         hood.setPos(-1000);
-        indexer.setState(IndexerState.IDLE);
+        indexer.setShooting(false);
     }
 }
