@@ -21,22 +21,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Ports;
+import frc.robot.Constants.kPorts;
 import frc.robot.Constants.kIndexer;
 
 public class Indexer extends SubsystemBase {
   private final CANSparkMax kicker;
   private final CANSparkMax feeder;
   private final CANSparkMax ejecter;
+  private boolean colorEnabled;
 
   private final DigitalInput lowerBeamBreak;
   private final DigitalInput upperBeamBreak;
 
   private final ColorSensorV3 colorSensor;
   private IndexerState currState;
+  private NetworkTable table;
 
   private int ballCount = 0;
-  private final boolean isRedAlliance;
+  private boolean isRedAlliance;
   private BallColor ballColor;
   // This prevents it from counting the same ball multiple balls
   private boolean isShooting = false;
@@ -51,7 +53,10 @@ public class Indexer extends SubsystemBase {
     WAITING_FOR_BALL,
     INTAKING,
     EJECTING,
-    MOVING_UP
+    MOVING_UP,
+    BACKING,
+    SHOOTING,
+    AUTO_INTAKE
   }
 
   private enum BallColor {
@@ -60,7 +65,7 @@ public class Indexer extends SubsystemBase {
     Blue
   }
 
-  private static Indexer indexer = null;
+  private static Indexer indexer;
 
   public static Indexer getInstance() {
     if (indexer == null) {
@@ -71,12 +76,12 @@ public class Indexer extends SubsystemBase {
 
   /** Creates a new Indexer. */
   private Indexer() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("FMSInfo");
+    table = NetworkTableInstance.getDefault().getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
 
-    kicker = MotorHelper.createSparkMax(Constants.Ports.KICKER_MOTOR, MotorType.kBrushless);
-    feeder = MotorHelper.createSparkMax(Ports.FEEDER_MOTOR, MotorType.kBrushless);
-    ejecter = MotorHelper.createSparkMax(Ports.EJECTER_MOTOR, MotorType.kBrushless);
+    kicker = MotorHelper.createSparkMax(kPorts.KICKER_MOTOR, MotorType.kBrushless);
+    feeder = MotorHelper.createSparkMax(kPorts.FEEDER_MOTOR, MotorType.kBrushless);
+    ejecter = MotorHelper.createSparkMax(kPorts.EJECTER_MOTOR, MotorType.kBrushless);
 
     currState = IndexerState.WAITING_FOR_BALL;
 
@@ -86,8 +91,11 @@ public class Indexer extends SubsystemBase {
         ColorSensorMeasurementRate.kColorRate25ms,
         GainFactor.kGain3x);
 
-    lowerBeamBreak = new DigitalInput(Ports.BOTTOM_BEAM_BREAK);
-    upperBeamBreak = new DigitalInput(Ports.UPPER_BEAM_BREAK);
+    lowerBeamBreak = new DigitalInput(kPorts.BOTTOM_BEAM_BREAK);
+    upperBeamBreak = new DigitalInput(kPorts.UPPER_BEAM_BREAK);
+
+    ballCount = 0;
+    colorEnabled = true;
 
     m_timer.start();
   }
@@ -98,12 +106,8 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Ejecter", ejecter.getAppliedOutput());
-    SmartDashboard.putNumber("Kicker", kicker.getAppliedOutput());
-    SmartDashboard.putNumber("Feeder", feeder.getAppliedOutput());
+    isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
     SmartDashboard.putString("Indexer State", currState.toString());
-    SmartDashboard.putNumber("Ball count", ballCount);
-    // SmartDashboard.putBoolean("Beam Break", bottomBeamBreak.get());
 
     boolean lowerBeamBreak = lowerBeamBreakActuated();
     boolean upperBeamBreak = upperBeamBreakActuated();
@@ -125,6 +129,7 @@ public class Indexer extends SubsystemBase {
     switch (currState) {
       case EJECTING:
         if (!lowerBeamBreak && m_timer.get() - m_startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
+          ballCount--;
           setState(IndexerState.INTAKING);
         }
         break;
@@ -221,7 +226,13 @@ public class Indexer extends SubsystemBase {
   }
 
   public boolean isCorrectColor() {
-    return ballColor == BallColor.Red && isRedAlliance || ballColor == BallColor.Blue && !isRedAlliance;
+    //return true;
+    return ballColor == BallColor.Red && isRedAlliance || ballColor ==
+    BallColor.Blue && !isRedAlliance;
+  }
+
+  public void enableColor (boolean enable){
+    colorEnabled = enable;
   }
 
   public void pollColor() {
@@ -256,16 +267,18 @@ public class Indexer extends SubsystemBase {
     if (newState != currState) {
       System.out.println(newState);
     }
+
     currState = newState;
 
     switch (currState) {
       case WAITING_FOR_BALL:
         ejecter.set(0);
         feeder.set(0);
+        kicker.set(0);
         break;
       case INTAKING:
         ejecter.set(0);
-        feeder.set(0.5); // diffrent from other feeder speeds, is this needed?
+        feeder.set(0.5);
         break;
       case EJECTING:
         ejecter.set(-kIndexer.EJECTER_SPEED);
@@ -275,7 +288,6 @@ public class Indexer extends SubsystemBase {
       case MOVING_UP:
         ejecter.set(kIndexer.EJECTER_SPEED);
         feeder.set(kIndexer.FEEDER_SPEED);
-        m_startMovingUpTime = m_timer.get();
         break;
       default:
         break;

@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
@@ -8,37 +7,49 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import SushiFrcLib.Math.Conversion;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.kVision;
 
 public class PhotonVision extends SubsystemBase {
-    PhotonCamera camera;
-    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
-    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+    private final PhotonCamera camera;
 
     private PhotonPipelineResult result;
     private PhotonTrackedTarget bestTarget;
     private boolean hasTargets;
+    private boolean lastHeadingPositive;
+    private LinearFilter distanceFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
+    private double distance = 0;
+    private double heading = 0;
 
-    private static PhotonVision sInstance;
+    private static PhotonVision instance;
 
     public static PhotonVision getInstance() {
-        if (sInstance == null) {
-            sInstance = new PhotonVision();
+        if (instance == null) {
+            instance = new PhotonVision();
         }
-        return sInstance;
-    }
-
-    // @Override
-    public void periodic() {
-        result = camera.getLatestResult();
-        bestTarget = result.getBestTarget();
-        hasTargets = result.hasTargets();
+        return instance;
     }
 
     private PhotonVision() {
         camera = new PhotonCamera("gloworm");
+        lastHeadingPositive = true;
+    }
+
+    @Override
+    public void periodic() {
+        result = camera.getLatestResult();
+        bestTarget = result.getBestTarget();
+        hasTargets = result.hasTargets();
+
+        if (hasTargets) {
+            lastHeadingPositive = bestTarget.getYaw() > 0;
+        }
+
+        distance = distanceFilter.calculate(calculateDistance());
+        SmartDashboard.putNumber("Heading", heading);
+        SmartDashboard.putNumber("Distance", distance);
     }
 
     private double getBestArea() {
@@ -50,7 +61,23 @@ public class PhotonVision extends SubsystemBase {
     }
 
     private double getBestHeading() {
-        return hasTargets ? bestTarget.getYaw() : 10;
+        return hasTargets ? bestTarget.getYaw() : (lastHeadingPositive ? 30 : -30);
+    }
+
+    private double getAvreageHeading() {
+        if (hasTargets) {
+            List<PhotonTrackedTarget> targets = result.getTargets();
+            double sum = 0;
+
+            for (var target : targets) {
+                sum += target.getYaw();
+            }
+
+            System.out.println(sum / targets.size());
+
+            return -(sum / targets.size());
+        }
+        return (lastHeadingPositive ? 30 : -30);
     }
 
     private double getLeftMostHeading() {
@@ -70,17 +97,19 @@ public class PhotonVision extends SubsystemBase {
     }
 
     public double getHeading() {
-        // return getLeftMostHeading(); //TODO: switch to this if not working
-        return -getBestHeading();
+        return getAvreageHeading();
     }
 
-    public double getDistance() {
-        // return getBestArea(); //TODO: switch to this if not working
+    public double calculateDistance() {
         if (!camera.getLatestResult().hasTargets()) {
             return 0;
         }
 
-        double angle = Constants.VisionConstants.kLimeLightMountAngle + getBestPitch();
-        return (1 / Math.tan(Conversion.degreesToRadians(angle))) * Constants.VisionConstants.kLimeLightToHubHeight;
+        double angle = kVision.LIME_LIGHT_MOUNT_ANGLE + getBestPitch();
+        return (1 / Math.tan(Conversion.degreesToRadians(angle))) * kVision.LIME_LIGHT_TO_HUB_HEIGHT;
+    }
+    
+    public double getDistance() {
+        return distance;
     }
 }

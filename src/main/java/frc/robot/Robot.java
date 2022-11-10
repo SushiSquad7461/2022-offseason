@@ -4,19 +4,14 @@
 
 package frc.robot;
 
-import org.opencv.photo.Photo;
-
-import com.ctre.phoenix.sensors.Pigeon2;
-
-import SushiFrcLib.Sensors.Gyro.Gyro;
-import SushiFrcLib.Sensors.Gyro.NavX;
-import SushiFrcLib.Sensors.Gyro.Pigeon;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.PhotonVision;
+import frc.robot.subsystems.Swerve;
+import frc.robot.util.CTREConfigs;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,6 +27,7 @@ public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs = new CTREConfigs();
   private RobotContainer m_robotContainer;
   private PhotonVision vision;
+  private Swerve swerve;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -46,7 +42,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     // Constants.setup(); TODO: dependency injection
     vision = PhotonVision.getInstance();
-    LiveWindow.disableAllTelemetry();
+    //LiveWindow.disableAllTelemetry();
+    swerve = Swerve.getInstance();
   }
 
   /**
@@ -79,6 +76,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    swerve.updateEncoders();
   }
 
   /**
@@ -106,7 +104,6 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_robotContainer.teleopDrive();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
