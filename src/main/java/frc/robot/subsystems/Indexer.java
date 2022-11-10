@@ -252,11 +252,7 @@ public class Indexer extends SubsystemBase {
     SmartDashboard.putString("Ball Color", ballColor.name());
   }
 
-  public void setIntake() {
-    setState(IndexerState.INTAKING);
-  }
-
-  public void setState(IndexerState newState) {
+  private void setState(IndexerState newState) {
     if (newState != currState) {
       System.out.println(newState);
     }
