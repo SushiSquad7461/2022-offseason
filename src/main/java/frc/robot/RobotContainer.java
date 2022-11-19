@@ -106,21 +106,6 @@ public class RobotContainer {
         )
     );
 
-    // new JoystickButton(driver, kOI.RUN_INTAKE)
-    //     .whenPressed(
-    //         new ParallelCommandGroup(
-    //             new InstantCommand(intake::runIntake, intake),
-    //             new InstantCommand(indexer::setIntake, indexer)
-    //         )
-    //     )
-    //     .whenReleased(
-    //         new SequentialCommandGroup(
-    //             new InstantCommand(intake::stopIntake, intake), 
-    //             new WaitCommand(0.5),
-    //             new InstantCommand(indexer::setIdle, indexer)
-    //         )
-    //     );
-
     new JoystickButton(driver, kOI.REVERSE_INTAKE)
         .whenPressed(new InstantCommand(intake::ejectIntake, intake))
         .whenReleased(new InstantCommand(intake::stopIntake, intake));
@@ -128,19 +113,12 @@ public class RobotContainer {
     new JoystickButton(op, kOI.ZERO_GYRO)
         .whenPressed(new InstantCommand(swerve::zeroGyro));
 
-        new Button(() -> driver.getRightTriggerAxis() >= kOI.TRIGGER_THRESHOLD)
-        .whenPressed(new TeleopShoot(
-                driver,
-                kOI.DRIVE_TRANSLATION_Y,
-                kOI.DRIVE_TRANSLATION_X,
-                kOI.DRIVE_ROTATE,
-                kSwerve.FEILD_RELATIVE,
-                kSwerve.OPEN_LOOP
+    new Button(() -> driver.getRightTriggerAxis() >= kOI.TRIGGER_THRESHOLD)
+        .whenPressed(
+            new TeleopShoot(
+                () -> Double.valueOf(driver.getRawAxis(kOI.DRIVE_ROTATE))
             )
         );
-
-    // new JoystickButton(driver, kOI.AUTO_SHOOT)
-    //         .whenPressed(new AutoShoot());
 
     new JoystickButton(driver, kOI.FENDER_SHOOT)
         .whenPressed(new Shoot(kShots.FENDER.hoodAngle, kShots.FENDER.shooterVelocity));
@@ -175,9 +153,10 @@ public class RobotContainer {
             .whenReleased(() -> climb.stop());
 
     new POVButton(op, 180)
-            .whenPressed(() -> climb.openLoopLowerClimb())
+            .whenPressed(() -> climb.openLoopRetractClimb())
             .whenReleased(() -> climb.stop());
 
+    // TODO: Try to remove toggle from intake #18
     new Button(() -> driver.getLeftTriggerAxis() >= kOI.TRIGGER_THRESHOLD).whenPressed(
             new ParallelCommandGroup(
                 new InstantCommand(intake::toggleIntake, intake),
@@ -187,7 +166,12 @@ public class RobotContainer {
         .whenReleased(
             new SequentialCommandGroup(
                 new WaitCommand(1),
-                new InstantCommand(() -> {if(!intake.isToggled()){indexer.setIdle();}}, indexer, intake)
+                new InstantCommand(() -> {
+                    if (!intake.isToggled()) {
+                        indexer.setIdle();
+                    }
+                }, 
+            indexer, intake)
             )
         );
 

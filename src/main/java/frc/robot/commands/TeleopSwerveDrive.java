@@ -3,9 +3,8 @@ package frc.robot.commands;
 import SushiFrcLib.Math.Normalization;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.drive.Vector2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Swerve;
 
@@ -37,15 +36,13 @@ public class TeleopSwerveDrive extends CommandBase {
         double leftRight = -controller.getRawAxis(strafeAxis);
         double rot = -controller.getRawAxis(rotationsAxis);
 
-        forwardBack = Normalization.cube(forwardBack);
-        leftRight = Normalization.cube(leftRight);
+        forwardBack = Normalization.cube(Math.abs(forwardBack) < Constants.STICK_DEADBAND ? 0 : forwardBack);
+        leftRight = Normalization.cube(Math.abs(leftRight) < Constants.STICK_DEADBAND ? 0 : leftRight);
 
-        double magnitude = new Vector2d(forwardBack, leftRight).magnitude();
-        double magnitudeRatio = magnitude == 0 ? 1 : Normalization.cube(magnitude) / magnitude;
         Translation2d translation = new Translation2d(forwardBack, leftRight)
-                .times(kSwerve.MAX_SPEED * magnitudeRatio);
+                .times(kSwerve.MAX_SPEED);
 
-        rot = Normalization.cube(Normalization.cube(rot));
+        rot = Normalization.cube(rot);
         rot *= kSwerve.MAX_ANGULAR_VELOCITY;
 
         swerve.drive(translation, rot, fieldRelative, openLoop);

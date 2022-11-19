@@ -26,7 +26,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class AutoCommands {
-
     //subsystems
     private final Swerve swerve;
     private final Intake intake;

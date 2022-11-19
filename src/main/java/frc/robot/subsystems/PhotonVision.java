@@ -14,14 +14,11 @@ import frc.robot.Constants.kVision;
 
 public class PhotonVision extends SubsystemBase {
     private final PhotonCamera camera;
+    private final LinearFilter distanceFilter;
 
     private PhotonPipelineResult result;
-    private PhotonTrackedTarget bestTarget;
-    private boolean hasTargets;
     private boolean lastHeadingPositive;
-    private LinearFilter distanceFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
-    private double distance = 0;
-    private double heading = 0;
+    private double distance;
 
     private static PhotonVision instance;
 
@@ -33,39 +30,31 @@ public class PhotonVision extends SubsystemBase {
     }
 
     private PhotonVision() {
-        camera = new PhotonCamera("gloworm");
+        camera = new PhotonCamera(kVision.CAMERA_NAME);
+        distanceFilter = LinearFilter.singlePoleIIR(kVision.TIME_CONSTANT, kVision.PERIOD);
+
+        distance = 0;
         lastHeadingPositive = true;
     }
 
     @Override
     public void periodic() {
         result = camera.getLatestResult();
-        bestTarget = result.getBestTarget();
-        hasTargets = result.hasTargets();
-
-        if (hasTargets) {
-            lastHeadingPositive = bestTarget.getYaw() > 0;
-        }
-
         distance = distanceFilter.calculate(calculateDistance());
-        SmartDashboard.putNumber("Heading", heading);
-        SmartDashboard.putNumber("Distance", distance);
-    }
 
-    private double getBestArea() {
-        return hasTargets ? bestTarget.getArea() : 0;
+        SmartDashboard.putNumber("Distance", distance);
+
+        if (result.hasTargets()) {
+            lastHeadingPositive = result.getBestTarget().getYaw() > 0;
+        }
     }
 
     private double getBestPitch() {
-        return hasTargets ? bestTarget.getPitch() : 0;
+        return result.hasTargets() ? result.getBestTarget().getPitch() : 0;
     }
 
-    private double getBestHeading() {
-        return hasTargets ? bestTarget.getYaw() : (lastHeadingPositive ? 30 : -30);
-    }
-
-    private double getAvreageHeading() {
-        if (hasTargets) {
+    private double getAverageHeading() {
+        if (result.hasTargets()) {
             List<PhotonTrackedTarget> targets = result.getTargets();
             double sum = 0;
 
@@ -73,31 +62,13 @@ public class PhotonVision extends SubsystemBase {
                 sum += target.getYaw();
             }
 
-            System.out.println(sum / targets.size());
-
             return -(sum / targets.size());
         }
         return (lastHeadingPositive ? 30 : -30);
     }
 
-    private double getLeftMostHeading() {
-        if (hasTargets) {
-            List<PhotonTrackedTarget> targets = result.getTargets();
-            double LeftestYaw = targets.get(0).getYaw();
-
-            for (var target : targets) {
-                if (target.getYaw() < LeftestYaw) {
-                    LeftestYaw = target.getYaw();
-                }
-            }
-
-            return LeftestYaw;
-        }
-        return 0;
-    }
-
     public double getHeading() {
-        return getAvreageHeading();
+        return getAverageHeading();
     }
 
     public double calculateDistance() {

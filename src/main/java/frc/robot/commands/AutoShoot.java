@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.PhotonVision;
@@ -18,6 +19,7 @@ public class AutoShoot extends CommandBase {
 
   private boolean shoot;
   private double finishDelay;
+  private double initTime;
 
   public AutoShoot() {
     shooter = Shooter.getInstance();
@@ -37,6 +39,7 @@ public class AutoShoot extends CommandBase {
   public void initialize() {
     finishDelay = 0;
     shoot = false;
+    initTime = Timer.getFPGATimestamp();
   }
 
   @Override
@@ -53,9 +56,11 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    boolean isFinished = shoot;
+    if (Timer.getFPGATimestamp() - initTime > Constants.SHOOT_UP_TO_SPEED_TIMEOUT && !shoot) {
+      return true;
+    }
 
-    if (isFinished) {
+    if (shoot) {
       if (finishDelay == 0) {
         finishDelay = Timer.getFPGATimestamp();
         return false;
@@ -63,7 +68,7 @@ public class AutoShoot extends CommandBase {
         return Timer.getFPGATimestamp() - finishDelay > 1;
       }
     }
-    return isFinished;
+    return false;
   }
 
   @Override
