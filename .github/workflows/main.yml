@@ -1,0 +1,34 @@
+name: Build and Check Style
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2022-18.04
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: "Run assemble"
+        run: ./gradlew assemble
+  lint:
+    name: Run checkstyle linter
+    runs-on: ubuntu-latest
+    container: gradle:jdk11
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: "Run linter"
+        run: ./gradlew check
+      - name: "Upload artifact"      
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: linter-report
+          path: build/reports/checkstyle/main.html
+
