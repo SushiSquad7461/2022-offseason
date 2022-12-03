@@ -19,7 +19,7 @@ public final class Constants {
     public static final double STICK_DEADBAND = 0.1;
     public static final double SHOOT_TIMEOUT = 1;
     public static final double SHOOT_UP_TO_SPEED_TIMEOUT = 10;
-    public static final boolean TUNING_MODE = false;
+    public static final boolean TUNING_MODE = true;
 
     public final static class kIntake {
         public static final double INTAKE_SPEED = 4000;
@@ -155,20 +155,20 @@ public final class Constants {
         public static final int DRIVE_CURRENT_LIMIT = 25;
 
         /* Angle Motor PID Values */
-        public static final double ANGLE_P = 0.15;
+        public static final double ANGLE_P = 0.3;
         public static final double ANGLE_I = 0.0;
         public static final double ANGLE_D = 12.0;
         public static final double ANGLE_F = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double DRIVE_P = 0.05;
+        public static final double DRIVE_P = 0.009000;
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double DRIVE_F = 0.05;
+        public static final double DRIVE_F = 0.046;
 
         /* Swerve Profiling Values */
         public static final double MAX_ACCELERATION = 3; // 2
-        public static final double MAX_SPEED = 11.5; // 4.5 meters per second
+        public static final double MAX_SPEED = 5; // 4.5 meters per second
         public static final double MAX_ANGULAR_VELOCITY = 20; // 11.5
 
         public static final PIDController X_CONTROLLER = new PIDController(2, 0, 0);

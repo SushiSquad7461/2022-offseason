@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.kPorts;
 import frc.robot.Constants.kSwerve;
@@ -27,6 +28,8 @@ public class SwerveModule {
     private final TunableNumber mDriveP;
     private final TunableNumber mDriveD;
     private final TunableNumber mDriveF;
+    private final TunableNumber mAngleP;
+    private final TunableNumber mAngleD;
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants) {
         this.moduleNumber = moduleNumber;
@@ -50,9 +53,12 @@ public class SwerveModule {
 
         lastAngle = getState().angle.getDegrees();
 
-        mDriveP = new TunableNumber("Mod " + moduleNumber + " drive P", 0.0, Constants.TUNING_MODE);
-        mDriveD = new TunableNumber("Mod " + moduleNumber + " drive D", 0.0, Constants.TUNING_MODE);
-        mDriveF = new TunableNumber("Mod " + moduleNumber + " drive F", 0.0, Constants.TUNING_MODE);
+        mDriveP = new TunableNumber("Mod " + moduleNumber + " drive P", kSwerve.DRIVE_P, Constants.TUNING_MODE);
+        mDriveD = new TunableNumber("Mod " + moduleNumber + " drive D", kSwerve.DRIVE_D, Constants.TUNING_MODE);
+        mDriveF = new TunableNumber("Mod " + moduleNumber + " drive F", kSwerve.DRIVE_F, Constants.TUNING_MODE);
+
+        mAngleP = new TunableNumber("Mod " + moduleNumber + " angle P", kSwerve.ANGLE_P, Constants.TUNING_MODE);
+        mAngleD = new TunableNumber("Mod " + moduleNumber + " angle D", kSwerve.ANGLE_D, Constants.TUNING_MODE);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -64,6 +70,14 @@ public class SwerveModule {
         }
         if (mDriveF.hasChanged()) {
             driveMotor.config_kF(0, mDriveF.get());
+        }
+
+        if (mAngleP.hasChanged()) {
+            angleMotor.config_kP(0, mAngleP.get());
+        }
+
+        if (mAngleD.hasChanged()) {
+            angleMotor.config_kD(0, mAngleD.get());
         }
 
         desiredState = CTREModuleState.optimize(desiredState, getState().angle); // Custom optimize command, since
@@ -78,12 +92,17 @@ public class SwerveModule {
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, kSwerve.WHEEL_CIRCUMFRANCE,
                     kSwerve.DRIVE_GEAR_RATIO);
             driveMotor.set(ControlMode.Velocity, velocity);
+
+            SmartDashboard.putNumber("Mod " + moduleNumber + " wanted velocity ", velocity);
         }
 
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (kSwerve.MAX_SPEED * 0.01)) ? lastAngle
                 : desiredState.angle.getDegrees(); // Prevent rotating module if speed is less then 1%. Prevents
                                                    // Jittering.
         angleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle, kSwerve.ANGLE_GEAR_RATIO));
+
+        SmartDashboard.putNumber("Mod " + moduleNumber + " wanted angle ", angle);
+
         lastAngle = angle;
     }
 
@@ -113,6 +132,10 @@ public class SwerveModule {
         Rotation2d angle = Rotation2d.fromDegrees(
                 Conversions.falconToDegrees(angleMotor.getSelectedSensorPosition(), kSwerve.ANGLE_GEAR_RATIO));
         return new SwerveModuleState(velocity, angle);
+    }
+
+    public double getDriveSpeed() {
+        return driveMotor.getSelectedSensorVelocity();
     }
 
 }
