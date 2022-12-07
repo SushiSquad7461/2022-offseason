@@ -120,7 +120,7 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getAngle());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getDriveSpeed());
-            // DataLogManager.log("Mod " + mod.moduleNumber + " Angule Current Draw: " + mod.getAngleCurrentDraw());
+            // DataLogManager.log("Mod " + mod.moduleNumber + " Angle Current Draw: " + mod.getAngleCurrentDraw());
             // DataLogManager.log("Mod " + mod.moduleNumber + " Drive Current Draw: " + mod.getDriveCurrentDraw());
         }
     }
