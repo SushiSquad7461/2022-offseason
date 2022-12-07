@@ -138,4 +138,15 @@ public class SwerveModule {
         return driveMotor.getSelectedSensorVelocity();
     }
 
-}
+    public double getAngleCurrentDraw() {
+        return angleMotor.getSupplyCurrent();
+    }
+
+    public double getDriveCurrentDraw() {
+        return driveMotor.getSupplyCurrent();
+    }
+
+    public boolean exceedsCurrentLimit() {
+        return getAngleCurrentDraw() > kSwerve.ANGLE_CURRENT_LIMIT && getDriveCurrentDraw() > kSwerve.DRIVE_CURRENT_LIMIT;
+    }
+} 
