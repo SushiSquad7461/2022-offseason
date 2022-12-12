@@ -4,14 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Swerve;
-import frc.robot.util.CTREConfigs;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,7 +24,6 @@ import frc.robot.util.CTREConfigs;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  public static CTREConfigs ctreConfigs = new CTREConfigs();
   private RobotContainer m_robotContainer;
   private PhotonVision vision;
   private Swerve swerve;
@@ -44,6 +43,12 @@ public class Robot extends TimedRobot {
     vision = PhotonVision.getInstance();
     //LiveWindow.disableAllTelemetry();
     swerve = Swerve.getInstance();
+
+    // Starts recording to data log
+    DataLogManager.start();
+
+    // Record both DS control and joystick data
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   /**

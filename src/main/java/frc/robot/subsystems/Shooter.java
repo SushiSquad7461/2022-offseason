@@ -20,8 +20,7 @@ import frc.robot.Constants.kPorts;
 import frc.robot.Constants.kShooter;
 
 public class Shooter extends SubsystemBase {
-  //private final WPI_TalonFX leftMotor;
-  private final WPI_TalonFX rightMotor;
+  private final WPI_TalonFX motor;
 
   private final TunableNumber shooterP;
   private final TunableNumber shooterI;
@@ -45,48 +44,39 @@ public class Shooter extends SubsystemBase {
     shooterF = new TunableNumber("Shooter F", kShooter.kF, Constants.TUNING_MODE);
     shooterRPM = new TunableNumber("shooter rpm", 0, Constants.TUNING_MODE);
 
-    // leftMotor = MotorHelper.createFalconMotor(kPorts.SHOOTER_LEFT_MOTOR, kShooter.CURRENT_LIMIT,
-    //     TalonFXInvertType.Clockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
-    //     shooterF.get());
-    rightMotor = MotorHelper.createFalconMotor(kPorts.SHOOTER_RIGHT_MOTOR, kShooter.CURRENT_LIMIT,
-        TalonFXInvertType.OpposeMaster, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
+    motor = MotorHelper.createFalconMotor(kPorts.SHOOTER_MOTOR, kShooter.CURRENT_LIMIT,
+        TalonFXInvertType.CounterClockwise, NeutralMode.Coast, shooterP.get(), shooterI.get(), shooterD.get(),
         shooterF.get());
-
-    //rightMotor.follow(leftMotor);
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Shooter current rpm",
-        Conversion.convertTransToRPM(rightMotor.getSelectedSensorVelocity()));
+      Conversion.convertTransToRPM(motor.getSelectedSensorVelocity()));
     SmartDashboard.putNumber("Shooter set rpm", shooterRPM.get());
     SmartDashboard.putNumber("Shooter error", getError());
 
     runShooter();
 
     if (shooterF.hasChanged()) {
-      //leftMotor.config_kF(0, shooterF.get());
-      rightMotor.config_kF(0, shooterF.get());
+      motor.config_kF(0, shooterF.get());
     }
 
     if (shooterP.hasChanged()) {
-      //leftMotor.config_kP(0, shooterP.get());
-      rightMotor.config_kP(0, shooterF.get());
+      motor.config_kP(0, shooterF.get());
     }
 
     if (shooterI.hasChanged()) {
-      //leftMotor.config_kI(0, shooterI.get());
-      rightMotor.config_kI(0, shooterF.get());
+      motor.config_kI(0, shooterF.get());
     }
 
     if (shooterD.hasChanged()) {
-      //leftMotor.config_kD(0, shooterD.get());
-      rightMotor.config_kD(0, shooterF.get());
+      motor.config_kD(0, shooterF.get());
     }
   }
 
   public void runShooter() {
-    rightMotor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(shooterRPM.get()));
+    motor.set(ControlMode.Velocity, Conversion.convertRPMtoTrans(shooterRPM.get()));
   }
 
   public void stopShooter() {
@@ -98,15 +88,7 @@ public class Shooter extends SubsystemBase {
   }
 
   private double getError() {
-    return Math.abs(shooterRPM.get() - Conversion.convertTransToRPM(rightMotor.getSelectedSensorVelocity()));
-  }
-
-  public double getLeftMotorPosition() {
-    return rightMotor.getSelectedSensorPosition();
-  }
-
-  public double getRightMotorPosition() {
-    return rightMotor.getSelectedSensorPosition();
+    return Math.abs(shooterRPM.get() - Conversion.convertTransToRPM(motor.getSelectedSensorVelocity()));
   }
 
   public void setVelocity(double speed) {

@@ -26,7 +26,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class AutoCommands {
-
     //subsystems
     private final Swerve swerve;
     private final Intake intake;
@@ -37,6 +36,7 @@ public class AutoCommands {
     private final String[] sixBallPaths = {"TarmacToSide", "SideToHP", "HPToShot2", "ShotToFarBall"};
     private final String[] fiveBallPaths = {"TarmacToSide", "SideToBall", "BallToHP", "HPToShot"};
     private final String[] twoBallPaths = {"TarmacToBall"};
+    private final String[] testing = {"BinaryCircle"};
 
     public AutoCommands(Swerve swerve, Intake intake, Indexer indexer) {
         this.swerve = swerve;
@@ -45,6 +45,7 @@ public class AutoCommands {
 
         autos = new HashMap<String, SequentialCommandGroup>();
 
+        autos.put("Circle", new SequentialCommandGroup(getCommand(testing[0], true)));
         autos.put("nothing", new SequentialCommandGroup());
 
         autos.put("1 Ball", new SequentialCommandGroup(

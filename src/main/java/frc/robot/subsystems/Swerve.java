@@ -12,14 +12,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase {
-    public SwerveDriveOdometry swerveOdometry;
-    public SwerveModule[] mSwerveMods;
-    public Pigeon2 gyro;
+    private final SwerveDriveOdometry swerveOdometry;
+    private final SwerveModule[] mSwerveMods;
+    private final Pigeon2 gyro;
     private final Field2d field;
 
     private static Swerve instance;
@@ -38,7 +39,7 @@ public class Swerve extends SubsystemBase {
 
         field = new Field2d();
  
-        swerveOdometry = new SwerveDriveOdometry(kSwerve.SWERVE_KINEMATICS, getYaw());
+        swerveOdometry = new SwerveDriveOdometry(kSwerve.SWERVE_KINEMATICS, Rotation2d.fromDegrees(0));
 
         mSwerveMods = new SwerveModule[] {
                 new SwerveModule(0, kSwerve.Mod0.CONSTANTS),
@@ -51,16 +52,20 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
-        SwerveModuleState[] swerveModuleStates = kSwerve.SWERVE_KINEMATICS.toSwerveModuleStates(fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                        translation.getX(),
-                        translation.getY(),
-                        rotation,
-                        getYaw())
-                : new ChassisSpeeds(
-                        translation.getX(),
-                        translation.getY(),
-                        rotation));
+        SwerveModuleState[] swerveModuleStates = kSwerve.SWERVE_KINEMATICS.toSwerveModuleStates(
+            fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                translation.getX(),
+                translation.getY(),
+                rotation,
+                getYaw()
+            )
+            : new ChassisSpeeds(
+                translation.getX(),
+                translation.getY(),
+                rotation
+            )
+        );
+
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kSwerve.MAX_SPEED);
 
         for (SwerveModule mod : mSwerveMods) {
@@ -99,28 +104,30 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getYaw() {
-        double[] ypr = new double[3];
-        gyro.getYawPitchRoll(ypr);
-        return (kSwerve.GYRO_INVERSION) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+        double yaw = gyro.getYaw();
+        return (kSwerve.GYRO_INVERSION) ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);
     }
 
     @Override
     public void periodic() {
         swerveOdometry.update(getYaw(), getStates());
         field.setRobotPose(swerveOdometry.getPoseMeters());
+
         SmartDashboard.putNumber("gyro", getYaw().getDegrees());
 
         for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getAngle());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getDriveSpeed());
+            // DataLogManager.log("Mod " + mod.moduleNumber + " Angle Current Draw: " + mod.getAngleCurrentDraw());
+            // DataLogManager.log("Mod " + mod.moduleNumber + " Drive Current Draw: " + mod.getDriveCurrentDraw());
         }
     }
 
     public void updateEncoders() {
         for (SwerveModule mod : mSwerveMods) {
             mod.resetToAbsolute();
-        }        
+        } 
     }
 }

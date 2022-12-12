@@ -2,71 +2,77 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class Shoot extends CommandBase {
-    private final Shooter hooter;
+    private final Shooter shooter;
     private final Hood hood;
     private final Indexer indexer;
     private final Swerve swerve;
 
     private boolean shoot;
-    private double finishDelay;
+    private double shootTime;
+    private double initTime;
     private double hoodPos;
     private double shooterVelocity;
 
     public Shoot(double hoodPos, double shooterVelocity) {
-        hooter = Shooter.getInstance();
-        swerve = Swerve.getInstance();
+        shooter = Shooter.getInstance();
         indexer = Indexer.getInstance();
         hood = Hood.getInstance();
+        swerve = Swerve.getInstance();
+
         this.hoodPos = hoodPos;
         this.shooterVelocity = shooterVelocity;
 
-        addRequirements(swerve);
         addRequirements(indexer);
-        addRequirements(hooter);
+        addRequirements(shooter);
         addRequirements(hood);
+        addRequirements(swerve);
     }
 
     @Override
     public void initialize() {
-        finishDelay = 0;
+        shootTime = 0;
         shoot = false;
+        initTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
-        hooter.setVelocity(shooterVelocity);
+        shooter.setVelocity(shooterVelocity);
         hood.setPos(hoodPos);
 
-        if (hooter.isAtSpeed() && hood.isAtPos() && !shoot) {
-            indexer.setShooting();
+        if (shooter.isAtSpeed() && hood.isAtPos() && !shoot) {
+            indexer.setState(IndexerState.SHOOTING);
             shoot = true;
         }
     }
 
     @Override
     public boolean isFinished() {
-        boolean isFinished = shoot;
+        if (Timer.getFPGATimestamp() - initTime > Constants.SHOOT_UP_TO_SPEED_TIMEOUT && !shoot) {
+            return true;
+        }
 
-        if (isFinished) {
-            if (finishDelay == 0) {
-                finishDelay = Timer.getFPGATimestamp();
+        if (shoot) {
+            if (shootTime == 0) {
+                shootTime = Timer.getFPGATimestamp();
                 return false;
             } else {
-                return Timer.getFPGATimestamp() - finishDelay > 1;
+                return Timer.getFPGATimestamp() - shootTime > Constants.SHOOT_TIMEOUT;
             }
         }
-        return isFinished;
+        return false;
     }
 
     @Override
     public void end(boolean interrupted) {
-        hooter.stopShooter();
+        shooter.stopShooter();
         hood.setPos(-1000);
         indexer.setShooting(false);
     }

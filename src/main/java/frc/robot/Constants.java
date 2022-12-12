@@ -17,11 +17,17 @@ import frc.robot.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double STICK_DEADBAND = 0.1;
-    public static final boolean TUNING_MODE = false;
+    public static final double SHOOT_TIMEOUT = 1;
+    public static final double SHOOT_UP_TO_SPEED_TIMEOUT = 10;
+    public static final boolean TUNING_MODE = true;
 
     public final static class kIntake {
-        public static final double INTAKE_SPEED = 0.6;
+        public static final double INTAKE_SPEED = 4000;
+        public static final double EJECT_INTAKE_SPEED = -4000;
         public static final double HOPPER_SPEED = 0.3;
+        public static final double EJECT_HOPPER_SPEED = -0.3;
+
+        public static final double kP = 0.1;
 
         public static final TalonFXInvertType INTAKE_INVERSION = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType HOPPER_INVERSION = TalonFXInvertType.Clockwise;
@@ -31,15 +37,15 @@ public final class Constants {
 
     public final static class kClimb {
         public static final double CLIMB_SPEED = 0.6;
+        public static final double CLIMB_LOWER_SPEED = -0.6;
 
-        public static final TalonFXInvertType LEFT_INVERSION = TalonFXInvertType.CounterClockwise;
-        public static final TalonFXInvertType RIGHT_INVERSION = TalonFXInvertType.CounterClockwise;
+        public static final TalonFXInvertType INVERSION = TalonFXInvertType.Clockwise;
 
         public static final int CURRENT_LIMIT = 20;
 
         public static final double MAX_POS = 235000;
-
-        public static final double INVERSION = -1;
+        public static final double TENSION_CURRENT = 0.5;
+        public static final double STARTUP_LOWER_SPEED = -0.12;
     }
 
     public static class kHood {
@@ -51,6 +57,7 @@ public final class Constants {
         public static final double kD = 0.1;
         public static final double kF = 0;
         public static final double MAX_POS = 150000;
+        public static final double MIN_POS = -1000;
         public static final double HOOD_ERROR = 200;
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> POS_MAP = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         public static final double OFFSET = 0;
@@ -71,7 +78,7 @@ public final class Constants {
 
     public static class kShooter {
         public static final double SETPOINT_RPM = 0;
-        public static final double ERROR_TOLERANCE = 40; // 50
+        public static final double ERROR_TOLERANCE = 90; // 50
         public static final int CURRENT_LIMIT = 30;
         public static final double kP = 3.0000; // 0.27
         public static final double kI = 0.0;
@@ -112,8 +119,7 @@ public final class Constants {
         public static final int BOTTOM_BEAM_BREAK = 0;
         public static final int UPPER_BEAM_BREAK = 1;
 
-        public static final int SHOOTER_LEFT_MOTOR = 45;
-        public static final int SHOOTER_RIGHT_MOTOR = 46;
+        public static final int SHOOTER_MOTOR = 46;
         public static final int KICKER_MOTOR = 43;
         public static final int EJECTER_MOTOR = 44;
         public static final int FEEDER_MOTOR = 41;
@@ -122,8 +128,7 @@ public final class Constants {
         public static final int INTAKE_MOTOR = 49;
         public static final int HOPPER_MOTOR = 48;
 
-        public static final int LEFT_CLIMB_MOTOR = 50;
-        public static final int RIGHT_CLIMB_MOTOR = 51;
+        public static final int CLIMB_MOTOR = 51;
     }
 
     public static final class kSwerve {
@@ -139,7 +144,6 @@ public final class Constants {
         public static final double WHEEL_CIRCUMFRANCE = WHEEL_DIAMATER * Math.PI;
 
         public static final double OPEN_LOOP_RAMP = 0.25;
-        public static final double CLOSED_LOOP_RAMP = 0.0;
 
         public static final double DRIVE_GEAR_RATIO = 6.75; // 6.86:1
         public static final double ANGLE_GEAR_RATIO = (150.0 / 7.0); // 12.8:1
@@ -151,31 +155,24 @@ public final class Constants {
                 new Translation2d(-WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0));
 
         /* Swerve Current Limiting */
-        public static final int ANGLE_CONTINUSE_CURRENT_LIMIT = 20; // 25
-        public static final int ANGLE_PEAK_CURRENT_LIMIT = 20; // 40
-        public static final double ANGLE_PEAK_CURRENT_DURATION = 0;
-        public static final boolean ANGLE_ENABLE_CURRENT_LIMIT = true;
-
-        public static final int DRIVE_CONTINUSE_CURRENT_LIMIT = 25; // 35
-        public static final int DRIVE_PEAK_CURRENT_LIMIT = 25; // 60
-        public static final double DRIVE_PEAK_CURRENT_DURATION = 0;
-        public static final boolean DRIVE_ENABLE_CURRENT_LIMIT = true;
+        public static final int ANGLE_CURRENT_LIMIT = 20;
+        public static final int DRIVE_CURRENT_LIMIT = 25;
 
         /* Angle Motor PID Values */
-        public static final double ANGLE_P = 0.15;
+        public static final double ANGLE_P = 0.3;
         public static final double ANGLE_I = 0.0;
         public static final double ANGLE_D = 12.0;
         public static final double ANGLE_F = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double DRIVE_P = 0.05;
+        public static final double DRIVE_P = 0.009000;
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double DRIVE_F = 0.05;
+        public static final double DRIVE_F = 0.046;
 
         /* Swerve Profiling Values */
         public static final double MAX_ACCELERATION = 3; // 2
-        public static final double MAX_SPEED = 11.5; // 4.5 meters per second
+        public static final double MAX_SPEED = 5; // 4.5 meters per second
         public static final double MAX_ANGULAR_VELOCITY = 20; // 11.5
 
         public static final PIDController X_CONTROLLER = new PIDController(2, 0, 0);
@@ -238,6 +235,11 @@ public final class Constants {
     }
 
     public static final class kVision {
+        public static final double PERIOD = 0.02;
+        public static final double TIME_CONSTANT = 0.2;
+
+        public static final String CAMERA_NAME = "gloworm";
+
         public static final double LIME_LIGHT_HEIGHT = 2.75; // Limelight height in feet
         public static final double HUB_HEIGHT = 8.666667; // hub height in feet
         public static final double LIME_LIGHT_TO_HUB_HEIGHT = HUB_HEIGHT - LIME_LIGHT_HEIGHT; // height difference
@@ -265,6 +267,12 @@ public final class Constants {
         public static final int UPDATE_ENCODER = XboxController.Button.kY.value;
 
         public static final double TRIGGER_THRESHOLD = 0.5;
+    }
+
+    public static final class kAutoShoot {
+        public static final double kP = 0.1;
+        public static final double kI = 0;
+        public static final double kD = 0;
     }
 
     enum kShots {

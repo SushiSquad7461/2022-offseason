@@ -11,74 +11,75 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import SushiFrcLib.Motor.MotorHelper;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.kClimb;
+import frc.robot.Constants.kPorts;
 
 public class Climb extends SubsystemBase {
-    private final WPI_TalonFX rightMotor;
-
-    private static Climb mInstance;
+    private final WPI_TalonFX motor;
 
     private boolean goingDown;
-
     private boolean resetClimb;
 
+    private static Climb instance;
+
     public static Climb getInstance() {
-        if (mInstance == null) {
-            mInstance = new Climb();
+        if (instance == null) {
+            instance = new Climb();
         }
-        return mInstance;
+        return instance;
     }
 
     public Climb() {
-        rightMotor = MotorHelper.createFalconMotor(Constants.kPorts.RIGHT_CLIMB_MOTOR, Constants.kClimb.CURRENT_LIMIT,
-                Constants.kClimb.RIGHT_INVERSION, NeutralMode.Brake);
+        motor = MotorHelper.createFalconMotor(kPorts.CLIMB_MOTOR, kClimb.CURRENT_LIMIT,
+                kClimb.INVERSION, NeutralMode.Brake);
 
-        rightMotor.setSelectedSensorPosition(0);
         goingDown = false;
         resetClimb = true;
     }
 
     public void openLoopRaiseClimb() {
-        if (getPosition() <= Constants.kClimb.MAX_POS) {
-            rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * Constants.kClimb.INVERSION);
+        if (getPosition() <= kClimb.MAX_POS) {
+            setMotor(ControlMode.PercentOutput, kClimb.CLIMB_SPEED);
             goingDown = false;
         }
     }
 
     public void stop() {
-        rightMotor.set(ControlMode.PercentOutput, 0);
+        setMotor(ControlMode.PercentOutput, 0);
     }
 
-    public void openLoopLowerClimb() {
+    public void openLoopRetractClimb() {
         if (getPosition() >= 0) {
-            rightMotor.set(ControlMode.PercentOutput, Constants.kClimb.CLIMB_SPEED * -1 * Constants.kClimb.INVERSION);
+            setMotor(ControlMode.PercentOutput, kClimb.CLIMB_LOWER_SPEED);
             goingDown = true;
         }
     }
 
+    private void setMotor(ControlMode controlMode, double speed) {
+        motor.set(controlMode, speed);
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("climb current right", rightMotor.getSupplyCurrent());
-        SmartDashboard.putNumber("climb pos right", getPosition());
+        double climbPosition = getPosition();
+        SmartDashboard.putNumber("climb current right", motor.getSupplyCurrent());
+        SmartDashboard.putNumber("climb pos right", climbPosition);
 
         if (resetClimb) {
-            if (rightMotor.getSupplyCurrent() < 0.5) {
-                rightMotor.set(ControlMode.PercentOutput, 0.12);
+            if (motor.getSupplyCurrent() < kClimb.TENSION_CURRENT) {
+                setMotor(ControlMode.PercentOutput, kClimb.STARTUP_LOWER_SPEED);
             } else {
-                rightMotor.set(ControlMode.PercentOutput, 0);
-                rightMotor.setSelectedSensorPosition(0);
+                setMotor(ControlMode.PercentOutput, 0);
+                motor.setSelectedSensorPosition(0);
                 resetClimb = false;
             }
-            return;
-        }
-
-        if ((getPosition() > Constants.kClimb.MAX_POS && !goingDown) || (getPosition() < 0 && goingDown)) {
-            rightMotor.set(ControlMode.PercentOutput, 0);
+        } else if ((climbPosition > kClimb.MAX_POS && !goingDown) || (climbPosition < 0 && goingDown)) {
+            setMotor(ControlMode.PercentOutput, 0);
         }
     }
 
     public double getPosition() {
-        return rightMotor.getSelectedSensorPosition() * -1;
+        return motor.getSelectedSensorPosition();
     }
 
     public void resetClimb() {
