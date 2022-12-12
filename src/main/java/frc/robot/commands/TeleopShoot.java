@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Constants.kAutoShoot;
 import frc.robot.Constants.kShooter;
-import frc.robot.Constants.kSwerve;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.PhotonVision;

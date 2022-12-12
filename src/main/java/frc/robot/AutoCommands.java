@@ -22,14 +22,11 @@ import frc.robot.Constants.kSwerve;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class AutoCommands {
     //subsystems
     private final Swerve swerve;
-    private final Intake intake;
-    private final Indexer indexer;
     public final Map<String, SequentialCommandGroup> autos;
 
     //names of pathplanner paths for autos
@@ -40,8 +37,6 @@ public class AutoCommands {
 
     public AutoCommands(Swerve swerve, Intake intake, Indexer indexer) {
         this.swerve = swerve;
-        this.intake = intake;
-        this.indexer = indexer;
 
         autos = new HashMap<String, SequentialCommandGroup>();
 

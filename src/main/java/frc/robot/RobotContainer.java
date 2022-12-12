@@ -4,9 +4,7 @@
 
 package frc.robot;
 
-import java.time.Instant;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 
 import SushiFrcLib.Constants.SushiConstants;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -23,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Climb;
@@ -31,7 +28,6 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 import frc.robot.Constants.kOI;
 import frc.robot.Constants.kShots;
-import frc.robot.Constants.kSwerve;
 import frc.robot.commands.*;
 
 /**
