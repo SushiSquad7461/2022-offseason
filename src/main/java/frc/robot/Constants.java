@@ -83,7 +83,7 @@ public final class Constants {
         public static final double kP = 3.0000; // 0.27
         public static final double kI = 0.0;
         public static final double kD = 3.0; // 0
-        public static final double kF = 0.058; //0.0527
+        public static final double kF = 0.058; // 0.0527
         public static final double OFFSET = 0;
         public static final double TX_OFFSET = 0;
         public static final double PID_TOLERANCE_DEGREES = 2;
@@ -101,15 +101,11 @@ public final class Constants {
     }
 
     public static class kIndexer {
-        public static final double colorSensorRatioThresholdRed = 2.25;
-        public static final double colorSensorRatioThresholdBlue = 1;
-
-        public static final double ejectDelaySeconds = 0.1;
-        public static final double movingUpDelaySeconds = 0.1;
+        public static final double EJECT_DELAY = 0.15; // in seconds
 
         public static final double EJECTER_SPEED = 1;
         public static final double KICKER_SPEED = 1;
-        public static final double FEEDER_SPEED = 0.8;
+        public static final double FEADER_SPEED = 0.8;
     }
 
     public static class kPorts {
