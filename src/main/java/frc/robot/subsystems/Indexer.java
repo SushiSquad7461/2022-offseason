@@ -37,16 +37,20 @@ public class Indexer extends SubsystemBase {
   private IndexerState currState;
   private NetworkTable table;
 
+  private int ballCount = 0;
   private boolean isRedAlliance;
   private BallColor ballColor;
+  // This prevents it from counting the same ball multiple balls
+  private boolean isShooting = false;
+  private boolean overrideIdle = false;
 
-  private final Timer timer ;
-  private double startTime;
-  private double startEjectTime;
+  private final Timer m_timer = new Timer();
+  private double m_startTime = 0;
+  private double m_startEjectTime = 0;
+  private double m_startMovingUpTime = 0;
 
   public enum IndexerState {
-    WAITING_FOR_COLOR,
-    IDLE,
+    WAITING_FOR_BALL,
     INTAKING,
     EJECTING,
     MOVING_UP,
@@ -75,15 +79,11 @@ public class Indexer extends SubsystemBase {
     table = NetworkTableInstance.getDefault().getTable("FMSInfo");
     isRedAlliance = table.getEntry("IsRedAlliance").getBoolean(true);
 
-    timer = new Timer();
-    startEjectTime = 0;
-    startTime = 0;
-
     kicker = MotorHelper.createSparkMax(kPorts.KICKER_MOTOR, MotorType.kBrushless);
     feeder = MotorHelper.createSparkMax(kPorts.FEEDER_MOTOR, MotorType.kBrushless);
     ejecter = MotorHelper.createSparkMax(kPorts.EJECTER_MOTOR, MotorType.kBrushless);
 
-    currState = IndexerState.IDLE;
+    currState = IndexerState.WAITING_FOR_BALL;
 
     colorSensor = new ColorSensorV3(Port.kMXP);
     colorSensor.configureColorSensor(
@@ -94,8 +94,14 @@ public class Indexer extends SubsystemBase {
     lowerBeamBreak = new DigitalInput(kPorts.BOTTOM_BEAM_BREAK);
     upperBeamBreak = new DigitalInput(kPorts.UPPER_BEAM_BREAK);
 
-    timer.start();
+    ballCount = 0;
     colorEnabled = true;
+
+    m_timer.start();
+  }
+
+  public boolean canIntake() {
+    return ballCount < 2;
   }
 
   @Override
@@ -109,54 +115,106 @@ public class Indexer extends SubsystemBase {
     pollColor();
     boolean correctColor = isCorrectColor();
 
+    ballCount = 0;
+    if (lowerBeamBreak) {
+      ballCount++;
+    } if (upperBeamBreak) {
+      ballCount++;
+    }
+
+    if (isShooting && !upperBeamBreak) {
+      setShooting(false);
+    }
+
     switch (currState) {
-      case INTAKING:
-        if (lowerBeamBreak) {
-          setState(IndexerState.WAITING_FOR_COLOR);
-        } else {
-          break;
+      case EJECTING:
+        if (!lowerBeamBreak && m_timer.get() - m_startEjectTime > Constants.kIndexer.ejectDelaySeconds) {
+          ballCount--;
+          setState(IndexerState.INTAKING);
         }
-        // This case purposefully spills into the waiting for color one
-      case WAITING_FOR_COLOR:
-        if (ballColor != BallColor.Unknown) {
+        break;
+      case MOVING_UP:
+        if (upperBeamBreak && !lowerBeamBreak
+          && m_timer.get() - m_startMovingUpTime > Constants.kIndexer.movingUpDelaySeconds) {
+          setState(IndexerState.INTAKING);
+        }
+        break;
+      case INTAKING:
+        if (!lowerBeamBreak) {
+          if (overrideIdle) {
+            setState(IndexerState.WAITING_FOR_BALL);
+          }
+          break;
+        } 
+
+      // This case purposefully spills into the waiting for color one
+      default:
+      case WAITING_FOR_BALL:
+        if (ballColor == BallColor.Unknown) {
+          if (canIntake() && !overrideIdle) {
+            setState(IndexerState.INTAKING);
+          } else {
+            setState(IndexerState.WAITING_FOR_BALL);
+          }
+        } else {
           if (correctColor) {
             setState(upperBeamBreak
-                ? IndexerState.IDLE
+                ? IndexerState.WAITING_FOR_BALL
                 : IndexerState.MOVING_UP);
           } else {
             setState(IndexerState.EJECTING);
           }
         }
         break;
-      case AUTO_INTAKE:
-        if (lowerBeamBreak) {
-          setState(upperBeamBreak
-              ? IndexerState.IDLE
-              : IndexerState.MOVING_UP);
-        }
-        break;
-      case EJECTING:
-        if (!lowerBeamBreak && timer.get() - startEjectTime > Constants.kIndexer.EJECT_DELAY) {
-          setState(IndexerState.INTAKING);
-        }
-        break;
-      case MOVING_UP:
-        if (upperBeamBreak && !lowerBeamBreak) {
-          setState(IndexerState.INTAKING);
-        }
-        break;
-      case IDLE:
-        break;
-      case BACKING:
-        break;
-      case SHOOTING:
-        break;
-      default:
-        if (!upperBeamBreak && lowerBeamBreak) {
-          setState(IndexerState.MOVING_UP);
-        } 
-        break;
     }
+
+    // if (currState == IndexerState.SHOOTING && !upperBeamBreak) {
+    // setState(IndexerState.IDLE);
+    // ballCount = 0;
+    // } else if (!canIntake()) {
+    // setState(IndexerState.IDLE);
+    // } else if (lowerBeamBreak) {
+    // pollColor();
+    // if (ballColor == BallColor.Unknown && currState == IndexerState.INTAKING) {
+    // setState(IndexerState.IDLE);
+    // } else if (correctColor && canCount) {
+    // ballCount += 1;
+    // canCount = false;
+    // setState(correctColor ? IndexerState.MOVING_UP : IndexerState.IDLE);
+    // } else if (!isCorrectColor()) {
+    // setState(IndexerState.EJECTING);
+    // }
+    // } else if ((currState == IndexerState.EJECTING && !lowerBeamBreak) ||
+    // (currState == IndexerState.MOVING_UP && !upperBeamBreak)) {
+    // setState(IndexerState.INTAKING);
+    // canCount = true;
+    // }
+  }
+
+  public void setShooting() {
+    setShooting(true);
+  }
+
+  public void setShooting(boolean shooting) {
+    isShooting = shooting;
+    if (shooting) {
+      kicker.set(-kIndexer.KICKER_SPEED);
+    } else {
+      kicker.set(0);
+    }
+    SmartDashboard.putBoolean("isShooting", isShooting);
+  }
+
+  public boolean getShooting() {
+    return isShooting;
+  }
+
+  public void setOverrideIdle(boolean value) {
+    overrideIdle = value;
+  }
+
+  public boolean getOverrideIdle() {
+    return overrideIdle;
   }
 
   public boolean lowerBeamBreakActuated() {
@@ -181,46 +239,31 @@ public class Indexer extends SubsystemBase {
     Color color = colorSensor.getColor();
     double colorRatio = color.red / color.blue;
 
-    if (colorRatio < 0.75) {
+    if (colorRatio < Constants.kIndexer.colorSensorRatioThresholdBlue) {
       if (ballColor != BallColor.Blue) {
-        System.out.println("blue: " + (timer.get() - startTime));
+        System.out.println("blue: " + (m_timer.get() - m_startTime));
         System.out.println(colorRatio);
       }
       ballColor = BallColor.Blue;
-    } else if (colorRatio > 2.0) {
+    } else if (colorRatio > Constants.kIndexer.colorSensorRatioThresholdRed) {
       if (ballColor != BallColor.Red) {
-        System.out.println("red: " + (timer.get() - startTime));
+        System.out.println("red: " + (m_timer.get() - m_startTime));
         System.out.println(colorRatio);
       }
       ballColor = BallColor.Red;
     } else {
       if (ballColor != BallColor.Unknown) {
-        System.out.println("unknown: " + (timer.get() - startTime));
+        System.out.println("unknown: " + (m_timer.get() - m_startTime));
         System.out.println(colorRatio);
       }
       ballColor = BallColor.Unknown;
     }
 
+    SmartDashboard.putNumber("ball ratio", colorRatio);
     SmartDashboard.putString("Ball Color", ballColor.name());
   }
 
-  public void setIntake() {
-    if(colorEnabled) {
-      setState(IndexerState.INTAKING);
-    } else {
-      setState(IndexerState.AUTO_INTAKE);
-    }
-  }
-
-  public void setAutoIntake() {
-    setState(IndexerState.AUTO_INTAKE); 
-  }
-
-  public void setIdle() {
-    setState(IndexerState.IDLE);
-  }
-
-  public void setState(IndexerState newState) {
+  private void setState(IndexerState newState) {
     if (newState != currState) {
       System.out.println(newState);
     }
@@ -228,12 +271,7 @@ public class Indexer extends SubsystemBase {
     currState = newState;
 
     switch (currState) {
-      case WAITING_FOR_COLOR:
-        ejecter.set(0);
-        feeder.set(0);
-        kicker.set(0);
-        break;
-      case IDLE:
+      case WAITING_FOR_BALL:
         ejecter.set(0);
         feeder.set(0);
         kicker.set(0);
@@ -244,26 +282,12 @@ public class Indexer extends SubsystemBase {
         break;
       case EJECTING:
         ejecter.set(-kIndexer.EJECTER_SPEED);
-        feeder.set(kIndexer.FEADER_SPEED);
-        startEjectTime = timer.get();
+        feeder.set(kIndexer.FEEDER_SPEED);
+        m_startEjectTime = m_timer.get();
         break;
       case MOVING_UP:
         ejecter.set(kIndexer.EJECTER_SPEED);
-        feeder.set(kIndexer.FEADER_SPEED);
-        break;
-      case SHOOTING:
-        kicker.set(-kIndexer.KICKER_SPEED * 0.25);
-        feeder.set(kIndexer.FEADER_SPEED);
-        ejecter.set(kIndexer.EJECTER_SPEED * 0.5);
-        break;
-      case BACKING:
-        ejecter.set(kIndexer.EJECTER_SPEED * -0.5);
-        feeder.set(kIndexer.FEADER_SPEED * -1);
-        kicker.set(1);
-        break;
-      case AUTO_INTAKE:
-        ejecter.set(0);
-        feeder.set(0.5);
+        feeder.set(kIndexer.FEEDER_SPEED);
         break;
       default:
         break;

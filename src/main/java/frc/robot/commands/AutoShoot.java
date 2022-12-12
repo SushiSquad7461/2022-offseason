@@ -8,7 +8,6 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Indexer.IndexerState;
 
 public class AutoShoot extends CommandBase {
   private final Shooter shooter;
@@ -49,7 +48,7 @@ public class AutoShoot extends CommandBase {
     hood.setPosBasedOnDistance(distance);
 
     if (shooter.isAtSpeed() && hood.isAtPos() && !shoot) {
-      indexer.setState(IndexerState.SHOOTING);
+      indexer.setShooting();
       shoot = true;
     }
   }
@@ -75,6 +74,6 @@ public class AutoShoot extends CommandBase {
   public void end(boolean interrupted) {
     shooter.stopShooter();
     hood.setPos(-1000);
-    indexer.setState(IndexerState.IDLE);
+    indexer.setShooting(false);
   }
 }
