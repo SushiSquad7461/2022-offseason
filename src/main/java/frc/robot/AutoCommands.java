@@ -30,7 +30,11 @@ public class AutoCommands {
     public final Map<String, SequentialCommandGroup> autos;
 
     //names of pathplanner paths for autos
-    private final String[] sixBallPaths = {"TarmacToSide", "SideToHP", "HPToShot2", "ShotToFarBall"};
+    private final String[] sixBallPaths = {
+        "TarmacToSide", "SideToHP", 
+        "HPToShot2", "ShotToFarBall"
+    };
+
     private final String[] fiveBallPaths = {"TarmacToSide", "SideToBall", "BallToHP", "HPToShot"};
     private final String[] twoBallPaths = {"TarmacToBall"};
     private final String[] testing = {"BinaryCircle"};
@@ -46,7 +50,7 @@ public class AutoCommands {
         autos.put("1 Ball", new SequentialCommandGroup(
             new InstantCommand(() -> swerve.resetOdometry(
                 new Pose2d(
-                    new Translation2d(0,0),
+                    new Translation2d(0, 0),
                     new Rotation2d(Conversion.degreesToRadians(180))   
                 )
             )),
@@ -142,7 +146,10 @@ public class AutoCommands {
             ),
             new InstantCommand(indexer::setIdle, indexer),
             new ParallelCommandGroup(
-                new Shoot(kShots.AUTO_TARMAC.hoodAngle-5000, kShots.AUTO_TARMAC.shooterVelocity+30),
+                new Shoot(
+                    kShots.AUTO_TARMAC.hoodAngle - 5000, 
+                    kShots.AUTO_TARMAC.shooterVelocity + 30
+                ),
                 new SequentialCommandGroup(
                     new InstantCommand(intake::stopIntake, intake),
                     new WaitCommand(0.5)
@@ -200,12 +207,17 @@ public class AutoCommands {
     }
 
     private Command getCommand(String pathName, boolean isFirstPath) {
-        PathPlannerTrajectory path = PathPlanner.loadPath(pathName, kSwerve.MAX_ANGULAR_VELOCITY, kSwerve.MAX_ACCELERATION);
+        PathPlannerTrajectory path = PathPlanner.loadPath(
+            pathName, 
+            kSwerve.MAX_ANGULAR_VELOCITY, 
+            kSwerve.MAX_ACCELERATION
+        );
 
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
-                if (isFirstPath)
+                if (isFirstPath) {
                     swerve.resetOdometry(getInitialPose(path));
+                }
             }, swerve),
             new PPSwerveControllerCommand(
                 path, 
@@ -218,13 +230,16 @@ public class AutoCommands {
                 swerve
             ),
             new InstantCommand(() -> {
-                swerve.drive(new Translation2d(0,0), 0, true, false);
+                swerve.drive(new Translation2d(0, 0), 0, true, false);
             })
         );
     }
 
     private Pose2d getInitialPose(PathPlannerTrajectory path) {
-        return new Pose2d(path.getInitialPose().getTranslation(), path.getInitialState().holonomicRotation);
+        return new Pose2d(
+            path.getInitialPose().getTranslation(), 
+            path.getInitialState().holonomicRotation
+        );
     }
 }
 

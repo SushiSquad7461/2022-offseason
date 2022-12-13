@@ -33,8 +33,8 @@ public class Hood extends SubsystemBase {
         hoodD = new TunableNumber("Hood D", kHood.kD, Constants.TUNING_MODE);
         targetPos = new TunableNumber("Target Pos", 0, Constants.TUNING_MODE);
 
-        motor = MotorHelper.createFalconMotor(kPorts.HOOD_MOTOR, kHood.CURRENT_LIMIT, kHood.INVERSION,
-                kHood.NEUTRAL_MODE, hoodP.get(), kHood.kI, hoodD.get(), kHood.kF);
+        motor = MotorHelper.createFalconMotor(kPorts.HOOD_MOTOR, kHood.CURRENT_LIMIT, 
+            kHood.INVERSION, kHood.NEUTRAL_MODE, hoodP.get(), kHood.kI, hoodD.get(), kHood.kF);
 
         reset = true;
     }
@@ -44,7 +44,10 @@ public class Hood extends SubsystemBase {
     }
 
     public void setPosBasedOnDistance(double distance) {
-        targetPos.setDefault(kHood.POS_MAP.getInterpolated(new InterpolatingDouble(distance)).value + Constants.kHood.OFFSET);
+        targetPos.setDefault(
+            kHood.POS_MAP.getInterpolated(new InterpolatingDouble(distance)).value
+            + Constants.kHood.OFFSET
+        );
     }
 
     @Override

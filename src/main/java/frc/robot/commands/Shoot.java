@@ -3,11 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Indexer.IndexerState;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Indexer.IndexerState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Indexer.IndexerState;
 
 public class Shoot extends CommandBase {
     private final Shooter shooter;

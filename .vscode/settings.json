@@ -26,5 +26,7 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "java.format.settings.url": "eclipse-formatter.xml"
+  "java.format.settings.url": "eclipse-formatter.xml",
+  "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
+  "java.checkstyle.version": "10.5.0"
 }
